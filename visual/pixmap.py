@@ -66,28 +66,23 @@ class Pixmap(QTableWidget):
             self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Minimum)
 
-        width = self.size * self.columns
-        width += self.verticalHeader().width() if self.hv else 2
-        width += self.verticalScrollBar().height() if self.sb else 0
-
+    def sizeHint(self):
         max_rows = self.mr if self.mr is not None and self.rows > MAX_ROWS else self.rows
-        height = self.size * max_rows
+
+        width = self.size * self.columns + 2
+        width += self.verticalHeader().width() if self.hv else 0
+        width += self.verticalScrollBar().width() if self.verticalScrollBar().isVisible() else 0
+
+        height = self.size * max_rows + 2
         height += self.horizontalHeader().height() if self.hh else 0
-        height += self.horizontalScrollBar().height() if self.sb else 0
+        height += self.horizontalScrollBar().height() if self.horizontalScrollBar().isVisible() else 0
 
-        self.setMaximumWidth(width)
-        self.setFixedHeight(height)
+        return QSize(width, height)
 
-    # def sizeHint(self):
-    #     width = self.size * self.columns
-    #     width += self.verticalHeader().width() if self.hv else 10
-    #     width += self.verticalScrollBar().width() if self.verticalScrollBar().isVisible() else 0
-    #
-    #     max_rows = self.mr if self.mr is not None and self.rows > MAX_ROWS else self.rows
-    #     height = self.size * max_rows + 2
-    #     height += self.horizontalHeader().height() if self.hh else 0
-    #     height += self.horizontalScrollBar().height() if self.horizontalScrollBar().isVisible() else 0
-    #
-    #     return QSize(width, height)
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        hint = self.sizeHint()
+        self.setMaximumWidth(hint.width())
+        self.setMinimumHeight(hint.height())

@@ -101,6 +101,46 @@ class MainWindow(QMainWindow):
         layer_layout = QVBoxLayout()
         layer_layout.addWidget(layer_scroll)
 
+        # Buttons for 1D and 2D Conv
+        flat_layout = QVBoxLayout()
+        flat_layout.addWidget(QLabel('Filter #'))
+        flat_layout_filter = QHBoxLayout()
+        flat_layout_filter.addWidget(QPushButton('Prev'))
+        # flat_prev = QPushButton('Prev')
+        # flat_prev.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Ignored)
+        # flat_prev.resize(30, flat_prev.height())
+        flat_layout_filter.addWidget(QPushButton('Next'))
+        flat_layout.addLayout(flat_layout_filter)
+        self.flat_widget = QWidget()
+        self.flat_widget.setLayout(flat_layout)
+        layer_layout.addWidget(self.flat_widget)
+
+        # Buttons for 3D Conv
+        volume_layout_filter = QVBoxLayout()
+        volume_layout_filter.addWidget(QLabel('Filter #'))
+        volume_layout_filter_buttons = QHBoxLayout()
+        volume_layout_filter_buttons.addWidget(QPushButton('Prev'))
+        volume_layout_filter_buttons.addWidget(QPushButton('Next'))
+        volume_layout_filter.addLayout(volume_layout_filter_buttons)
+
+        volume_layout_depth = QVBoxLayout()
+        volume_layout_depth.addWidget(QLabel('Depth #'))
+        volume_layout_depth_buttons = QHBoxLayout()
+        volume_layout_depth_buttons.addWidget(QPushButton('Prev'))
+        volume_layout_depth_buttons.addWidget(QPushButton('Next'))
+        volume_layout_depth.addLayout(volume_layout_depth_buttons)
+
+        volume_layout = QHBoxLayout()
+        volume_layout.addLayout(volume_layout_filter)
+        volume_layout.addLayout(volume_layout_depth)
+
+        self.volume_widget = QWidget()
+        self.volume_widget.setLayout(volume_layout)
+        layer_layout.addWidget(self.volume_widget)
+
+        self.flat_widget.hide()
+        self.volume_widget.hide()
+
         self.tabLayer.setLayout(layer_layout)
 
     def showMaximized(self):
@@ -113,7 +153,7 @@ class MainWindow(QMainWindow):
         filename, _ = QFileDialog.getOpenFileName()
         self.logic = LModel(filename)
         self.visual = VModel(self.logic, self.scene, Display.EXTENDED, False, False, Names.HORIZONTAL, False, False,
-                             self.layer_widget, self.model_widget)
+                             self.layer_widget, self.model_widget, self.flat_widget, self.model_widget)
 
     def export_image(self):
         self.scene.clearSelection()

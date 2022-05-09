@@ -7,7 +7,7 @@ from visual.layers.layers import *
 
 class VModel:
     def __init__(self, logic, scene, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                 wl, wm):
+                 wl, wm, wf, wv):
         self.logic = logic
         self.scene = scene
 
@@ -20,6 +20,8 @@ class VModel:
 
         self.wl = wl
         self.wm = wm
+        self.wf = wf
+        self.wv = wv
 
         self.summary()
 
@@ -30,20 +32,20 @@ class VModel:
             if type(l_layer).__name__ == 'LDense':
                 layer = VDense(l_layer, self.scene, self.x,
                                self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                               self.opt_names, self.opt_captions, self.opt_bias, self.wl)
+                               self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
 
             elif type(l_layer).__name__ == 'LEmbedding':
                 layer = VEmbedding(l_layer, self.scene, self.x,
                                    self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl)
+                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
             elif type(l_layer).__name__ == 'LConv2D':
                 layer = VConv2D(l_layer, self.scene, self.x,
                                    self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl)
+                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
             else:
                 layer = VDefault(l_layer, self.scene, self.x,
                                  self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                 self.opt_names, self.opt_captions, self.opt_bias, self.wl)
+                                 self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
 
             self.layers.append(layer)
             self.x = self.scene.width() + LAYER_MARGIN
