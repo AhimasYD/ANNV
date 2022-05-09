@@ -3,8 +3,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 
+MAX_ROWS = 10
+
+
 class Pixmap(QTableWidget):
-    def __init__(self, array, size, hv, hh):
+    def __init__(self, array, size, hv=True, hh=True, sb=True):
         maximum = max(array.min(), array.max(), key=abs)
         if len(array.shape) == 2:
             rows = array.shape[0]
@@ -53,7 +56,20 @@ class Pixmap(QTableWidget):
             self.verticalHeader().hide()
         if not hh:
             self.horizontalHeader().hide()
+        if not sb:
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.setMaximumWidth(size * columns + self.verticalHeader().width() + 2)
-        self.setFixedHeight(size * rows + self.horizontalHeader().height() + self.horizontalScrollBar().height())
+
+        width = size * columns
+        width += self.verticalHeader().width() if hv else 2
+        width += self.verticalScrollBar().height() if sb else 0
+
+        max_rows = MAX_ROWS if rows > MAX_ROWS else rows
+        height = size * max_rows
+        height += self.horizontalHeader().height() if hh else 0
+        height += self.horizontalScrollBar().height() if sb else 0
+
+        self.setMaximumWidth(width)
+        self.setFixedHeight(height)

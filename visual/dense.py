@@ -1,11 +1,13 @@
-from logic.layers import *
-from .layer import VLayer
-from .pixmap import Pixmap
-from .constants import *
-from .functions import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+
+from logic.layers import *
+
+from .constants import *
+from .functions import *
+from .layer import VLayer
+from .pixmap import Pixmap
 
 
 class VDense(VLayer):
@@ -25,31 +27,23 @@ class VDense(VLayer):
                 y += NEURON_HEIGHT + NEURON_MARGIN
 
     def select(self, event):
-        clear_layout(self.widget.layout())
-        print(self.widget.layout())
-        if self.widget.layout():
-            self.widget.layout().deleteLater()
-            self.widget.layout = None
-        print(self.widget.layout())
+        layout = self.widget.layout()
+        clear_layout(layout)
 
-        layout = QVBoxLayout()
         layout.addWidget(QLabel('Type: ' + self.logic.type))
         layout.addWidget(QLabel('Activation: ' + self.logic.activation))
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('Kernel:'))
-        layout.addWidget(Pixmap(self.logic.kernel, CELL_TABLE_SIZE, True, True))
+        layout.addWidget(Pixmap(self.logic.kernel, CELL_TABLE_SIZE, hv=False, hh=False, sb=False))
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('Bias:'))
-        layout.addWidget(Pixmap(self.logic.bias, CELL_TABLE_SIZE, True, True))
+        layout.addWidget(Pixmap(self.logic.bias, CELL_TABLE_SIZE, hv=False, hh=False, sb=False))
 
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
-
-        self.widget.setLayout(layout)
-        print('SELECT')
 
 
 class VDenseBlock:

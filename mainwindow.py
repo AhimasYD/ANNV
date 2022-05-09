@@ -69,18 +69,39 @@ class MainWindow(QMainWindow):
 
         menu_bar.addMenu(menu)
 
-        # object_methods = [method_name for method_name in dir(self.tabLayer)
-        #                   if callable(getattr(self.tabLayer, method_name))]
-        # print(object_methods)
-        # pprint(vars(self.tabLayer))
-        # self.tabLayer.setExpanding(True)
-        # print(self.tabModel.tabModel.setExpanding(True))
-
         self.actionOpen.triggered.connect(self.open_model)
         self.actionExport.triggered.connect(self.export_image)
 
         self.scene = QGraphicsScene()
         self.visualView.setScene(self.scene)
+
+        # Tab Model
+        self.model_widget = QWidget()
+        model_widget_layout = QVBoxLayout()
+        self.model_widget.setLayout(model_widget_layout)
+
+        model_scroll = QScrollArea()
+        model_scroll.setWidget(self.model_widget)
+        model_scroll.setWidgetResizable(True)
+
+        model_layout = QVBoxLayout()
+        model_layout.addWidget(model_scroll)
+
+        self.tabModel.setLayout(model_layout)
+
+        # Tab Layer
+        self.layer_widget = QWidget()
+        layer_widget_layout = QVBoxLayout()
+        self.layer_widget.setLayout(layer_widget_layout)
+
+        layer_scroll = QScrollArea()
+        layer_scroll.setWidget(self.layer_widget)
+        layer_scroll.setWidgetResizable(True)
+
+        layer_layout = QVBoxLayout()
+        layer_layout.addWidget(layer_scroll)
+
+        self.tabLayer.setLayout(layer_layout)
 
     def showMaximized(self):
         super().showMaximized()
@@ -91,8 +112,8 @@ class MainWindow(QMainWindow):
     def open_model(self):
         filename, _ = QFileDialog.getOpenFileName()
         self.logic = LModel(filename)
-        self.tabModelSummary()
-        self.visual = VModel(self.logic, self.scene, Display.COMPACT, False, False, Names.HORIZONTAL, False, False, self.tabLayer)
+        self.visual = VModel(self.logic, self.scene, Display.EXTENDED, False, False, Names.HORIZONTAL, False, False,
+                             self.layer_widget, self.model_widget)
 
     def export_image(self):
         self.scene.clearSelection()
@@ -103,38 +124,3 @@ class MainWindow(QMainWindow):
         painter = QPainter(image)
         self.scene.render(painter)
         image.save('D:\lala.png')
-
-    def tabModelSummary(self):
-        summary = self.logic.summary
-
-        table = QTableWidget(summary.shape[0], summary.shape[1], self.tabModel)
-
-        vh_name = QTableWidgetItem('Name')
-        vh_type = QTableWidgetItem('Type')
-        vh_shape = QTableWidgetItem('Shape')
-        table.setHorizontalHeaderItem(0, vh_name)
-        table.setHorizontalHeaderItem(1, vh_type)
-        table.setHorizontalHeaderItem(2, vh_shape)
-        table.verticalHeader().hide()
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        table.setFocusPolicy(Qt.NoFocus)
-        # table.setSelectionModel(QAbstractItemView.NoSelection)
-
-        for i in range(summary.shape[0]):
-            c_name = QTableWidgetItem(str(summary.at[i, 'Name']))
-            c_type = QTableWidgetItem(str(summary.at[i, 'Type']))
-            c_shape = QTableWidgetItem(str(summary.at[i, 'Shape']))
-
-            c_name.setTextAlignment(Qt.AlignCenter)
-            c_type.setTextAlignment(Qt.AlignCenter)
-            c_shape.setTextAlignment(Qt.AlignCenter)
-
-            table.setItem(i, 0, c_name)
-            table.setItem(i, 1, c_type)
-            table.setItem(i, 2, c_shape)
-
-        layout = QVBoxLayout()
-        layout.addWidget(table)
-        self.tabModel.setLayout(layout)

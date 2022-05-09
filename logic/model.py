@@ -1,6 +1,7 @@
-from tensorflow import keras
-from .layers import *
 import pandas as pd
+from tensorflow import keras
+
+from .layers import *
 
 
 class LModel:
@@ -24,6 +25,8 @@ class LModel:
             name = layer_names[i]
             if name == 'Dense':
                 layer = LDense(model.layers[i])
+            elif name == 'Conv2D':
+                layer = LConv2D(model.layers[i])
             elif name == 'Embedding':
                 layer = LEmbedding(model.layers[i])
             else:
