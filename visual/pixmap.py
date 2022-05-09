@@ -8,18 +8,24 @@ MAX_ROWS = 10
 
 class Pixmap(QTableWidget):
     def __init__(self, array, size, hv=True, hh=True, sb=True, mr=MAX_ROWS):
+        self.size = size
+        self.hv = hv
+        self.hh = hh
+        self.sb = sb
+        self.mr = mr
+
         maximum = max(array.min(), array.max(), key=abs)
         if len(array.shape) == 2:
-            rows = array.shape[0]
-            columns = array.shape[1]
+            self.rows = array.shape[0]
+            self.columns = array.shape[1]
         else:
-            rows = 1
-            columns = array.shape[0]
+            self.rows = 1
+            self.columns = array.shape[0]
 
-        super().__init__(rows, columns)
+        super().__init__(self.rows, self.columns)
 
-        for i in range(rows):
-            for j in range(columns):
+        for i in range(self.rows):
+            for j in range(self.columns):
                 if len(array.shape) == 2:
                     val = array[i][j]
                 else:
@@ -36,14 +42,14 @@ class Pixmap(QTableWidget):
                 cell.setToolTip(str(val))
                 self.setItem(i, j, cell)
 
-        self.setVerticalHeaderLabels(list(map(lambda x: str(x), list(range(rows)))))
-        self.setHorizontalHeaderLabels(list(map(lambda x: str(x), list(range(columns)))))
+        self.setVerticalHeaderLabels(list(map(lambda x: str(x), list(range(self.rows)))))
+        self.setHorizontalHeaderLabels(list(map(lambda x: str(x), list(range(self.columns)))))
 
         self.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
 
-        self.verticalHeader().setDefaultSectionSize(size)
-        self.horizontalHeader().setDefaultSectionSize(size)
+        self.verticalHeader().setDefaultSectionSize(self.size)
+        self.horizontalHeader().setDefaultSectionSize(self.size)
 
         self.verticalHeader().sectionPressed.disconnect()
         self.horizontalHeader().sectionPressed.disconnect()
@@ -62,14 +68,26 @@ class Pixmap(QTableWidget):
 
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        width = size * columns
-        width += self.verticalHeader().width() if hv else 2
-        width += self.verticalScrollBar().height() if sb else 0
+        width = self.size * self.columns
+        width += self.verticalHeader().width() if self.hv else 2
+        width += self.verticalScrollBar().height() if self.sb else 0
 
-        max_rows = mr if mr is not None and rows > MAX_ROWS else rows
-        height = size * max_rows
-        height += self.horizontalHeader().height() if hh else 0
-        height += self.horizontalScrollBar().height() if sb else 0
+        max_rows = self.mr if self.mr is not None and self.rows > MAX_ROWS else self.rows
+        height = self.size * max_rows
+        height += self.horizontalHeader().height() if self.hh else 0
+        height += self.horizontalScrollBar().height() if self.sb else 0
 
         self.setMaximumWidth(width)
         self.setFixedHeight(height)
+
+    # def sizeHint(self):
+    #     width = self.size * self.columns
+    #     width += self.verticalHeader().width() if self.hv else 10
+    #     width += self.verticalScrollBar().width() if self.verticalScrollBar().isVisible() else 0
+    #
+    #     max_rows = self.mr if self.mr is not None and self.rows > MAX_ROWS else self.rows
+    #     height = self.size * max_rows + 2
+    #     height += self.horizontalHeader().height() if self.hh else 0
+    #     height += self.horizontalScrollBar().height() if self.horizontalScrollBar().isVisible() else 0
+    #
+    #     return QSize(width, height)
