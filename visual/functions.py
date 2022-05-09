@@ -34,3 +34,7 @@ def clear_layout(layout):
         child = layout.takeAt(0)
         if child.widget():
             child.widget().deleteLater()
+
+
+def press(event):
+    print('PRESS')

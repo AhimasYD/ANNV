@@ -16,21 +16,21 @@ class VDense(VLayer):
         if self.opt_display == Display.COMPACT:
             self.block = VDenseBlock(self.scene, self.pos_x, self.select)
         elif self.opt_display == Display.EXTENDED:
-            self.neurons = []
             units = self.logic.units
+            self.neurons = np.empty(units, dtype=VDenseNeuron)
+
             total_height = units * NEURON_HEIGHT + (units - 1) * NEURON_MARGIN
             y = -total_height/2 + NEURON_HEIGHT/2
             for i in range(units):
-                unit = VDenseNeuron(self.scene, self.pos_x, y, self.select)
-                self.neurons.append(unit)
+                self.neurons[i] = VDenseNeuron(self.scene, self.pos_x, y, self.select)
                 y += NEURON_HEIGHT + NEURON_MARGIN
 
     def select(self, event):
         layout = self.widget.layout()
         clear_layout(layout)
 
-        layout.addWidget(QLabel('Type: ' + self.logic.type))
-        layout.addWidget(QLabel('Activation: ' + self.logic.activation))
+        layout.addWidget(QLabel(f'Type: {self.logic.type}'))
+        layout.addWidget(QLabel(f'Activation: {self.logic.activation}'))
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
 

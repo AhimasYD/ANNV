@@ -7,7 +7,7 @@ MAX_ROWS = 10
 
 
 class Pixmap(QTableWidget):
-    def __init__(self, array, size, hv=True, hh=True, sb=True):
+    def __init__(self, array, size, hv=True, hh=True, sb=True, mr=MAX_ROWS):
         maximum = max(array.min(), array.max(), key=abs)
         if len(array.shape) == 2:
             rows = array.shape[0]
@@ -66,7 +66,7 @@ class Pixmap(QTableWidget):
         width += self.verticalHeader().width() if hv else 2
         width += self.verticalScrollBar().height() if sb else 0
 
-        max_rows = MAX_ROWS if rows > MAX_ROWS else rows
+        max_rows = mr if mr is not None and rows > MAX_ROWS else rows
         height = size * max_rows
         height += self.horizontalHeader().height() if hh else 0
         height += self.horizontalScrollBar().height() if sb else 0

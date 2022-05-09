@@ -20,6 +20,12 @@ class LConv2D:
         self.channel_num = self.filters.shape[1]
         self.kernel_shape = self.filters.shape[2:]
 
+        self.padding = layer.padding
+        self.strides = layer.strides
+        self.dilation_rate = layer.dilation_rate
+        self.groups = layer.groups
+        self.activation = str(layer.activation.__name__)
+
 
 class LEmbedding:
     def __init__(self, layer):
