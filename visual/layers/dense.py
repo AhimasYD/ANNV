@@ -4,10 +4,9 @@ from PyQt5.QtCore import *
 
 from logic.layers import *
 
-from .constants import *
-from .functions import *
+from visual.functions import *
+from visual.pixmap import Pixmap
 from .layer import VLayer
-from .pixmap import Pixmap
 
 
 class VDense(VLayer):
@@ -36,12 +35,12 @@ class VDense(VLayer):
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('Kernel:'))
-        layout.addWidget(Pixmap(self.logic.kernel, CELL_TABLE_SIZE, hv=False, hh=False, sb=False))
+        layout.addWidget(Pixmap(self.logic.kernel, CELL_TABLE_SIZE, hv=True, hh=True, sb=True))
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('Bias:'))
-        layout.addWidget(Pixmap(self.logic.bias, CELL_TABLE_SIZE, hv=False, hh=False, sb=False))
+        layout.addWidget(Pixmap(self.logic.bias, CELL_TABLE_SIZE, hv=True, hh=True, sb=True))
 
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 

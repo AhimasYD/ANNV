@@ -4,8 +4,8 @@ from PyQt5.QtCore import *
 
 from logic.layers import *
 
-from .constants import *
-from .functions import *
+from visual.functions import *
+from visual.pixmap import Pixmap
 from .layer import VLayer
 
 

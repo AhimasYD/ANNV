@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from enum import Enum, auto
+import numpy as np
 
 from .constants import *
 
