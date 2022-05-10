@@ -38,6 +38,10 @@ class VModel:
                 layer = VEmbedding(l_layer, self.scene, self.x,
                                    self.opt_display, self.opt_weight_color, self.opt_weight_thick,
                                    self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+            elif type(l_layer).__name__ == 'LConv1D':
+                layer = VConv1D(l_layer, self.scene, self.x,
+                                self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                                self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
             elif type(l_layer).__name__ == 'LConv2D':
                 layer = VConv2D(l_layer, self.scene, self.x,
                                    self.opt_display, self.opt_weight_color, self.opt_weight_thick,

@@ -14,7 +14,7 @@ class FlatBlock(QWidget):
         layout_buttons.addWidget(button_prev)
         layout_buttons.addWidget(button_next)
 
-        label = QLabel('Filter ')
+        label = QLabel('Filter:')
         num = QLabel('#')
 
         layout_text = QHBoxLayout()

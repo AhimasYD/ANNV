@@ -10,7 +10,7 @@ from visual.pixmap import Pixmap
 from .layer import VLayer
 
 
-class VConv2D(VLayer):
+class VConv1D(VLayer):
     def __init__(self, logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
                  opt_bias, widget, flat, volume):
         super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
@@ -22,12 +22,12 @@ class VConv2D(VLayer):
         self.widget_kernels = None
 
         if self.opt_display == Display.COMPACT:
-            self.block = VConv2DBlock(self.scene, self.pos_x, self.select)
+            self.block = VConv1DBlock(self.scene, self.pos_x, self.select)
         elif self.opt_display == Display.EXTENDED:
             channels = self.logic.channel_num
-            self.kernels = np.empty(channels, dtype=VConv2DKernel)
+            self.kernels = np.empty(channels, dtype=VConv1DKernel)
             for i in range(channels):
-                self.kernels[i] = VConv2DKernel(self.scene, self.logic.filters[self.filter, i], self.pos_x, 0, self.select)
+                self.kernels[i] = VConv1DKernel(self.scene, self.logic.filters[self.filter, i], self.pos_x, 0, self.select)
 
             height = self.kernels[0].height()
             total_height = channels * height + (channels - 1) * KERNEL_MARGIN
@@ -86,7 +86,7 @@ class VConv2D(VLayer):
             self.update()
 
 
-class VConv2DBlock:
+class VConv1DBlock:
     def __init__(self, scene, x, callback):
         self.scene = scene
 
@@ -100,7 +100,7 @@ class VConv2DBlock:
         self.rect.mousePressEvent = callback
 
 
-class VConv2DKernel:
+class VConv1DKernel:
     def __init__(self, scene, array, x, y, callback):
         self.scene = scene
 

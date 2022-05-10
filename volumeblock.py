@@ -14,7 +14,7 @@ class VolumeBlock(QWidget):
         layout_filter_buttons.addWidget(filter_button_prev)
         layout_filter_buttons.addWidget(filter_button_next)
 
-        filter_label = QLabel('Filter ')
+        filter_label = QLabel('Filter:')
         filter_num = QLabel('#')
 
         layout_filter_text = QHBoxLayout()
@@ -33,7 +33,7 @@ class VolumeBlock(QWidget):
         layout_depth_buttons.addWidget(depth_button_prev)
         layout_depth_buttons.addWidget(depth_button_next)
 
-        depth_label = QLabel('Depth ')
+        depth_label = QLabel('Depth:')
         depth_num = QLabel('#')
 
         layout_depth_text = QHBoxLayout()
