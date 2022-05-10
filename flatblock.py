@@ -30,3 +30,4 @@ class FlatBlock(QWidget):
 
         self.filter_prev = button_prev
         self.filter_next = button_next
+        self.filter_num = num
