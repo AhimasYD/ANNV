@@ -13,3 +13,15 @@ class VLayer:
         self.widget = widget
         self.flat = flat
         self.volume = volume
+
+    def select(self, event):
+        self.flat.hide()
+        self.volume.hide()
+
+        self.flat.filter_prev.mousePressEvent = None
+        self.flat.filter_next.mousePressEvent = None
+
+        self.volume.filter_prev.mousePressEvent = None
+        self.volume.filter_next.mousePressEvent = None
+        self.volume.depth_prev.mousePressEvent = None
+        self.volume.depth_next.mousePressEvent = None

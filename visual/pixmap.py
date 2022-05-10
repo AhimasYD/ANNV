@@ -68,6 +68,25 @@ class Pixmap(QTableWidget):
 
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Minimum)
 
+    def update(self, array):
+        maximum = max(array.min(), array.max(), key=abs)
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if len(array.shape) == 2:
+                    val = array[i][j]
+                else:
+                    val = array[j]
+
+                alpha = abs(int(255 * (val / maximum)))
+                if val >= 0:
+                    color = QColor(255, 0, 0, alpha)
+                else:
+                    color = QColor(0, 0, 255, alpha)
+
+                cell = self.item(i, j)
+                cell.setBackground(QBrush(color))
+                cell.setToolTip(str(val))
+
     def sizeHint(self):
         max_rows = self.mr if self.mr is not None and self.rows > MAX_ROWS else self.rows
 

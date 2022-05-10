@@ -28,6 +28,8 @@ class VDense(VLayer):
                 y += NEURON_HEIGHT + NEURON_MARGIN
 
     def select(self, event):
+        super().select(event)
+
         layout = self.widget.layout()
         clear_layout(layout)
 

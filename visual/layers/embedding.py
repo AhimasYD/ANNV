@@ -18,6 +18,8 @@ class VEmbedding(VLayer):
         self.block = VEmbeddingBlock(self.scene, self.pos_x, self.select)
 
     def select(self, event):
+        super().select(event)
+
         layout = self.widget.layout()
         clear_layout(layout)
 

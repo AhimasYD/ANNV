@@ -16,6 +16,8 @@ class VConv2D(VLayer):
                          widget, flat, volume)
 
         self.filter = 0
+        self.block = None
+        self.kernels = None
 
         if self.opt_display == Display.COMPACT:
             self.block = VConv2DBlock(self.scene, self.pos_x, self.select)
@@ -23,7 +25,7 @@ class VConv2D(VLayer):
             channels = self.logic.channel_num
             self.kernels = np.empty(channels, dtype=VConv2DKernel)
             for i in range(channels):
-                self.kernels[i] = VConv2DKernel(self.scene, logic.filters[self.filter, i], self.pos_x, 0, self.select)
+                self.kernels[i] = VConv2DKernel(self.scene, self.logic.filters[self.filter, i], self.pos_x, 0, self.select)
 
             height = self.kernels[0].height()
             total_height = channels * height + (channels - 1) * KERNEL_MARGIN
@@ -34,6 +36,8 @@ class VConv2D(VLayer):
                 y += height + KERNEL_MARGIN
 
     def select(self, event):
+        super().select(event)
+
         layout = self.widget.layout()
         clear_layout(layout)
 
@@ -55,6 +59,23 @@ class VConv2D(VLayer):
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.flat.show()
+        self.flat.filter_prev.mousePressEvent = self.filter_prev
+        self.flat.filter_next.mousePressEvent = self.filter_next
+
+    def update(self):
+        if self.kernels is not None:
+            for i in range(self.logic.channel_num):
+                self.kernels[i].update(self.logic.filters[self.filter, i])
+
+    def filter_prev(self, event):
+        if self.filter - 1 >= 0:
+            self.filter -= 1
+            self.update()
+
+    def filter_next(self, event):
+        if self.filter + 1 < self.logic.filter_num:
+            self.filter += 1
+            self.update()
 
 
 class VConv2DBlock:
@@ -90,3 +111,6 @@ class VConv2DKernel:
         y = y - self.pixmap.height() / 2
         self.proxy.setX(x_left)
         self.proxy.setY(y)
+
+    def update(self, array):
+        self.pixmap.update(array)
