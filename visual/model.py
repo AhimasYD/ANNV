@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from .constants import *
-from visual.layers.layers import *
+from .layers import *
 
 
 class VModel:

@@ -3,9 +3,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from logic.model import LModel
-from visual.model import VModel
-from visual.constants import *
+from logic import *
+from visual import *
 
 
 class MainWindow(QMainWindow):
