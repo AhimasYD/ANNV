@@ -25,6 +25,8 @@ class LModel:
             name = layer_names[i]
             if name == 'Dense':
                 layer = LDense(model.layers[i])
+            elif name == 'LSTM':
+                layer = LLSTM(model.layers[i])
             elif name == 'Conv1D':
                 layer = LConv1D(model.layers[i])
             elif name == 'Conv2D':

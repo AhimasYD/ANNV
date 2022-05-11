@@ -22,7 +22,7 @@ class VConv1D(VLayer):
         self.widget_kernels = None
 
         if self.opt_display == Display.COMPACT:
-            self.block = VConv1DBlock(self.scene, self.pos_x, self.select)
+            self.block = VConv1DBlock(self.scene, self.pos_x, self.select, self.opt_names)
         elif self.opt_display == Display.EXTENDED:
             channels = self.logic.channel_num
             self.kernels = np.empty(channels, dtype=VConv1DKernel)
@@ -60,6 +60,9 @@ class VConv1D(VLayer):
             layout.addWidget(QLabel(f'Filter_{self.filter} / Kernel_{i}:'))
             layout.addWidget(self.widget_kernels[i])
 
+        layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
+        layout.addWidget(QLabel('Bias:'))
+        layout.addWidget(Pixmap(self.logic.bias, CELL_TABLE_SIZE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.flat.show()
@@ -87,12 +90,12 @@ class VConv1D(VLayer):
 
 
 class VConv1DBlock:
-    def __init__(self, scene, x, callback):
+    def __init__(self, scene, x, callback, opt_names):
         self.scene = scene
 
         self.rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
         self.bound = self.rect.boundingRect()
-        self.text = draw_text('Conv2D', self.bound)
+        self.text = draw_text('Conv1D', self.bound, opt_names)
 
         self.scene.addItem(self.rect)
         self.scene.addItem(self.text)
@@ -103,11 +106,10 @@ class VConv1DBlock:
 class VConv1DKernel:
     def __init__(self, scene, array, x, y, callback):
         self.scene = scene
-
         self.pixmap = Pixmap(array, CELL_TABLE_SIZE, hv=False, hh=False, sb=False)
         self.proxy = self.scene.addWidget(self.pixmap)
-
         self.pixmap.mousePressEvent = callback
+        self.move_to(x, y)
 
     def height(self):
         return self.pixmap.height()

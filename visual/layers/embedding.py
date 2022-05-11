@@ -15,7 +15,7 @@ class VEmbedding(VLayer):
         super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
                          widget, flat, volume)
 
-        self.block = VEmbeddingBlock(self.scene, self.pos_x, self.select)
+        self.block = VEmbeddingBlock(self.scene, self.pos_x, self.select, self.opt_names)
 
     def select(self, event):
         super().select(event)
@@ -25,12 +25,12 @@ class VEmbedding(VLayer):
 
 
 class VEmbeddingBlock:
-    def __init__(self, scene, x, callback):
+    def __init__(self, scene, x, callback, opt_names):
         self.scene = scene
 
         self.rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
         self.bound = self.rect.boundingRect()
-        self.text = draw_text('Embedding', self.bound)
+        self.text = draw_text('Embedding', self.bound, opt_names)
 
         self.scene.addItem(self.rect)
         self.scene.addItem(self.text)

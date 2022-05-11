@@ -12,20 +12,20 @@ from .layer import VLayer
 class VDense(VLayer):
     def __init__(self, logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
                  opt_bias, widget, flat, volume):
-        super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                         widget, flat, volume)
+        super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
+                         opt_bias, widget, flat, volume)
 
         if self.opt_display == Display.COMPACT:
-            self.block = VDenseBlock(self.scene, self.pos_x, self.select)
+            self.block = VDenseBlock(self.scene, self.pos_x, self.select, self.opt_names)
         elif self.opt_display == Display.EXTENDED:
             units = self.logic.units
             self.neurons = np.empty(units, dtype=VDenseNeuron)
 
-            total_height = units * NEURON_HEIGHT + (units - 1) * NEURON_MARGIN
-            y = -total_height/2 + NEURON_HEIGHT/2
+            total_height = units * NEURON_SIDE + (units - 1) * NEURON_MARGIN
+            y = -total_height/2 + NEURON_SIDE/2
             for i in range(units):
                 self.neurons[i] = VDenseNeuron(self.scene, self.pos_x, y, self.select)
-                y += NEURON_HEIGHT + NEURON_MARGIN
+                y += NEURON_SIDE + NEURON_MARGIN
 
     def select(self, event):
         super().select(event)
@@ -50,12 +50,12 @@ class VDense(VLayer):
 
 
 class VDenseBlock:
-    def __init__(self, scene, x, callback):
+    def __init__(self, scene, x, callback, opt_names):
         self.scene = scene
 
         self.rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
         self.bound = self.rect.boundingRect()
-        self.text = draw_text('Dense', self.bound)
+        self.text = draw_text('Dense', self.bound, opt_names)
 
         self.scene.addItem(self.rect)
         self.scene.addItem(self.text)
@@ -67,7 +67,7 @@ class VDenseNeuron:
     def __init__(self, scene, x, y, callback):
         self.scene = scene
 
-        self.ellipse = draw_ellipse(x, y, NEURON_HEIGHT, NEURON_WIDTH)
+        self.ellipse = draw_ellipse(x, y, NEURON_SIDE, NEURON_SIDE)
         self.scene.addItem(self.ellipse)
 
         self.ellipse.mousePressEvent = callback
