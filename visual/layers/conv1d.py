@@ -54,15 +54,15 @@ class VConv1D(VLayer):
         layout.addWidget(QLabel(f'Activation: {self.logic.activation}'))
 
         self.widget_kernels = np.empty(self.logic.channel_num, dtype=Pixmap)
-        for i in range(self.kernels.size):
-            self.widget_kernels[i] = Pixmap(self.logic.filters[self.filter, i], CELL_TABLE_SIZE, hv=True, hh=True, sb=True, mr=None)
+        for i in range(self.logic.channel_num):
+            self.widget_kernels[i] = Pixmap(self.logic.filters[self.filter, i], PIXMAP_SIDE, hv=True, hh=True, sb=True, mr=None)
             layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
             layout.addWidget(QLabel(f'Filter_{self.filter} / Kernel_{i}:'))
             layout.addWidget(self.widget_kernels[i])
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('Bias:'))
-        layout.addWidget(Pixmap(self.logic.bias, CELL_TABLE_SIZE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self.logic.bias, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.flat.show()
@@ -106,7 +106,7 @@ class VConv1DBlock:
 class VConv1DKernel:
     def __init__(self, scene, array, x, y, callback):
         self.scene = scene
-        self.pixmap = Pixmap(array, CELL_TABLE_SIZE, hv=False, hh=False, sb=False)
+        self.pixmap = Pixmap(array, PIXMAP_SIDE, hv=False, hh=False, sb=False)
         self.proxy = self.scene.addWidget(self.pixmap)
         self.pixmap.mousePressEvent = callback
         self.move_to(x, y)
