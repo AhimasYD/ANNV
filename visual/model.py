@@ -7,7 +7,7 @@ from .layers import *
 
 class VModel:
     def __init__(self, logic, scene, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                 wl, wm, wf, wv):
+                 wm, wl, wf, wv):
         self.logic = logic
         self.scene = scene
 

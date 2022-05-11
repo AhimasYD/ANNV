@@ -12,8 +12,8 @@ from .layer import VLayer
 class VDefault(VLayer):
     def __init__(self, logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
                  opt_bias, widget, flat, volume):
-        super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                         widget, flat, volume)
+        super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
+                         opt_bias, widget, flat, volume)
 
         self.block = VDefaultBlock(self.scene, self.pos_x, self.logic.name, self.select, self.opt_names)
 

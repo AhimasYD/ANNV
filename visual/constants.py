@@ -6,9 +6,29 @@ class Display(Enum):
     EXTENDED = auto()
 
 
+class WeightColor(Enum):
+    OFF = auto()
+    ON = auto()
+
+
+class WeightThick(Enum):
+    OFF = auto()
+    ON = auto()
+
+
 class Names(Enum):
     HORIZONTAL = auto()
     VERTICAL = auto()
+
+
+class Captions(Enum):
+    OFF = auto()
+    ON = auto()
+
+
+class Bias(Enum):
+    OFF = auto()
+    ON = auto()
 
 
 LAYER_MARGIN = 300

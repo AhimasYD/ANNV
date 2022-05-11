@@ -121,8 +121,9 @@ class MainWindow(QMainWindow):
     def open_model(self):
         filename, _ = QFileDialog.getOpenFileName()
         self.logic = LModel(filename)
-        self.visual = VModel(self.logic, self.scene, Display.EXTENDED, False, False, Names.VERTICAL, False, False,
-                             self.layer_widget, self.model_widget, self.flat, self.volume)
+        self.visual = VModel(self.logic, self.scene,
+                             Display.EXTENDED, WeightColor.OFF, WeightThick.OFF, Names.VERTICAL, Captions.OFF, Bias.OFF,
+                             self.model_widget, self.layer_widget, self.flat, self.volume)
 
     def export_image(self):
         self.scene.clearSelection()

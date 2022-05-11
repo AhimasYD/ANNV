@@ -34,6 +34,7 @@ class VDense(VLayer):
             # Placeholder needed
             else:
                 placeholder = VPlaceholder(PLACEHOLDER_SIDE, PLACEHOLDER_MARGIN_IN, pos_x, 0)
+                placeholder.mousePressEvent = self.select
                 self.scene.addItem(placeholder)
 
                 total_height = 2 * PLACEHOLDER_MAX_NEURONS * NEURON_SIDE + 2 * PLACEHOLDER_MAX_NEURONS * NEURON_MARGIN
@@ -77,22 +78,19 @@ class VDense(VLayer):
 class VDenseBlock:
     def __init__(self, scene, width, height, x, callback, opt_names):
         self.scene = scene
-
         self.rect = draw_rect(x, 0, width, height)
-        self.bound = self.rect.boundingRect()
-        self.text = draw_text('Dense', self.bound, opt_names)
-
+        self.rect.mousePressEvent = callback
+        self.text = draw_text('Dense', self.rect.boundingRect(), opt_names)
         self.scene.addItem(self.rect)
         self.scene.addItem(self.text)
-
-        self.rect.mousePressEvent = callback
 
 
 class VDenseNeuron:
     def __init__(self, scene, side, x, y, callback):
         self.scene = scene
-
         self.ellipse = draw_ellipse(x, y, side, side)
+        self.ellipse.mousePressEvent = callback
         self.scene.addItem(self.ellipse)
 
-        self.ellipse.mousePressEvent = callback
+        self.bind_in = QPoint(int(x - side/2), int(y))
+        self.bind_out = QPoint(int(x + side / 2), int(y))
