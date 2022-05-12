@@ -10,10 +10,10 @@ class VPlaceholder(QGraphicsItemGroup):
     def __init__(self, side, margin, x, y):
         super().__init__()
 
-        circle1 = draw_ellipse(x, y - margin - side, side, side)
-        circle2 = draw_ellipse(x, y, side, side)
-        circle3 = draw_ellipse(x, y + margin + side, side, side)
+        _circle1 = draw_ellipse(x, y - margin - side, side, side)
+        _circle2 = draw_ellipse(x, y, side, side)
+        _circle3 = draw_ellipse(x, y + margin + side, side, side)
 
-        self.addToGroup(circle1)
-        self.addToGroup(circle2)
-        self.addToGroup(circle3)
+        self.addToGroup(_circle1)
+        self.addToGroup(_circle2)
+        self.addToGroup(_circle3)

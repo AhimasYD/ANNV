@@ -11,72 +11,72 @@ from .layer import VLayer
 
 
 class VConv2D(VLayer):
-    def __init__(self, logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
-                 opt_bias, widget, flat, volume):
-        super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                         widget, flat, volume)
+    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions,
+                 o_bias, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias,
+                         w_info, w_flat, w_volume)
 
         self.filter = 0
         self.block = None
         self.kernels = None
         self.widget_kernels = None
 
-        if self.opt_display == Display.COMPACT:
-            self.block = VConv2DBlock(self.scene, self.pos_x, self.select, self.opt_names)
-        elif self.opt_display == Display.EXTENDED:
-            channels = self.logic.channel_num
+        if self._o_display == Display.COMPACT:
+            self.block = VConv2DBlock(self._scene, self.x, self.select, self._o_names)
+        elif self._o_display == Display.EXTENDED:
+            channels = self._logic.channel_num
             self.kernels = np.empty(channels, dtype=VConv2DKernel)
             for i in range(channels):
-                self.kernels[i] = VConv2DKernel(self.scene, self.logic.filters[self.filter, i], self.pos_x, 0, self.select)
+                self.kernels[i] = VConv2DKernel(self._scene, self._logic.filters[self.filter, i], self.x, 0, self.select)
 
             height = self.kernels[0].height()
             total_height = channels * height + (channels - 1) * KERNEL_MARGIN
             y = -total_height / 2 + height / 2
             for i in range(channels):
                 kernel = self.kernels[i]
-                kernel.move_to(self.pos_x, y)
+                kernel.move_to(self.x, y)
                 y += height + KERNEL_MARGIN
 
     def select(self, event):
         super().select(event)
 
-        layout = self.widget.layout()
+        layout = self._w_info.layout()
         clear_layout(layout)
 
-        layout.addWidget(QLabel(f'Type: {self.logic.type}'))
-        layout.addWidget(QLabel(f'Filters: {self.logic.filter_num}'))
-        layout.addWidget(QLabel(f'Channels: {self.logic.channel_num}'))
-        layout.addWidget(QLabel(f'Kernel shape: {self.logic.kernel_shape}'))
-        layout.addWidget(QLabel(f'Padding: {self.logic.padding}'))
-        layout.addWidget(QLabel(f'Strides: {self.logic.strides}'))
-        layout.addWidget(QLabel(f'Dilation rate: {self.logic.dilation_rate}'))
-        layout.addWidget(QLabel(f'Groups: {self.logic.groups}'))
-        layout.addWidget(QLabel(f'Activation: {self.logic.activation}'))
+        layout.addWidget(QLabel(f'Type: {self._logic.type}'))
+        layout.addWidget(QLabel(f'Filters: {self._logic.filter_num}'))
+        layout.addWidget(QLabel(f'Channels: {self._logic.channel_num}'))
+        layout.addWidget(QLabel(f'Kernel shape: {self._logic.kernel_shape}'))
+        layout.addWidget(QLabel(f'Padding: {self._logic.padding}'))
+        layout.addWidget(QLabel(f'Strides: {self._logic.strides}'))
+        layout.addWidget(QLabel(f'Dilation rate: {self._logic.dilation_rate}'))
+        layout.addWidget(QLabel(f'Groups: {self._logic.groups}'))
+        layout.addWidget(QLabel(f'Activation: {self._logic.activation}'))
 
-        self.widget_kernels = np.empty(self.logic.channel_num, dtype=Pixmap)
-        for i in range(self.logic.channel_num):
-            self.widget_kernels[i] = Pixmap(self.logic.filters[self.filter, i], PIXMAP_SIDE, hv=True, hh=True, sb=True, mr=None)
+        self.widget_kernels = np.empty(self._logic.channel_num, dtype=Pixmap)
+        for i in range(self._logic.channel_num):
+            self.widget_kernels[i] = Pixmap(self._logic.filters[self.filter, i], PIXMAP_SIDE, hv=True, hh=True, sb=True, mr=None)
             layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
             layout.addWidget(QLabel(f'Filter_{self.filter} / Kernel_{i}:'))
             layout.addWidget(self.widget_kernels[i])
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('Bias:'))
-        layout.addWidget(Pixmap(self.logic.bias, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.bias, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self.flat.show()
-        self.flat.filter_num.setText(f'{self.filter}')
-        self.flat.filter_prev.mousePressEvent = self.filter_prev
-        self.flat.filter_next.mousePressEvent = self.filter_next
+        self._w_flat.show()
+        self._w_flat.filter_num.setText(f'{self.filter}')
+        self._w_flat.filter_prev.mousePressEvent = self.filter_prev
+        self._w_flat.filter_next.mousePressEvent = self.filter_next
 
     def update(self):
-        self.flat.filter_num.setText(f'{self.filter}')
+        self._w_flat.filter_num.setText(f'{self.filter}')
         if self.kernels is not None:
-            for i in range(self.logic.channel_num):
-                self.kernels[i].update(self.logic.filters[self.filter, i])
-        for i in range(self.logic.channel_num):
-            self.widget_kernels[i].update(self.logic.filters[self.filter, i])
+            for i in range(self._logic.channel_num):
+                self.kernels[i].update(self._logic.filters[self.filter, i])
+        for i in range(self._logic.channel_num):
+            self.widget_kernels[i].update(self._logic.filters[self.filter, i])
 
     def filter_prev(self, event):
         if self.filter - 1 >= 0:
@@ -84,7 +84,7 @@ class VConv2D(VLayer):
             self.update()
 
     def filter_next(self, event):
-        if self.filter + 1 < self.logic.filter_num:
+        if self.filter + 1 < self._logic.filter_num:
             self.filter += 1
             self.update()
 

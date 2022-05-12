@@ -66,8 +66,8 @@ class VModel:
             layer_0 = self.layers[i]
             layer_1 = self.layers[i + 1]
 
-            type_out, binds_out = layer_0.get_binds_out()
-            type_in, binds_in = layer_1.get_binds_in()
+            type_out, binds_out = layer_0.binds_out()
+            type_in, binds_in = layer_1.binds_in()
 
             if type_out == LinkType.UNITED and type_in == LinkType.UNITED:
                 link = Link(binds_out, binds_in, LinkType.UNITED)

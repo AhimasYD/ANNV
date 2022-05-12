@@ -10,70 +10,67 @@ from .layer import VLayer
 
 
 class VLSTM(VLayer):
-    def __init__(self, logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions,
-                 opt_bias, widget, flat, volume):
-        super().__init__(logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                         widget, flat, volume)
+    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
 
-        if self.opt_display == Display.COMPACT:
-            self.block = VLSTMBlock(self.scene, self.pos_x, self.select, self.opt_names)
-        elif self.opt_display == Display.EXTENDED:
-            units = self.logic.units
+        if self._o_display == Display.COMPACT:
+            self.block = VLSTMBlock(self._scene, self._x, self.select, self._o_names)
+        elif self._o_display == Display.EXTENDED:
+            units = self._logic.units
             self.neurons = np.empty(units, dtype=VLSTMNeuron)
 
             total_height = units * NEURON_REC_HEIGHT + (units - 1) * NEURON_REC_MARGIN
             y = -total_height/2 + NEURON_REC_HEIGHT/2
             for i in range(units):
-                self.neurons[i] = VLSTMNeuron(self.scene, self.pos_x, y, self.select)
+                self.neurons[i] = VLSTMNeuron(self._scene, self.x, y, self.select)
                 y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
 
     def select(self, event):
         super().select(event)
 
-        layout = self.widget.layout()
-        clear_layout(layout)
+        layout = self._w_info.layout()
 
-        layout.addWidget(QLabel(f'Type: {self.logic.type}'))
-        layout.addWidget(QLabel(f'Activation: {self.logic.activation}'))
+        layout.addWidget(QLabel(f'Type: {self._logic.type}'))
+        layout.addWidget(QLabel(f'Activation: {self._logic.activation}'))
         layout.addItem(QSpacerItem(0, 25, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('W_i:'))
-        layout.addWidget(Pixmap(self.logic.W_i, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.W_i, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('W_f:'))
-        layout.addWidget(Pixmap(self.logic.W_f, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.W_f, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('W_c:'))
-        layout.addWidget(Pixmap(self.logic.W_c, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.W_c, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('W_o:'))
-        layout.addWidget(Pixmap(self.logic.W_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.W_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 25, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('U_i:'))
-        layout.addWidget(Pixmap(self.logic.U_i, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.U_i, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('U_f:'))
-        layout.addWidget(Pixmap(self.logic.U_f, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.U_f, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('U_c:'))
-        layout.addWidget(Pixmap(self.logic.U_c, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.U_c, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('U_o:'))
-        layout.addWidget(Pixmap(self.logic.U_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.U_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 25, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('b_i:'))
-        layout.addWidget(Pixmap(self.logic.b_i, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.b_i, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('b_f:'))
-        layout.addWidget(Pixmap(self.logic.b_f, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.b_f, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('b_c:'))
-        layout.addWidget(Pixmap(self.logic.b_c, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.b_c, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('b_o:'))
-        layout.addWidget(Pixmap(self.logic.b_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addWidget(Pixmap(self._logic.b_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
 
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 

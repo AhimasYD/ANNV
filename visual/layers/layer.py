@@ -1,27 +1,31 @@
+from visual.functions import clear_layout
+
+
 class VLayer:
-    def __init__(self, logic, scene, pos_x, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                 widget, flat, volume):
-        self.logic = logic
-        self.scene = scene
-        self.pos_x = pos_x
-        self.opt_display = opt_display
-        self.opt_weight_color = opt_weight_color
-        self.opt_weight_thick = opt_weight_thick
-        self.opt_names = opt_names
-        self.opt_captions = opt_captions
-        self.opt_bias = opt_bias
-        self.widget = widget
-        self.flat = flat
-        self.volume = volume
+    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
+        self._logic = logic
+        self._scene = scene
+        self._x = x
+        self._o_display = o_display
+        self._o_color = o_color
+        self._o_thick = o_thick
+        self._o_names = o_names
+        self._o_captions = o_captions
+        self._o_bias = o_bias
+        self._w_info = w_info
+        self._w_flat = w_flat
+        self._w_volume = w_volume
 
     def select(self, event):
-        self.flat.hide()
-        self.volume.hide()
+        clear_layout(self._w_info.layout())
 
-        self.flat.filter_prev.mousePressEvent = None
-        self.flat.filter_next.mousePressEvent = None
+        self._w_flat.hide()
+        self._w_volume.hide()
 
-        self.volume.filter_prev.mousePressEvent = None
-        self.volume.filter_next.mousePressEvent = None
-        self.volume.depth_prev.mousePressEvent = None
-        self.volume.depth_next.mousePressEvent = None
+        self._w_flat.filter_prev.mousePressEvent = None
+        self._w_flat.filter_next.mousePressEvent = None
+
+        self._w_volume.filter_prev.mousePressEvent = None
+        self._w_volume.filter_next.mousePressEvent = None
+        self._w_volume.depth_prev.mousePressEvent = None
+        self._w_volume.depth_next.mousePressEvent = None
