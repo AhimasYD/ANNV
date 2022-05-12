@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 
 from .constants import *
 from .layers import *
+from .links import *
 
 
 class VModel:
@@ -26,36 +27,59 @@ class VModel:
         self.summary()
 
         self.x = 0
-
         self.layers = []
         for l_layer in logic.layers:
-            if type(l_layer).__name__ == 'LDense':
-                layer = VDense(l_layer, self.scene, self.x,
-                               self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                               self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
-            elif type(l_layer).__name__ == 'LLSTM':
-                layer = VLSTM(l_layer, self.scene, self.x,
-                                   self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
-            elif type(l_layer).__name__ == 'LEmbedding':
-                layer = VEmbedding(l_layer, self.scene, self.x,
-                                   self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
-            elif type(l_layer).__name__ == 'LConv1D':
-                layer = VConv1D(l_layer, self.scene, self.x,
-                                self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
-            elif type(l_layer).__name__ == 'LConv2D':
-                layer = VConv2D(l_layer, self.scene, self.x,
-                                   self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                   self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
-            else:
-                layer = VDefault(l_layer, self.scene, self.x,
-                                 self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                                 self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
-
+            layer = self.create_layer(l_layer)
             self.layers.append(layer)
             self.x = self.scene.width() + LAYER_MARGIN
+        self.init_weights()
+
+    def create_layer(self, logic):
+        if type(logic).__name__ == 'LDense':
+            layer = VDense(logic, self.scene, self.x,
+                           self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                           self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+        elif type(logic).__name__ == 'LLSTM':
+            layer = VLSTM(logic, self.scene, self.x,
+                          self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                          self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+        elif type(logic).__name__ == 'LEmbedding':
+            layer = VEmbedding(logic, self.scene, self.x,
+                               self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                               self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+        elif type(logic).__name__ == 'LConv1D':
+            layer = VConv1D(logic, self.scene, self.x,
+                            self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                            self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+        elif type(logic).__name__ == 'LConv2D':
+            layer = VConv2D(logic, self.scene, self.x,
+                            self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                            self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+        else:
+            layer = VDefault(logic, self.scene, self.x,
+                             self.opt_display, self.opt_weight_color, self.opt_weight_thick,
+                             self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+        return layer
+
+    def init_weights(self):
+        for i in range(len(self.layers) - 1):
+            layer_0 = self.layers[i]
+            layer_1 = self.layers[i + 1]
+
+            type_out, binds_out = layer_0.get_binds_out()
+            type_in, binds_in = layer_1.get_binds_in()
+
+            if type_out == LinkType.UNITED and type_in == LinkType.UNITED:
+                link = Link(binds_out, binds_in, LinkType.UNITED)
+                self.scene.addItem(link.get_item())
+
+            elif type_out == LinkType.SEPARATED and type_in == LinkType.SEPARATED:
+                for i in range(len(binds_in)):
+                    for j in range(len(binds_out)):
+                        if binds_out[j] is None or binds_in[i] is None:
+                            continue
+                        link = Link(binds_out[j], binds_in[i], LinkType.SEPARATED)
+                        self.scene.addItem(link.get_item())
 
     def summary(self):
         summary = self.logic.summary

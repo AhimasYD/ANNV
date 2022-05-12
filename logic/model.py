@@ -36,3 +36,6 @@ class LModel:
             else:
                 layer = LDefault(model.layers[i])
             self.layers.append(layer)
+
+    def layer_num(self):
+        return len(self.layers)

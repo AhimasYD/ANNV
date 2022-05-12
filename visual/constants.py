@@ -31,6 +31,11 @@ class Bias(Enum):
     ON = auto()
 
 
+class LinkType(Enum):
+    UNITED = auto()
+    SEPARATED = auto()
+
+
 LAYER_MARGIN = 300
 
 
