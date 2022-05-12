@@ -90,7 +90,7 @@ class VDenseNeuronController:
             total_height = units * NEURON_SIDE + (units - 1) * NEURON_MARGIN
             y = -total_height/2 + NEURON_SIDE/2
             for i in range(units):
-                self._neurons[i] = VDenseNeuron(self._scene, NEURON_SIDE, self._x, y, select)
+                self._neurons[i] = VDenseNeuron(self._scene, self._x, y, select)
                 y += NEURON_SIDE + NEURON_MARGIN
 
         # Placeholder needed
@@ -109,11 +109,11 @@ class VDenseNeuronController:
             for i in range(units):
                 if i < PLACEHOLDER_MAX_NEURONS:
                     j = i
-                    self._neurons_start[j] = VDenseNeuron(self._scene, NEURON_SIDE, self._x, y, select)
+                    self._neurons_start[j] = VDenseNeuron(self._scene, self._x, y, select)
                     y += NEURON_SIDE + NEURON_MARGIN
                 elif i >= units - PLACEHOLDER_MAX_NEURONS:
                     j = i - (units - PLACEHOLDER_MAX_NEURONS)
-                    self._neurons_end[j] = VDenseNeuron(self._scene, NEURON_SIDE, self._x, y, select)
+                    self._neurons_end[j] = VDenseNeuron(self._scene, self._x, y, select)
                     y += NEURON_SIDE + NEURON_MARGIN
 
                 if i == PLACEHOLDER_MAX_NEURONS:
@@ -165,14 +165,16 @@ class VDenseNeuronController:
 
 
 class VDenseNeuron:
-    def __init__(self, scene, side, x, y, select):
+    def __init__(self, scene, x, y, select):
         self._scene = scene
+
+        side = NEURON_SIDE
 
         self._ellipse = draw_ellipse(x, y, side, side)
         self._ellipse.mousePressEvent = select
         self._scene.addItem(self._ellipse)
 
-        self._bind_in = QPointF(x - side/2, y)
+        self._bind_in = QPointF(x - side / 2, y)
         self._bind_out = QPointF(x + side / 2, y)
 
     def bind_in(self):

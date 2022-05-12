@@ -19,11 +19,11 @@ class VDefault(VLayer):
 
 
 class VDefaultBlock:
-    def __init__(self, scene, x, name, callback, opt_names):
+    def __init__(self, scene, x, name, select, opt_names):
         self._scene = scene
 
         self._rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
-        self._rect.mousePressEvent = callback
+        self._rect.mousePressEvent = select
         self._text = draw_text(name + ' (D)', self._rect.boundingRect(), opt_names)
         self._scene.addItem(self._rect)
         self._scene.addItem(self._text)

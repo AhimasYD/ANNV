@@ -32,7 +32,7 @@ class VModel:
             layer = self.create_layer(l_layer)
             self.layers.append(layer)
             self.x = self.scene.width() + LAYER_MARGIN
-        self.init_weights()
+        # self.init_weights()
 
     def create_layer(self, logic):
         if type(logic).__name__ == 'LDense':

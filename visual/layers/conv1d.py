@@ -11,10 +11,8 @@ from .layer import VLayer
 
 
 class VConv1D(VLayer):
-    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions,
-                 o_bias, w_info, w_flat, w_volume):
-        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias,
-                         w_info, w_flat, w_volume)
+    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
 
         self.filter = 0
         self.block = None
@@ -22,26 +20,25 @@ class VConv1D(VLayer):
         self.widget_kernels = None
 
         if self._o_display == Display.COMPACT:
-            self.block = VConv1DBlock(self._scene, self.x, self.select, self._o_names)
+            self.block = VConv1DBlock(self._scene, self._x, self.select, self._o_names)
         elif self._o_display == Display.EXTENDED:
             channels = self._logic.channel_num
             self.kernels = np.empty(channels, dtype=VConv1DKernel)
             for i in range(channels):
-                self.kernels[i] = VConv1DKernel(self._scene, self._logic.filters[self.filter, i], self.x, 0, self.select)
+                self.kernels[i] = VConv1DKernel(self._scene, self._logic.filters[self.filter, i], self._x, 0, self.select)
 
             height = self.kernels[0].height()
             total_height = channels * height + (channels - 1) * KERNEL_MARGIN
             y = -total_height / 2 + height / 2
             for i in range(channels):
                 kernel = self.kernels[i]
-                kernel.move_to(self.x, y)
+                kernel.move_to(self._x, y)
                 y += height + KERNEL_MARGIN
 
     def select(self, event):
         super().select(event)
 
         layout = self._w_info.layout()
-        clear_layout(layout)
 
         layout.addWidget(QLabel(f'Type: {self._logic.type}'))
         layout.addWidget(QLabel(f'Filters: {self._logic.filter_num}'))
@@ -90,37 +87,37 @@ class VConv1D(VLayer):
 
 
 class VConv1DBlock:
-    def __init__(self, scene, x, callback, opt_names):
-        self.scene = scene
+    def __init__(self, scene, x, select, opt_names):
+        self._scene = scene
 
-        self.rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
-        self.bound = self.rect.boundingRect()
-        self.text = draw_text('Conv1D', self.bound, opt_names)
+        self._rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
+        self._rect.mousePressEvent = select
+        self._text = draw_text('Conv1D', self._rect.boundingRect(), opt_names)
 
-        self.scene.addItem(self.rect)
-        self.scene.addItem(self.text)
-
-        self.rect.mousePressEvent = callback
+        self._scene.addItem(self._rect)
+        self._scene.addItem(self._text)
 
 
 class VConv1DKernel:
-    def __init__(self, scene, array, x, y, callback):
-        self.scene = scene
-        self.pixmap = Pixmap(array, PIXMAP_SIDE, hv=False, hh=False, sb=False)
-        self.proxy = self.scene.addWidget(self.pixmap)
-        self.pixmap.mousePressEvent = callback
+    def __init__(self, scene, array, x, y, select):
+        self._scene = scene
+
+        self._pixmap = Pixmap(array, PIXMAP_SIDE, hv=False, hh=False, sb=False)
+        self._pixmap.mousePressEvent = select
+        self._proxy = self._scene.addWidget(self._pixmap)
+
         self.move_to(x, y)
 
     def height(self):
-        return self.pixmap.height()
+        return self._pixmap.height()
 
     def width(self):
-        return self.pixmap.width()
+        return self._pixmap.width()
 
     def move_to(self, x_left, y):
-        y = y - self.pixmap.height() / 2
-        self.proxy.setX(x_left)
-        self.proxy.setY(y)
+        y = y - self._pixmap.height() / 2
+        self._proxy.setX(x_left)
+        self._proxy.setY(y)
 
     def update(self, array):
-        self.pixmap.update(array)
+        self._pixmap.update(array)
