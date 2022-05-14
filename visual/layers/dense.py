@@ -39,13 +39,13 @@ class VDense(VLayer):
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
     def binds_in(self):
-        if self._connection == LinkType.UNITED:
+        if self._o_display == Display.COMPACT:
             return self._connection, self._block.bind_in()
         else:
             return self._connection, self._neuron_ctrl.binds_in()
 
     def binds_out(self):
-        if self._connection == LinkType.UNITED:
+        if self._o_display == Display.COMPACT:
             return self._connection, self._block.bind_out()
         else:
             return self._connection, self._neuron_ctrl.binds_out()

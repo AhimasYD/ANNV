@@ -17,6 +17,12 @@ class VEmbedding(VLayer):
     def select(self, event):
         super().select(event)
 
+    def binds_in(self):
+        return LinkType.UNITED, self._block.bind_in()
+
+    def binds_out(self):
+        return LinkType.UNITED, self._block.bind_out()
+
 
 class VEmbeddingBlock:
     def __init__(self, scene, x, select, opt_names):

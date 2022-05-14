@@ -15,16 +15,12 @@ class VLSTM(VLayer):
         super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
 
         if self._o_display == Display.COMPACT:
-            self.block = VLSTMBlock(self._scene, self._x, self.select, self._o_names)
-        elif self._o_display == Display.EXTENDED:
-            units = self._logic.units
-            self.neurons = np.empty(units, dtype=VLSTMNeuron)
+            self._connection = LinkType.UNITED
+            self._block = VLSTMBlock(self._scene, self._x, self.select, self._o_names)
 
-            total_height = units * NEURON_REC_HEIGHT + (units - 1) * NEURON_REC_MARGIN
-            y = -total_height/2 + NEURON_REC_HEIGHT/2
-            for i in range(units):
-                self.neurons[i] = VLSTMNeuron(self._scene, self._x, y, self.select)
-                y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
+        elif self._o_display == Display.EXTENDED:
+            self._connection = LinkType.SEPARATED
+            self._neuron_ctrl = VLSTMNeuronController(self._scene, self._x, self._logic.units, self.select)
 
     def select(self, event):
         super().select(event)
@@ -74,6 +70,18 @@ class VLSTM(VLayer):
         layout.addWidget(Pixmap(self._logic.b_o, PIXMAP_SIDE, hv=True, hh=True, sb=True))
 
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+    def binds_in(self):
+        if self._o_display == Display.COMPACT:
+            return self._connection, self._block.bind_in()
+        else:
+            return self._connection, self._neuron_ctrl.binds_in()
+
+    def binds_out(self):
+        if self._o_display == Display.COMPACT:
+            return self._connection, self._block.bind_out()
+        else:
+            return self._connection, self._neuron_ctrl.binds_out()
 
 
 class VLSTMBlock:

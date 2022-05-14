@@ -17,6 +17,12 @@ class VDefault(VLayer):
     def select(self, event):
         super().select(event)
 
+    def binds_in(self):
+        return LinkType.UNITED, self._block.bind_in()
+
+    def binds_out(self):
+        return LinkType.UNITED, self._block.bind_out()
+
 
 class VDefaultBlock:
     def __init__(self, scene, x, name, select, opt_names):

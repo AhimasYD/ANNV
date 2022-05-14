@@ -32,7 +32,7 @@ class VModel:
             layer = self.create_layer(l_layer)
             self.layers.append(layer)
             self.x = self.scene.width() + LAYER_MARGIN
-        # self.init_weights()
+        self.init_weights()
 
     def create_layer(self, logic):
         if type(logic).__name__ == 'LDense':
@@ -72,6 +72,18 @@ class VModel:
             if type_out == LinkType.UNITED and type_in == LinkType.UNITED:
                 link = Link(binds_out, binds_in, LinkType.UNITED)
                 self.scene.addItem(link.get_item())
+
+            elif type_out == LinkType.UNITED and type_in == LinkType.SEPARATED:
+                for i in range(len(binds_in)):
+                    if binds_in[i] is not None:
+                        link = Link(binds_out, binds_in[i], LinkType.UNITED)
+                        self.scene.addItem(link.get_item())
+
+            elif type_out == LinkType.SEPARATED and type_in == LinkType.UNITED:
+                for i in range(len(binds_out)):
+                    if binds_out[i] is not None:
+                        link = Link(binds_out[i], binds_in, LinkType.UNITED)
+                        self.scene.addItem(link.get_item())
 
             elif type_out == LinkType.SEPARATED and type_in == LinkType.SEPARATED:
                 for i in range(len(binds_in)):
