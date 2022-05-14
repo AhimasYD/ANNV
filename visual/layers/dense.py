@@ -56,7 +56,7 @@ class VDense(VLayer):
         if self._o_display == Display.COMPACT:
             self._block.set_links_in(links)
         else:
-            self._neuron_ctrl.set_links_in(links)
+            self._neuron_ctrl.set_links_in(links, np.transpose(self._logic.kernel))
 
     def set_links_out(self, links):
         if self._o_display == Display.COMPACT:
@@ -155,7 +155,6 @@ class VDenseNeuronController:
             else:
                 return None
 
-
     def binds_in(self):
         if self._placeholder is None:
             binds = np.empty(self._units, dtype=QPointF)
@@ -198,11 +197,20 @@ class VDenseNeuronController:
 
         return binds
 
-    def set_links_in(self, links):
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                neuron.set_links_in(links[i])
+    def set_links_in(self, links, weights=None):
+
+        if weights is not None:
+            maximum = max(weights.min(), weights.max(), key=abs)
+            for i in range(self._units):
+                neuron = self._get_neuron(i)
+                if neuron is not None:
+                    neuron.set_links_in(links[i], weights=(weights[i], maximum))
+
+        else:
+            for i in range(self._units):
+                neuron = self._get_neuron(i)
+                if neuron is not None:
+                    neuron.set_links_in(links[i])
 
     def set_links_out(self, links):
         for i in range(self._units):
@@ -233,8 +241,15 @@ class VDenseNeuron:
     def bind_out(self):
         return self._bind_out
 
-    def set_links_in(self, links, add=True):
+    def set_links_in(self, links, add=True, weights=None):
         self._links_in = links
+
+        if type(self._links_in) is np.ndarray and weights is not None:
+            array, maximum = weights
+            for i in range(self._links_in.shape[0]):
+                if self._links_in[i] is not None:
+                    self._links_in[i].set_weight(array[i], maximum)
+
         if add:
             if type(self._links_in) is VLink:
                 self._scene.addItem(self._links_in)

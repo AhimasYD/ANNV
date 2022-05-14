@@ -9,17 +9,16 @@ from .links import *
 
 
 class VModel:
-    def __init__(self, logic, scene, opt_display, opt_weight_color, opt_weight_thick, opt_names, opt_captions, opt_bias,
-                 wm, wl, wf, wv):
+    def __init__(self, logic, scene, _o_display, o_color, o_thick, o_names, o_captions, o_bias, wm, wl, wf, wv):
         self.logic = logic
         self.scene = scene
 
-        self.opt_display = opt_display
-        self.opt_weight_color = opt_weight_color
-        self.opt_weight_thick = opt_weight_thick
-        self.opt_names = opt_names
-        self.opt_captions = opt_captions
-        self.opt_bias = opt_bias
+        self._o_display = _o_display
+        self.o_color = o_color
+        self.o_thick = o_thick
+        self.o_names = o_names
+        self.o_captions = o_captions
+        self.o_bias = o_bias
 
         self.wl = wl
         self.wm = wm
@@ -39,28 +38,28 @@ class VModel:
     def create_layer(self, logic):
         if type(logic).__name__ == 'LDense':
             layer = VDense(logic, self.scene, self.x,
-                           self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                           self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+                           self._o_display, self.o_color, self.o_thick,
+                           self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
         elif type(logic).__name__ == 'LLSTM':
             layer = VLSTM(logic, self.scene, self.x,
-                          self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                          self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+                          self._o_display, self.o_color, self.o_thick,
+                          self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
         elif type(logic).__name__ == 'LEmbedding':
             layer = VEmbedding(logic, self.scene, self.x,
-                               self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                               self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+                               self._o_display, self.o_color, self.o_thick,
+                               self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
         elif type(logic).__name__ == 'LConv1D':
             layer = VConv1D(logic, self.scene, self.x,
-                            self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                            self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+                            self._o_display, self.o_color, self.o_thick,
+                            self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
         elif type(logic).__name__ == 'LConv2D':
             layer = VConv2D(logic, self.scene, self.x,
-                            self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                            self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+                            self._o_display, self.o_color, self.o_thick,
+                            self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
         else:
             layer = VDefault(logic, self.scene, self.x,
-                             self.opt_display, self.opt_weight_color, self.opt_weight_thick,
-                             self.opt_names, self.opt_captions, self.opt_bias, self.wl, self.wf, self.wv)
+                             self._o_display, self.o_color, self.o_thick,
+                             self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
         return layer
 
     def init_weights(self):

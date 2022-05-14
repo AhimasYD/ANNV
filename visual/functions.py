@@ -8,11 +8,15 @@ from .constants import *
 
 
 def draw_rect(x, y, width, height):
-    return QGraphicsRectItem(x - width/2, y - height/2, width, height)
+    item = QGraphicsRectItem(x - width/2, y - height/2, width, height)
+    item.setZValue(50)
+    return item
 
 
 def draw_ellipse(x, y, width, height):
-    return QGraphicsEllipseItem(x - width/2, y - height/2, width, height)
+    item = QGraphicsEllipseItem(x - width/2, y - height/2, width, height)
+    item.setZValue(50)
+    return item
 
 
 def draw_text(text, rect, names):

@@ -76,6 +76,7 @@ class MainWindow(QMainWindow):
 
         self.scene = QGraphicsScene()
         self.visualView.setScene(self.scene)
+        self.visualView.setRenderHints(QPainter.Antialiasing)
 
         # Tab Model
         self.model_widget = QWidget()
