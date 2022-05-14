@@ -17,7 +17,7 @@ def draw_ellipse(x, y, width, height):
 
 def draw_text(text, rect, names):
     item = QGraphicsTextItem()
-    item.setFont(QFont('OldEnglish', 30, QFont.Light))
+    item.setFont(QFont('OldEnglish', 30, QFont.Bold))
 
     if names == Names.HORIZONTAL:
         item.setPlainText(text)

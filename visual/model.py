@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+import numpy as np
+
 from .constants import *
 from .layers import *
 from .links import *
@@ -70,28 +72,49 @@ class VModel:
             type_in, binds_in = layer_1.binds_in()
 
             if type_out == LinkType.UNITED and type_in == LinkType.UNITED:
-                link = Link(binds_out, binds_in, LinkType.UNITED)
+                link = VLink(binds_out, binds_in, LinkType.UNITED)
                 self.scene.addItem(link.get_item())
 
+                layer_0.set_links_out(link)
+                layer_1.set_links_in(link)
+
             elif type_out == LinkType.UNITED and type_in == LinkType.SEPARATED:
+                links = np.full(len(binds_in), None, dtype=VLayer)
                 for i in range(len(binds_in)):
                     if binds_in[i] is not None:
-                        link = Link(binds_out, binds_in[i], LinkType.UNITED)
+                        link = VLink(binds_out, binds_in[i], LinkType.UNITED)
                         self.scene.addItem(link.get_item())
+
+                        links[i] = link
+
+                layer_0.set_links_out(links)
+                layer_1.set_links_in(links)
 
             elif type_out == LinkType.SEPARATED and type_in == LinkType.UNITED:
+                links = np.full(len(binds_out), None, dtype=VLayer)
                 for i in range(len(binds_out)):
                     if binds_out[i] is not None:
-                        link = Link(binds_out[i], binds_in, LinkType.UNITED)
+                        link = VLink(binds_out[i], binds_in, LinkType.UNITED)
                         self.scene.addItem(link.get_item())
 
+                layer_0.set_links_out(links)
+                layer_1.set_links_in(links)
+
             elif type_out == LinkType.SEPARATED and type_in == LinkType.SEPARATED:
+                links_in = np.full((len(binds_in), len(binds_out)), None, dtype=VLayer)
+                links_out = np.full((len(binds_out), len(binds_in)), None, dtype=VLayer)
                 for i in range(len(binds_in)):
                     for j in range(len(binds_out)):
                         if binds_out[j] is None or binds_in[i] is None:
                             continue
-                        link = Link(binds_out[j], binds_in[i], LinkType.SEPARATED)
+                        link = VLink(binds_out[j], binds_in[i], LinkType.SEPARATED)
                         self.scene.addItem(link.get_item())
+
+                        links_in[i][j] = link
+                        links_out[j][i] = link
+
+                layer_0.set_links_out(links_out)
+                layer_1.set_links_in(links_in)
 
     def summary(self):
         summary = self.logic.summary

@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from .arrow import Arrow
 
 
-class Link(QGraphicsLineItem):
+class VLink(QGraphicsLineItem):
     def __init__(self, start, end, type):
         super().__init__()
         self._item = Arrow(start, end)

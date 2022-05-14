@@ -1,1 +1,1 @@
-from .link import Link
+from .vlink import VLink

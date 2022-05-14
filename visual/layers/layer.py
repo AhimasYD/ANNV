@@ -1,3 +1,5 @@
+from abc import ABCMeta, abstractmethod, abstractproperty
+
 from visual.functions import clear_layout
 
 
@@ -29,3 +31,11 @@ class VLayer:
         self._w_volume.filter_next.mousePressEvent = None
         self._w_volume.depth_prev.mousePressEvent = None
         self._w_volume.depth_next.mousePressEvent = None
+
+    @abstractmethod
+    def set_links_in(self, links):
+        """"""
+
+    @abstractmethod
+    def set_links_out(self, links):
+        """"""

@@ -1,3 +1,4 @@
+from .layer import VLayer
 from .dense import VDense
 from .lstm import VLSTM
 from .conv1d import VConv1D

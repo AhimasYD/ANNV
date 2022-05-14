@@ -1,3 +1,4 @@
+import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -8,6 +9,7 @@ from visual.functions import *
 from visual.pixmap import Pixmap
 from .layer import VLayer
 from .placeholder import VPlaceholder
+from visual.links import VLink
 
 
 class VDense(VLayer):
@@ -50,6 +52,18 @@ class VDense(VLayer):
         else:
             return self._connection, self._neuron_ctrl.binds_out()
 
+    def set_links_in(self, links):
+        if self._o_display == Display.COMPACT:
+            self._block.set_links_in(links)
+        else:
+            self._neuron_ctrl.set_links_in(links)
+
+    def set_links_out(self, links):
+        if self._o_display == Display.COMPACT:
+            self._block.set_links_out(links)
+        else:
+            self._neuron_ctrl.set_links_out(links)
+
 
 class VDenseBlock:
     def __init__(self, scene, x, callback, opt_names):
@@ -64,11 +78,20 @@ class VDenseBlock:
         self._bind_in = QPointF(x - BLOCK_WIDTH / 2, 0)
         self._bind_out = QPointF(x + BLOCK_WIDTH / 2, 0)
 
+        self._links_in = None
+        self._links_out = None
+
     def bind_in(self):
         return self._bind_in
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links):
+        self._links_in = links
+
+    def set_links_out(self, links):
+        self._links_out = links
 
 
 class VDenseNeuronController:
@@ -121,6 +144,18 @@ class VDenseNeuronController:
                     y += 2 * PLACEHOLDER_MARGIN_OUT
                     y += NEURON_MARGIN
 
+    def _get_neuron(self, i):
+        if self._neurons is not None:
+            return self._neurons[i]
+        else:
+            if i < PLACEHOLDER_MAX_NEURONS:
+                return self._neurons_start[i]
+            elif i >= self._units - PLACEHOLDER_MAX_NEURONS:
+                return self._neurons_end[i - (self._units - PLACEHOLDER_MAX_NEURONS)]
+            else:
+                return None
+
+
     def binds_in(self):
         if self._placeholder is None:
             binds = np.empty(self._units, dtype=QPointF)
@@ -163,6 +198,18 @@ class VDenseNeuronController:
 
         return binds
 
+    def set_links_in(self, links):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_links_in(links[i])
+
+    def set_links_out(self, links):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_links_out(links[i])
+
 
 class VDenseNeuron:
     def __init__(self, scene, x, y, select):
@@ -177,8 +224,33 @@ class VDenseNeuron:
         self._bind_in = QPointF(x - side / 2, y)
         self._bind_out = QPointF(x + side / 2, y)
 
+        self._links_in = None
+        self._links_out = None
+
     def bind_in(self):
         return self._bind_in
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links, add=True):
+        self._links_in = links
+        if add:
+            if type(self._links_in) is VLink:
+                self._scene.addItem(self._links_in)
+            elif type(self._links_in) is np.ndarray:
+                for i in range(self._links_in.shape[0]):
+                    self._scene.addItem(self._links_in[i])
+            else:
+                raise TypeError
+
+    def set_links_out(self, links, add=False):
+        self._links_out = links
+        if add:
+            if type(self._links_out) is VLink:
+                self._scene.addItem(self._links_out)
+            elif type(self._links_out) is np.ndarray:
+                for i in range(self._links_out.shape[0]):
+                    self._scene.addItem(self._links_out[i])
+            else:
+                raise TypeError
