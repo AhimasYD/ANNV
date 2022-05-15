@@ -9,6 +9,8 @@ from visual.functions import *
 from visual.pixmap import Pixmap
 from .layer import VLayer
 from .placeholder import VPlaceholder
+from visual.links import VLink
+from .kernelwrapper import KernelWrapperFlat
 
 
 class VConv2D(VLayer):
@@ -24,7 +26,7 @@ class VConv2D(VLayer):
         if self._o_display == Display.COMPACT:
             self._block = VConv2DBlock(self._scene, self._x, self.select, self._o_names)
         elif self._o_display == Display.EXTENDED:
-            self._kernel_ctrl = VConv2DKernelController(self._scene, self._x, self._logic.channel_num,
+            self._kernel_ctrl = VConv2DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
                                                         self._logic.filters[self._filter], self.select)
 
     def select(self, event):
@@ -100,6 +102,18 @@ class VConv2D(VLayer):
         else:
             self._kernel_ctrl.set_links_out(links)
 
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._o_display == Display.COMPACT:
+            self._block.set_weight_color_hint(hint, forward)
+        else:
+            self._kernel_ctrl.set_weight_color_hint(hint, forward)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._o_display == Display.COMPACT:
+            self._block.set_weight_thick_hint(hint, forward)
+        else:
+            self._kernel_ctrl.set_weight_thick_hint(hint, forward)
+
 
 class VConv2DBlock:
     def __init__(self, scene, x, select, opt_names):
@@ -129,9 +143,59 @@ class VConv2DBlock:
     def set_links_out(self, links):
         self._links_out = links
 
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_color_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                link = self._links_in[i]
+                if link is None:
+                    continue
+                link.set_color_hint(hint)
+
+        if not forward or self._links_out is None:
+            return
+
+        if type(self._links_out) is VLink:
+            self._links_out.set_color_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                link = self._links_out[i]
+                if link is None:
+                    continue
+                link.set_color_hint(hint)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_thick_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                link = self._links_in[i]
+                if link is None:
+                    continue
+                link.set_thick_hint(hint)
+
+        if not forward or self._links_out is None:
+            return
+
+        if type(self._links_out) is VLink:
+            self._links_out.set_thick_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                link = self._links_out[i]
+                if link is None:
+                    continue
+                link.set_thick_hint(hint)
+
 
 class VConv2DKernelController:
-    def __init__(self, scene, x, units, arrays, select):
+    def __init__(self, scene, x, units, filters, arrays, select):
         self._scene = scene
         self._x = x
         self._units = units
@@ -147,7 +211,7 @@ class VConv2DKernelController:
             self._kernels = np.empty(units, dtype=VConv2DKernel)
 
             for i in range(self._units):
-                self._kernels[i] = VConv2DKernel(self._scene, arrays[i], self._x, 0, select)
+                self._kernels[i] = VConv2DKernel(self._scene, arrays[i], self._x, 0, filters, select)
 
             height = self._kernels[0].height()
             width = self._kernels[0].width()
@@ -169,8 +233,8 @@ class VConv2DKernelController:
 
             for i in range(PLACEHOLDER_MAX_KERNELS):
                 j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i] = VConv2DKernel(self._scene, arrays[i], self._x, 0, select)
-                self._kernels_end[i] = VConv2DKernel(self._scene, arrays[j], self._x, 0, select)
+                self._kernels_start[i] = VConv2DKernel(self._scene, arrays[i], self._x, 0, filters, select)
+                self._kernels_end[i] = VConv2DKernel(self._scene, arrays[j], self._x, 0, filters, select)
 
             height = self._kernels_start[0].height()
             width = self._kernels_start[0].width()
@@ -220,14 +284,67 @@ class VConv2DKernelController:
     def set_links_out(self, links):
         self._links_out = links
 
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_color_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                if self._links_in[i] is not None:
+                    self._links_in[i].set_color_hint(hint)
+        else:
+            raise TypeError
+
+        if not forward:
+            return
+        if type(self._links_out) is VLink:
+            self._links_out.set_color_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                if self._links_out[i] is not None:
+                    self._links_out[i].set_color_hint(hint)
+        else:
+            raise TypeError
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_thick_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                if self._links_in[i] is not None:
+                    self._links_in[i].set_thick_hint(hint)
+        else:
+            raise TypeError
+
+        if not forward or self._links_out is None:
+            return
+        if type(self._links_out) is VLink:
+            self._links_out.set_thick_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                if self._links_out[i] is not None:
+                    self._links_out[i].set_thick_hint(hint)
+        else:
+            raise TypeError
+
 
 class VConv2DKernel:
-    def __init__(self, scene, array, x, y, select):
+    def __init__(self, scene, array, x, y, filters, select):
         self._scene = scene
 
         self._pixmap = Pixmap(array, PIXMAP_SIDE, hv=False, hh=False, sb=False)
         self._pixmap.mousePressEvent = select
         self._proxy = self._scene.addWidget(self._pixmap)
+
+        self._wrapper = KernelWrapperFlat(self._proxy.pos(), self._proxy.boundingRect(), filters)
+        self._scene.addItem(self._wrapper)
+
+        self._proxy.setZValue(self._wrapper.max_z)
 
         self.move_to(x, y)
 
@@ -238,9 +355,10 @@ class VConv2DKernel:
         return self._pixmap.width()
 
     def move_to(self, x_left, y):
-        y = y - self._pixmap.height() / 2
-        self._proxy.setX(x_left)
-        self._proxy.setY(y)
+        pos = QPointF(x_left, y - self._pixmap.height() / 2)
+        self._proxy.setPos(pos)
+        self._wrapper.move_to(pos)
 
-    def update(self, array):
+    def update(self, array, num, filters):
         self._pixmap.update(array)
+

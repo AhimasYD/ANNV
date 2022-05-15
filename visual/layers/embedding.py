@@ -7,6 +7,7 @@ from logic import *
 from visual.functions import *
 from visual.pixmap import Pixmap
 from .layer import VLayer
+from visual.links import VLink
 
 
 class VEmbedding(VLayer):
@@ -28,6 +29,12 @@ class VEmbedding(VLayer):
 
     def set_links_out(self, links):
         self._block.set_links_out(links)
+
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        self._block.set_weight_color_hint(hint, forward)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        self._block.set_weight_thick_hint(hint, forward)
 
 
 class VEmbeddingBlock:
@@ -57,3 +64,53 @@ class VEmbeddingBlock:
 
     def set_links_out(self, links):
         self._links_out = links
+
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_color_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                link = self._links_in[i]
+                if link is None:
+                    continue
+                link.set_color_hint(hint)
+
+        if not forward or self._links_out is None:
+            return
+
+        if type(self._links_out) is VLink:
+            self._links_out.set_color_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                link = self._links_out[i]
+                if link is None:
+                    continue
+                link.set_color_hint(hint)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_thick_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                link = self._links_in[i]
+                if link is None:
+                    continue
+                link.set_thick_hint(hint)
+
+        if not forward or self._links_out is None:
+            return
+
+        if type(self._links_out) is VLink:
+            self._links_out.set_thick_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                link = self._links_out[i]
+                if link is None:
+                    continue
+                link.set_thick_hint(hint)

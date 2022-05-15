@@ -113,7 +113,10 @@ class VDenseBlock:
             self._links_in.set_color_hint(hint)
         elif type(self._links_in) is np.ndarray:
             for i in range(self._links_in.shape[0]):
-                self._links_in[i].set_color_hint(hint)
+                link = self._links_in[i]
+                if link is None:
+                    continue
+                link.set_color_hint(hint)
 
         if not forward or self._links_out is None:
             return
@@ -122,7 +125,10 @@ class VDenseBlock:
             self._links_out.set_color_hint(hint)
         elif type(self._links_out) is np.ndarray:
             for i in range(self._links_out.shape[0]):
-                self._links_out[i].set_color_hint(hint)
+                link = self._links_out[i]
+                if link is None:
+                    continue
+                link.set_color_hint(hint)
 
     def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
         if self._links_in is None:
@@ -132,7 +138,10 @@ class VDenseBlock:
             self._links_in.set_thick_hint(hint)
         elif type(self._links_in) is np.ndarray:
             for i in range(self._links_in.shape[0]):
-                self._links_in[i].set_thick_hint(hint)
+                link = self._links_in[i]
+                if link is None:
+                    continue
+                link.set_thick_hint(hint)
 
         if not forward or self._links_out is None:
             return
@@ -141,7 +150,10 @@ class VDenseBlock:
             self._links_out.set_thick_hint(hint)
         elif type(self._links_out) is np.ndarray:
             for i in range(self._links_out.shape[0]):
-                self._links_out[i].set_thick_hint(hint)
+                link = self._links_out[i]
+                if link is None:
+                    continue
+                link.set_thick_hint(hint)
 
 
 class VDenseNeuronController:
