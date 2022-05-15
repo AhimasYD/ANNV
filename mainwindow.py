@@ -33,12 +33,19 @@ class MainWindow(QMainWindow):
         sub_weights = menu.addMenu('Weights')
         group = QActionGroup(sub_display)
         texts = ['Color', 'Thickness']
-        for text in texts:
-            action = QAction(text, sub_weights)
-            action.setCheckable(True)
 
-            sub_weights.addAction(action)
-            group.addAction(action)
+        act_color = QAction('Color', sub_weights)
+        act_color.setCheckable(True)
+        act_color.triggered.connect(self.color_checked)
+        sub_weights.addAction(act_color)
+        group.addAction(act_color)
+
+        act_thick = QAction('Thickness', sub_weights)
+        act_thick.setCheckable(True)
+        act_thick.triggered.connect(self.thick_checked)
+        sub_weights.addAction(act_thick)
+        group.addAction(act_thick)
+
         group.setExclusive(False)
 
         sub_text = menu.addMenu('Names')
@@ -135,3 +142,15 @@ class MainWindow(QMainWindow):
         painter = QPainter(image)
         self.scene.render(painter)
         image.save('D:\lala.png')
+
+    def color_checked(self, checked):
+        if checked:
+            self.visual.set_weight_color_hint(WeightColor.ON)
+        else:
+            self.visual.set_weight_color_hint(WeightColor.OFF)
+
+    def thick_checked(self, checked):
+        if checked:
+            self.visual.set_weight_thick_hint(WeightThick.ON)
+        else:
+            self.visual.set_weight_thick_hint(WeightThick.OFF)

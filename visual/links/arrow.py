@@ -1,9 +1,16 @@
-import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 import math
+
+
+LINE_WIDTH = 2.0
+LINE_WIDTH_MIN = 1.0
+LINE_WIDTH_MAX = 3.0
+
+ARROW_HEIGHT = 24
+ARROW_WIDTH = 12
 
 
 class Arrow(QGraphicsItemGroup):
@@ -14,12 +21,14 @@ class Arrow(QGraphicsItemGroup):
         self._destinationPoint = destination
 
         self._line = QGraphicsLineItem(QLineF(source, destination))
-        self._line.setPen(QPen(BRUSH_BLACK, LINE_WIDTH))
         self._line.setZValue(0)
+
         self._cap = QGraphicsPolygonItem(self._cap_calculation(self._sourcePoint, self._destinationPoint))
-        self._cap.setPen(QPen(BRUSH_BLACK, LINE_WIDTH))
-        self._cap.setBrush(BRUSH_WHITE)
+        self._cap.setBrush(QBrush(QColor(255, 255, 255)))
         self._cap.setZValue(0)
+
+        self.reset_width()
+        self.reset_color()
 
         self.addToGroup(self._line)
         self.addToGroup(self._cap)
@@ -51,6 +60,11 @@ class Arrow(QGraphicsItemGroup):
         except (ZeroDivisionError, Exception):
             return None
 
+    def reset_width(self):
+        brush = self._line.pen().brush()
+        self._line.setPen(QPen(brush, LINE_WIDTH_MIN))
+        self._line.setPen(QPen(brush, LINE_WIDTH_MIN))
+
     def set_width(self, factor: float):
         if factor < 0 or factor > 1:
             raise ValueError
@@ -61,6 +75,11 @@ class Arrow(QGraphicsItemGroup):
         brush = self._line.pen().brush()
         self._line.setPen(QPen(brush, width))
         self._line.setPen(QPen(brush, width))
+
+    def reset_color(self):
+        width = self._line.pen().width()
+        self._line.setPen(QPen(QBrush(QColor(0, 0, 0)), width))
+        self._line.setPen(QPen(QBrush(QColor(0, 0, 0)), width))
 
     def set_color(self, factor: float):
         if abs(factor) > 1:
@@ -75,14 +94,3 @@ class Arrow(QGraphicsItemGroup):
         width = self._line.pen().width()
         self._line.setPen(QPen(brush, width))
         self._line.setPen(QPen(brush, width))
-
-
-LINE_WIDTH = 2.0
-LINE_WIDTH_MIN = 1.0
-LINE_WIDTH_MAX = 3.0
-
-ARROW_HEIGHT = 12
-ARROW_WIDTH = 12
-
-BRUSH_BLACK = QBrush(QColor(0, 0, 0))
-BRUSH_WHITE = QBrush(QColor(255, 255, 255))

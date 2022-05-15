@@ -149,3 +149,11 @@ class VModel:
             table.setItem(i, 2, c_shape)
 
         self.wm.layout().addWidget(table)
+
+    def set_weight_color_hint(self, hint: WeightColor):
+        for layer in self.layers:
+            layer.set_weight_color_hint(hint)
+
+    def set_weight_thick_hint(self, hint: WeightThick):
+        for layer in self.layers:
+            layer.set_weight_thick_hint(hint)

@@ -64,6 +64,18 @@ class VDense(VLayer):
         else:
             self._neuron_ctrl.set_links_out(links)
 
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._o_display == Display.COMPACT:
+            self._block.set_weight_color_hint(hint, forward)
+        else:
+            self._neuron_ctrl.set_weight_color_hint(hint, forward)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._o_display == Display.COMPACT:
+            self._block.set_weight_thick_hint(hint, forward)
+        else:
+            self._neuron_ctrl.set_weight_thick_hint(hint, forward)
+
 
 class VDenseBlock:
     def __init__(self, scene, x, callback, opt_names):
@@ -92,6 +104,44 @@ class VDenseBlock:
 
     def set_links_out(self, links):
         self._links_out = links
+
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_color_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                self._links_in[i].set_color_hint(hint)
+
+        if not forward or self._links_out is None:
+            return
+
+        if type(self._links_out) is VLink:
+            self._links_out.set_color_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                self._links_out[i].set_color_hint(hint)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_thick_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                self._links_in[i].set_thick_hint(hint)
+
+        if not forward or self._links_out is None:
+            return
+
+        if type(self._links_out) is VLink:
+            self._links_out.set_thick_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                self._links_out[i].set_thick_hint(hint)
 
 
 class VDenseNeuronController:
@@ -217,6 +267,18 @@ class VDenseNeuronController:
             if neuron is not None:
                 neuron.set_links_out(links[i])
 
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_weight_color_hint(hint, forward)
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_weight_thick_hint(hint, forward)
+
 
 class VDenseNeuron:
     def __init__(self, scene, x, y, select):
@@ -251,3 +313,51 @@ class VDenseNeuron:
 
     def set_links_out(self, links):
         self._links_out = links
+
+    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_color_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                if self._links_in[i] is not None:
+                    self._links_in[i].set_color_hint(hint)
+        else:
+            raise TypeError
+
+        if not forward:
+            return
+        if type(self._links_out) is VLink:
+            self._links_out.set_color_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                if self._links_out[i] is not None:
+                    self._links_out[i].set_color_hint(hint)
+        else:
+            raise TypeError
+
+    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
+        if self._links_in is None:
+            return
+
+        if type(self._links_in) is VLink:
+            self._links_in.set_thick_hint(hint)
+        elif type(self._links_in) is np.ndarray:
+            for i in range(self._links_in.shape[0]):
+                if self._links_in[i] is not None:
+                    self._links_in[i].set_thick_hint(hint)
+        else:
+            raise TypeError
+
+        if not forward or self._links_out is None:
+            return
+        if type(self._links_out) is VLink:
+            self._links_out.set_thick_hint(hint)
+        elif type(self._links_out) is np.ndarray:
+            for i in range(self._links_out.shape[0]):
+                if self._links_out[i] is not None:
+                    self._links_out[i].set_thick_hint(hint)
+        else:
+            raise TypeError
