@@ -9,11 +9,16 @@ from visual import *
 from flatblock import FlatBlock
 from volumeblock import VolumeBlock
 
+import gc
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('mainwindow.ui', self)
+
+        self._logic = None
+        self._visual = None
 
         menu_bar = self.menuBar()
         menu = QMenu('Options', self)
@@ -127,9 +132,19 @@ class MainWindow(QMainWindow):
         self.visualView.setGeometry(visualView.x(), visualView.y(), width, visualView.height())
 
     def open_model(self):
-        filename, _ = QFileDialog.getOpenFileName()
-        self.logic = LModel(filename)
-        self.visual = VModel(self.logic, self.scene,
+        filename, lala = QFileDialog.getOpenFileName()
+        if not filename:
+            return
+
+        self.scene.clear()
+
+        self._logic = None
+        self._visual = None
+
+        gc.collect()
+
+        self._logic = LModel(filename)
+        self._visual = VModel(self._logic, self.scene,
                              Display.EXTENDED, WeightColor.OFF, WeightThick.OFF, Names.HORIZONTAL, Captions.OFF, Bias.OFF,
                              self.model_widget, self.layer_widget, self.flat, self.volume)
 
@@ -145,12 +160,12 @@ class MainWindow(QMainWindow):
 
     def color_checked(self, checked):
         if checked:
-            self.visual.set_weight_color_hint(WeightColor.ON)
+            self._visual.set_weight_color_hint(WeightColor.ON)
         else:
-            self.visual.set_weight_color_hint(WeightColor.OFF)
+            self._visual.set_weight_color_hint(WeightColor.OFF)
 
     def thick_checked(self, checked):
         if checked:
-            self.visual.set_weight_thick_hint(WeightThick.ON)
+            self._visual.set_weight_thick_hint(WeightThick.ON)
         else:
-            self.visual.set_weight_thick_hint(WeightThick.OFF)
+            self._visual.set_weight_thick_hint(WeightThick.OFF)

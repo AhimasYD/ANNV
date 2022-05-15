@@ -6,9 +6,9 @@ from .layers import *
 
 class LModel:
     def __init__(self, filename):
-        print('LOADING MODEL', filename)
+        # print('LOADING MODEL', filename)
         model = keras.models.load_model(filename)
-        print(model.summary())
+        # print(model.summary())
 
         self.summary = []
         for layer in model.layers:

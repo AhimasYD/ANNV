@@ -32,7 +32,7 @@ class VModel:
         for l_layer in logic.layers:
             layer = self.create_layer(l_layer)
             self.layers.append(layer)
-            self.x = self.scene.width() + LAYER_MARGIN
+            self.x = self.scene.itemsBoundingRect().width() + LAYER_MARGIN
         self.init_weights()
 
     def create_layer(self, logic):
