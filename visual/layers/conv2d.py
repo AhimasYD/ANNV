@@ -66,7 +66,7 @@ class VConv2D(VLayer):
         for i in range(self._logic.channel_num):
             self._kernels[i].update(self._logic.filters[self._filter, i])
         if self._kernel_ctrl is not None:
-            self._kernel_ctrl.update(self._logic.filters[self._filter])
+            self._kernel_ctrl.update(self._logic.filters[self._filter], self._filter)
 
     def filter_prev(self, event):
         if self._filter - 1 >= 0:
@@ -262,15 +262,15 @@ class VConv2DKernelController:
         self._links_in = None
         self._links_out = None
 
-    def update(self, arrays):
+    def update(self, arrays, filter_num):
         if self._kernels is not None:
             for i in range(self._units):
-                self._kernels[i].update(arrays[i])
+                self._kernels[i].update(arrays[i], filter_num)
         else:
             for i in range(PLACEHOLDER_MAX_KERNELS):
                 j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i].update(arrays[i])
-                self._kernels_end[i].update(arrays[j])
+                self._kernels_start[i].update(arrays[i], filter_num)
+                self._kernels_end[i].update(arrays[j], filter_num)
 
     def bind_in(self):
         return self._bind_in
@@ -341,10 +341,8 @@ class VConv2DKernel:
         self._pixmap.mousePressEvent = select
         self._proxy = self._scene.addWidget(self._pixmap)
 
-        self._wrapper = KernelWrapperFlat(self._proxy.pos(), self._proxy.boundingRect(), filters)
+        self._wrapper = KernelWrapperFlat(self._proxy.pos(), filters, self._proxy, select=select)
         self._scene.addItem(self._wrapper)
-
-        self._proxy.setZValue(self._wrapper.max_z)
 
         self.move_to(x, y)
 
@@ -356,9 +354,9 @@ class VConv2DKernel:
 
     def move_to(self, x_left, y):
         pos = QPointF(x_left, y - self._pixmap.height() / 2)
-        self._proxy.setPos(pos)
         self._wrapper.move_to(pos)
 
-    def update(self, array, num, filters):
+    def update(self, array, filter_num):
         self._pixmap.update(array)
+        self._wrapper.set_active(filter_num)
 
