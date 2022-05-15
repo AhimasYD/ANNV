@@ -4,7 +4,7 @@ from PyQt5.QtCore import QPointF
 import numpy as np
 
 from visual.constants import *
-from visual.functions import draw_rect, draw_text
+from visual.functions import draw_text
 
 from visual.links import VLink
 

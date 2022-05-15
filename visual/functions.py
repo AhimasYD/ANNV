@@ -4,12 +4,6 @@ from PyQt5.QtGui import *
 from .constants import *
 
 
-def draw_rect(x, y, width, height):
-    item = QGraphicsRectItem(x - width/2, y - height/2, width, height)
-    item.setZValue(50)
-    return item
-
-
 def draw_text(text, rect, names):
     item = QGraphicsTextItem()
     item.setFont(QFont('OldEnglish', 30, QFont.Bold))
