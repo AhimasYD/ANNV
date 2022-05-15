@@ -7,13 +7,15 @@ from logic import *
 
 from visual.functions import *
 from visual.pixmap import Pixmap
-from .layer import VLayer
-from .placeholder import VPlaceholder
+from visual.layers.layer import VLayer
 from visual.links import VLink
-from .kernelwrapper import KernelWrapperFlat
+from visual.layers.kernelwrapper import KernelWrapperFlat
+
+from .convkernelcontroller import VConvKernelController
+from .convkernel import VConvKernel
 
 
-class VConv1D(VLayer):
+class VConv2D(VLayer):
     def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
 
@@ -24,9 +26,9 @@ class VConv1D(VLayer):
 
         self._connection = LinkType.UNITED
         if self._o_display == Display.COMPACT:
-            self._block = VConv1DBlock(self._scene, self._x, self.select, self._o_names)
+            self._block = VConv2DBlock(self._scene, self._x, self.select, self._o_names)
         elif self._o_display == Display.EXTENDED:
-            self._kernel_ctrl = VConv1DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
+            self._kernel_ctrl = VConv2DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
                                                         self._logic.filters[self._filter], self.select)
 
     def select(self, event):
@@ -115,7 +117,7 @@ class VConv1D(VLayer):
             self._kernel_ctrl.set_weight_thick_hint(hint, forward)
 
 
-class VConv1DBlock:
+class VConv2DBlock:
     def __init__(self, scene, x, select, opt_names):
         self._scene = scene
 
@@ -194,168 +196,13 @@ class VConv1DBlock:
                 link.set_thick_hint(hint)
 
 
-class VConv1DKernelController:
+class VConv2DKernelController(VConvKernelController):
     def __init__(self, scene, x, units, filters, arrays, select):
-        self._scene = scene
-        self._x = x
-        self._units = units
-
-        self._kernels = None
-
-        self._placeholder = None
-        self._kernels_start = None
-        self._kernels_end = None
-
-        # No placeholder needed
-        if units <= PLACEHOLDER_MAX_NEURONS * 2:
-            self._kernels = np.empty(units, dtype=VConv1DKernel)
-
-            for i in range(self._units):
-                self._kernels[i] = VConv1DKernel(self._scene, arrays[i], self._x, 0, filters, select)
-
-            height = self._kernels[0].height()
-            width = self._kernels[0].width()
-            total_height = self._units * height + (self._units - 1) * KERNEL_MARGIN
-            y = -total_height / 2 + height / 2
-            for i in range(self._units):
-                kernel = self._kernels[i]
-                kernel.move_to(self._x, y)
-                y += height + KERNEL_MARGIN
-
-        # Placeholder needed
-        else:
-            self._placeholder = VPlaceholder(PLACEHOLDER_SIDE, PLACEHOLDER_MARGIN_IN, x, 0)
-            self._placeholder.mousePressEvent = select
-            self._scene.addItem(self._placeholder)
-
-            self._kernels_start = np.empty(PLACEHOLDER_MAX_KERNELS, dtype=VConv1DKernel)
-            self._kernels_end = np.empty(PLACEHOLDER_MAX_KERNELS, dtype=VConv1DKernel)
-
-            for i in range(PLACEHOLDER_MAX_KERNELS):
-                j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i] = VConv1DKernel(self._scene, arrays[i], self._x, 0, filters, select)
-                self._kernels_end[i] = VConv1DKernel(self._scene, arrays[j], self._x, 0, filters, select)
-
-            height = self._kernels_start[0].height()
-            width = self._kernels_start[0].width()
-            total_height = 2 * PLACEHOLDER_MAX_KERNELS * height + 2 * PLACEHOLDER_MAX_KERNELS * KERNEL_MARGIN
-            total_height += self._placeholder.boundingRect().height() + 2 * PLACEHOLDER_MARGIN_OUT
-
-            y = -total_height / 2 + height / 2
-            for i in range(PLACEHOLDER_MAX_KERNELS):
-                kernel = self._kernels_start[i]
-                kernel.move_to(self._x, y)
-                y += height + KERNEL_MARGIN
-            y += self._placeholder.boundingRect().height()
-            y += 2 * PLACEHOLDER_MARGIN_OUT
-            y += KERNEL_MARGIN
-            for i in range(PLACEHOLDER_MAX_KERNELS):
-                kernel = self._kernels_end[i]
-                kernel.move_to(self._x, y)
-                y += height + KERNEL_MARGIN
-
-            self._placeholder.moveBy(self._kernels_start[0].width() / 2, 0)
-
-        self._bind_in = QPointF(x, 0)
-        self._bind_out = QPointF(x + width, 0)
-
-        self._links_in = None
-        self._links_out = None
-
-    def update(self, arrays, filter_num):
-        if self._kernels is not None:
-            for i in range(self._units):
-                self._kernels[i].update(arrays[i], filter_num)
-        else:
-            for i in range(PLACEHOLDER_MAX_KERNELS):
-                j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i].update(arrays[i], filter_num)
-                self._kernels_end[i].update(arrays[j], filter_num)
-
-    def bind_in(self):
-        return self._bind_in
-
-    def bind_out(self):
-        return self._bind_out
-
-    def set_links_in(self, links):
-        self._links_in = links
-
-    def set_links_out(self, links):
-        self._links_out = links
-
-    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
-        if self._links_in is None:
-            return
-
-        if type(self._links_in) is VLink:
-            self._links_in.set_color_hint(hint)
-        elif type(self._links_in) is np.ndarray:
-            for i in range(self._links_in.shape[0]):
-                if self._links_in[i] is not None:
-                    self._links_in[i].set_color_hint(hint)
-        else:
-            raise TypeError
-
-        if not forward:
-            return
-        if type(self._links_out) is VLink:
-            self._links_out.set_color_hint(hint)
-        elif type(self._links_out) is np.ndarray:
-            for i in range(self._links_out.shape[0]):
-                if self._links_out[i] is not None:
-                    self._links_out[i].set_color_hint(hint)
-        else:
-            raise TypeError
-
-    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
-        if self._links_in is None:
-            return
-
-        if type(self._links_in) is VLink:
-            self._links_in.set_thick_hint(hint)
-        elif type(self._links_in) is np.ndarray:
-            for i in range(self._links_in.shape[0]):
-                if self._links_in[i] is not None:
-                    self._links_in[i].set_thick_hint(hint)
-        else:
-            raise TypeError
-
-        if not forward or self._links_out is None:
-            return
-        if type(self._links_out) is VLink:
-            self._links_out.set_thick_hint(hint)
-        elif type(self._links_out) is np.ndarray:
-            for i in range(self._links_out.shape[0]):
-                if self._links_out[i] is not None:
-                    self._links_out[i].set_thick_hint(hint)
-        else:
-            raise TypeError
+        super().__init__(scene, x, units, filters, arrays, select, VConv2DKernel)
 
 
-class VConv1DKernel:
+class VConv2DKernel(VConvKernel):
     def __init__(self, scene, array, x, y, filters, select):
-        self._scene = scene
+        super().__init__(scene, array, x, y, filters, select, KernelWrapperFlat)
 
-        self._pixmap = Pixmap(array, PIXMAP_SIDE, hv=False, hh=False, sb=False)
-        self._pixmap.mousePressEvent = select
-        self._proxy = self._scene.addWidget(self._pixmap)
 
-        self._wrapper = KernelWrapperFlat(self._proxy.pos(), filters, self._proxy, select=select)
-        self._scene.addItem(self._wrapper)
-
-        self.move_to(x, y)
-
-    def height(self):
-        return self._pixmap.height()
-
-    def width(self):
-        return self._pixmap.width()
-
-    def move_to(self, x_left, y):
-        pos = QPointF(x_left, y - self._pixmap.height() / 2)
-        self._wrapper.move_to(pos)
-
-    def update(self, array, filter_num):
-        self._pixmap.update(array)
-        self._wrapper.set_active(filter_num)
