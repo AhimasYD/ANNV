@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import abstractmethod
 
 from visual.functions import clear_layout
 
@@ -17,6 +17,8 @@ class VLayer:
         self._w_info = w_info
         self._w_flat = w_flat
         self._w_volume = w_volume
+
+        self._connection = None
 
     def select(self, event):
         clear_layout(self._w_info.layout())
