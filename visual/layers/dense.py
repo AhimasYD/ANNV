@@ -198,7 +198,6 @@ class VDenseNeuronController:
         return binds
 
     def set_links_in(self, links, weights=None):
-
         if weights is not None:
             maximum = max(weights.min(), weights.max(), key=abs)
             for i in range(self._units):
@@ -241,7 +240,7 @@ class VDenseNeuron:
     def bind_out(self):
         return self._bind_out
 
-    def set_links_in(self, links, add=True, weights=None):
+    def set_links_in(self, links, weights=None):
         self._links_in = links
 
         if type(self._links_in) is np.ndarray and weights is not None:
@@ -250,22 +249,5 @@ class VDenseNeuron:
                 if self._links_in[i] is not None:
                     self._links_in[i].set_weight(array[i], maximum)
 
-        if add:
-            if type(self._links_in) is VLink:
-                self._scene.addItem(self._links_in)
-            elif type(self._links_in) is np.ndarray:
-                for i in range(self._links_in.shape[0]):
-                    self._scene.addItem(self._links_in[i])
-            else:
-                raise TypeError
-
-    def set_links_out(self, links, add=False):
+    def set_links_out(self, links):
         self._links_out = links
-        if add:
-            if type(self._links_out) is VLink:
-                self._scene.addItem(self._links_out)
-            elif type(self._links_out) is np.ndarray:
-                for i in range(self._links_out.shape[0]):
-                    self._scene.addItem(self._links_out[i])
-            else:
-                raise TypeError

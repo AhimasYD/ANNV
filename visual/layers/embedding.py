@@ -23,6 +23,12 @@ class VEmbedding(VLayer):
     def binds_out(self):
         return LinkType.UNITED, self._block.bind_out()
 
+    def set_links_in(self, links):
+        self._block.set_links_in(links)
+
+    def set_links_out(self, links):
+        self._block.set_links_out(links)
+
 
 class VEmbeddingBlock:
     def __init__(self, scene, x, select, opt_names):
@@ -37,8 +43,17 @@ class VEmbeddingBlock:
         self._bind_in = QPointF(x - BLOCK_WIDTH / 2, 0)
         self._bind_out = QPointF(x + BLOCK_WIDTH / 2, 0)
 
+        self._links_in = None
+        self._links_out = None
+
     def bind_in(self):
         return self._bind_in
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links):
+        self._links_in = links
+
+    def set_links_out(self, links):
+        self._links_out = links

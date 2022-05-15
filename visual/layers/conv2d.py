@@ -88,6 +88,18 @@ class VConv2D(VLayer):
         else:
             return self._connection, self._kernel_ctrl.bind_out()
 
+    def set_links_in(self, links):
+        if self._o_display == Display.COMPACT:
+            self._block.set_links_in(links)
+        else:
+            self._kernel_ctrl.set_links_in(links)
+
+    def set_links_out(self, links):
+        if self._o_display == Display.COMPACT:
+            self._block.set_links_out(links)
+        else:
+            self._kernel_ctrl.set_links_out(links)
+
 
 class VConv2DBlock:
     def __init__(self, scene, x, select, opt_names):
@@ -102,11 +114,20 @@ class VConv2DBlock:
         self._bind_in = QPointF(x - BLOCK_WIDTH / 2, 0)
         self._bind_out = QPointF(x + BLOCK_WIDTH / 2, 0)
 
+        self._links_in = None
+        self._links_out = None
+
     def bind_in(self):
         return self._bind_in
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links):
+        self._links_in = links
+
+    def set_links_out(self, links):
+        self._links_out = links
 
 
 class VConv2DKernelController:
@@ -174,6 +195,9 @@ class VConv2DKernelController:
         self._bind_in = QPointF(x, 0)
         self._bind_out = QPointF(x + width, 0)
 
+        self._links_in = None
+        self._links_out = None
+
     def update(self, arrays):
         if self._kernels is not None:
             for i in range(self._units):
@@ -189,6 +213,12 @@ class VConv2DKernelController:
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links):
+        self._links_in = links
+
+    def set_links_out(self, links):
+        self._links_out = links
 
 
 class VConv2DKernel:

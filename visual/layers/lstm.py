@@ -83,6 +83,18 @@ class VLSTM(VLayer):
         else:
             return self._connection, self._neuron_ctrl.binds_out()
 
+    def set_links_in(self, links):
+        if self._o_display == Display.COMPACT:
+            self._block.set_links_in(links)
+        else:
+            self._neuron_ctrl.set_links_in(links, np.transpose(self._logic.kernel))
+
+    def set_links_out(self, links):
+        if self._o_display == Display.COMPACT:
+            self._block.set_links_out(links)
+        else:
+            self._neuron_ctrl.set_links_out(links)
+
 
 class VLSTMBlock:
     def __init__(self, scene, x, select, opt_names):
@@ -97,11 +109,20 @@ class VLSTMBlock:
         self._bind_in = QPointF(x - BLOCK_WIDTH / 2, 0)
         self._bind_out = QPointF(x + BLOCK_WIDTH / 2, 0)
 
+        self._links_in = None
+        self._links_out = None
+
     def bind_in(self):
         return self._bind_in
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links):
+        self._links_in = links
+
+    def set_links_out(self, links):
+        self._links_out = links
 
 
 class VLSTMNeuronController:
@@ -154,6 +175,17 @@ class VLSTMNeuronController:
                     y += 2 * PLACEHOLDER_MARGIN_OUT
                     y += NEURON_REC_MARGIN
 
+    def _get_neuron(self, i):
+        if self._neurons is not None:
+            return self._neurons[i]
+        else:
+            if i < PLACEHOLDER_MAX_NEURONS:
+                return self._neurons_start[i]
+            elif i >= self._units - PLACEHOLDER_MAX_NEURONS:
+                return self._neurons_end[i - (self._units - PLACEHOLDER_MAX_NEURONS)]
+            else:
+                return None
+
     def binds_in(self):
         if self._placeholder is None:
             binds = np.empty(self._units, dtype=QPointF)
@@ -196,6 +228,26 @@ class VLSTMNeuronController:
 
         return binds
 
+    def set_links_in(self, links, weights=None):
+        if weights is not None:
+            maximum = max(weights.min(), weights.max(), key=abs)
+            for i in range(self._units):
+                neuron = self._get_neuron(i)
+                if neuron is not None:
+                    neuron.set_links_in(links[i], weights=(weights[i], maximum))
+
+        else:
+            for i in range(self._units):
+                neuron = self._get_neuron(i)
+                if neuron is not None:
+                    neuron.set_links_in(links[i])
+
+    def set_links_out(self, links):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_links_out(links[i])
+
 
 class VLSTMNeuron:
     def __init__(self, scene, x, y, select):
@@ -211,8 +263,17 @@ class VLSTMNeuron:
         self._bind_in = QPointF(x - width / 2, y)
         self._bind_out = QPointF(x + width / 2, y)
 
+        self._links_in = None
+        self._links_out = None
+
     def bind_in(self):
         return self._bind_in
 
     def bind_out(self):
         return self._bind_out
+
+    def set_links_in(self, links, weights=None):
+        self._links_in = links
+
+    def set_links_out(self, links):
+        self._links_out = links

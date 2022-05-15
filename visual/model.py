@@ -63,9 +63,9 @@ class VModel:
         return layer
 
     def init_weights(self):
-        for i in range(len(self.layers) - 1):
-            layer_0 = self.layers[i]
-            layer_1 = self.layers[i + 1]
+        for k in range(len(self.layers) - 1):
+            layer_0 = self.layers[k]
+            layer_1 = self.layers[k + 1]
 
             type_out, binds_out = layer_0.binds_out()
             type_in, binds_in = layer_1.binds_in()
@@ -95,6 +95,8 @@ class VModel:
                     if binds_out[i] is not None:
                         link = VLink(binds_out[i], binds_in, LinkType.UNITED)
                         self.scene.addItem(link.get_item())
+
+                        links[i] = link
 
                 layer_0.set_links_out(links)
                 layer_1.set_links_in(links)
