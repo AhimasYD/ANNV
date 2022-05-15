@@ -26,14 +26,17 @@ class VConvKernelController:
             for i in range(self._units):
                 self._kernels[i] = dtype(self._scene, arrays[i], self._x, 0, filters, select)
 
-            height = self._kernels[0].height()
-            width = self._kernels[0].width()
+            width = self._kernels[0].bounding().width()
+            height = self._kernels[0].bounding().height()
             total_height = self._units * height + (self._units - 1) * KERNEL_MARGIN
-            y = -total_height / 2 + height / 2
+            y = -total_height / 2
             for i in range(self._units):
                 kernel = self._kernels[i]
                 kernel.move_to(self._x, y)
                 y += height + KERNEL_MARGIN
+
+            self._kernels[0].bounding()
+
 
         # Placeholder needed
         else:
@@ -49,12 +52,12 @@ class VConvKernelController:
                 self._kernels_start[i] = dtype(self._scene, arrays[i], self._x, 0, filters, select)
                 self._kernels_end[i] = dtype(self._scene, arrays[j], self._x, 0, filters, select)
 
-            height = self._kernels_start[0].height()
-            width = self._kernels_start[0].width()
+            width = self._kernels_start[0].bounding().width()
+            height = self._kernels_start[0].bounding().height()
             total_height = 2 * PLACEHOLDER_MAX_KERNELS * height + 2 * PLACEHOLDER_MAX_KERNELS * KERNEL_MARGIN
             total_height += self._placeholder.boundingRect().height() + 2 * PLACEHOLDER_MARGIN_OUT
 
-            y = -total_height / 2 + height / 2
+            y = -total_height / 2
             for i in range(PLACEHOLDER_MAX_KERNELS):
                 kernel = self._kernels_start[i]
                 kernel.move_to(self._x, y)
@@ -67,10 +70,11 @@ class VConvKernelController:
                 kernel.move_to(self._x, y)
                 y += height + KERNEL_MARGIN
 
-            self._placeholder.moveBy(self._kernels_start[0].width() / 2, 0)
+            self._placeholder.setPos(self._x + width / 2 - self._placeholder.boundingRect().width() / 2,
+                                     0 - self._placeholder.boundingRect().height() / 2)
 
-        self._bind_in = QPointF(x, 0)
-        self._bind_out = QPointF(x + width, 0)
+        self._bind_in = QPointF(self._x, 0)
+        self._bind_out = QPointF(self._x + width, 0)
 
         self._links_in = None
         self._links_out = None

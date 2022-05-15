@@ -4,7 +4,7 @@ import numpy as np
 
 from visual.constants import *
 from visual.pixmap import Pixmap
-from visual.layers.kernelwrapper import KernelWrapperFlat
+from visual.layers.conv.kernelwrapper import KernelWrapperFlat
 
 from visual.layers.conv.conv import VConv
 from visual.layers.block import VBlock

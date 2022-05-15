@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+import numpy as np
+
 from logic import *
 
 from visual.functions import *
@@ -132,7 +134,7 @@ class VLSTMNeuronController:
             self._neurons = np.empty(units, dtype=VLSTMNeuron)
 
             total_height = units * NEURON_REC_HEIGHT + (units - 1) * NEURON_REC_MARGIN
-            y = -total_height/2 + NEURON_REC_HEIGHT/2
+            y = -total_height/2
             for i in range(units):
                 self._neurons[i] = VLSTMNeuron(self._scene, self._x, y, select)
                 y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
@@ -149,7 +151,7 @@ class VLSTMNeuronController:
             total_height = 2 * PLACEHOLDER_MAX_NEURONS * NEURON_REC_HEIGHT + 2 * PLACEHOLDER_MAX_NEURONS * NEURON_REC_MARGIN
             total_height += self._placeholder.boundingRect().height() + 2 * PLACEHOLDER_MARGIN_OUT
 
-            y = -total_height / 2 + NEURON_REC_HEIGHT / 2
+            y = -total_height / 2
             for i in range(units):
                 if i < PLACEHOLDER_MAX_NEURONS:
                     j = i
@@ -164,6 +166,9 @@ class VLSTMNeuronController:
                     y += self._placeholder.boundingRect().height()
                     y += 2 * PLACEHOLDER_MARGIN_OUT
                     y += NEURON_REC_MARGIN
+
+            self._placeholder.setPos(self._x + NEURON_REC_WIDTH / 2 - self._placeholder.boundingRect().width() / 2,
+                                     0 - self._placeholder.boundingRect().height() / 2)
 
     def _get_neuron(self, i):
         if self._neurons is not None:
@@ -250,12 +255,12 @@ class VLSTMNeuron:
         width = NEURON_REC_WIDTH
         height = NEURON_REC_HEIGHT
 
-        self._rect = draw_rect(x, y, width, height)
+        self._rect = QGraphicsRectItem(x, y, width, height)
         self._rect.mousePressEvent = select
         self._scene.addItem(self._rect)
 
-        self._bind_in = QPointF(x - width / 2, y)
-        self._bind_out = QPointF(x + width / 2, y)
+        self._bind_in = QPointF(x, y + height / 2)
+        self._bind_out = QPointF(x + width, y + height / 2)
 
         self._links_in = None
         self._links_out = None

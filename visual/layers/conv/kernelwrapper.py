@@ -16,6 +16,7 @@ class KernelWrapperFlat(QGraphicsItemGroup):
         self._kernel_max = kernels
         self._kernel_num = min(kernels, MAX_WRAPPERS)
         self._kernel = kernel
+        self.addToGroup(self._kernel)
 
         self._wrappers = np.empty(MAX_WRAPPERS, dtype=QGraphicsRectItem)
         for i in range(self._kernel_num):
@@ -23,25 +24,16 @@ class KernelWrapperFlat(QGraphicsItemGroup):
             item.setBrush(QBrush(QColor(255, 255, 255)))
             item.setPen(QPen(QBrush(QColor(0, 0, 0)), 2))
             item.setZValue(INIT_Z + i)
-            item.setPos(pos + QPointF(10, 10) * float(i - np.floor(self._kernel_num / 2)))
+            item.setPos(pos + QPointF(10, 10) * float(i))
 
             self._wrappers[i] = item
             self.addToGroup(item)
-        self._max_z = INIT_Z + self._kernel_num
 
+        self._max_z = INIT_Z + self._kernel_num
         self._kernel.setZValue(self._max_z)
         self.set_active(active)
 
         self.mousePressEvent = select
-
-    def move_to(self, pos: QPointF):
-        for i in range(self._kernel_num):
-            item = self._wrappers[i]
-            item.setPos(pos + QPointF(10, 10) * float(i - np.floor(self._kernel_num / 2)))
-
-    @property
-    def max_z(self):
-        return self._max_z
 
     def set_active(self, number):
         for i in range(self._kernel_num):

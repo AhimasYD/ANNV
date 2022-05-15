@@ -1,7 +1,8 @@
-import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+
+import numpy as np
 
 from logic import *
 
@@ -100,14 +101,14 @@ class VDenseNeuronController:
             self._neurons = np.empty(units, dtype=VDenseNeuron)
 
             total_height = units * NEURON_SIDE + (units - 1) * NEURON_MARGIN
-            y = -total_height/2 + NEURON_SIDE/2
+            y = -total_height/2
             for i in range(units):
                 self._neurons[i] = VDenseNeuron(self._scene, self._x, y, select)
                 y += NEURON_SIDE + NEURON_MARGIN
 
         # Placeholder needed
         else:
-            self._placeholder = VPlaceholder(PLACEHOLDER_SIDE, PLACEHOLDER_MARGIN_IN, x, 0)
+            self._placeholder = VPlaceholder(PLACEHOLDER_SIDE, PLACEHOLDER_MARGIN_IN, 0, 0)
             self._placeholder.mousePressEvent = select
             self._scene.addItem(self._placeholder)
 
@@ -117,7 +118,7 @@ class VDenseNeuronController:
             total_height = 2 * PLACEHOLDER_MAX_NEURONS * NEURON_SIDE + 2 * PLACEHOLDER_MAX_NEURONS * NEURON_MARGIN
             total_height += self._placeholder.boundingRect().height() + 2 * PLACEHOLDER_MARGIN_OUT
 
-            y = -total_height / 2 + NEURON_SIDE / 2
+            y = -total_height / 2
             for i in range(units):
                 if i < PLACEHOLDER_MAX_NEURONS:
                     j = i
@@ -132,6 +133,9 @@ class VDenseNeuronController:
                     y += self._placeholder.boundingRect().height()
                     y += 2 * PLACEHOLDER_MARGIN_OUT
                     y += NEURON_MARGIN
+
+            self._placeholder.setPos(self._x + NEURON_SIDE / 2 - self._placeholder.boundingRect().width() / 2,
+                                     0 - self._placeholder.boundingRect().height() / 2)
 
     def _get_neuron(self, i):
         if self._neurons is not None:
@@ -225,12 +229,13 @@ class VDenseNeuron:
 
         side = NEURON_SIDE
 
-        self._ellipse = draw_ellipse(x, y, side, side)
+        self._ellipse = QGraphicsEllipseItem(x, y, side, side)
+        self._ellipse.setZValue(10)
         self._ellipse.mousePressEvent = select
         self._scene.addItem(self._ellipse)
 
-        self._bind_in = QPointF(x - side / 2, y)
-        self._bind_out = QPointF(x + side / 2, y)
+        self._bind_in = QPointF(x, y + side / 2)
+        self._bind_out = QPointF(x + side, y + side / 2)
 
         self._links_in = None
         self._links_out = None

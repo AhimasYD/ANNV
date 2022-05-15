@@ -17,15 +17,13 @@ class VConvKernel:
 
         self.move_to(x, y)
 
-    def height(self):
-        return self._pixmap.height()
+    def bounding(self):
+        bound = self._wrapper.childrenBoundingRect()
+        bound.moveTo(self._wrapper.pos())
+        return bound
 
-    def width(self):
-        return self._pixmap.width()
-
-    def move_to(self, x_left, y):
-        pos = QPointF(x_left, y - self._pixmap.height() / 2)
-        self._wrapper.move_to(pos)
+    def move_to(self, x, y):
+        self._wrapper.setPos(x, y)
 
     def update(self, array, filter_num):
         self._pixmap.update(array)

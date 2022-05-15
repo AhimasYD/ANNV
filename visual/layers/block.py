@@ -1,9 +1,11 @@
+from PyQt5.QtWidgets import QGraphicsRectItem
 from PyQt5.QtCore import QPointF
 
 import numpy as np
 
 from visual.constants import *
 from visual.functions import draw_rect, draw_text
+
 from visual.links import VLink
 
 
@@ -11,14 +13,14 @@ class VBlock:
     def __init__(self, scene, x, select, opt_names, name):
         self._scene = scene
 
-        self._rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
+        self._rect = QGraphicsRectItem(x, 0 - BLOCK_HEIGHT / 2, BLOCK_WIDTH, BLOCK_HEIGHT)
         self._rect.mousePressEvent = select
         self._text = draw_text(name, self._rect.boundingRect(), opt_names)
         self._scene.addItem(self._rect)
         self._scene.addItem(self._text)
 
-        self._bind_in = QPointF(x - BLOCK_WIDTH / 2, 0)
-        self._bind_out = QPointF(x + BLOCK_WIDTH / 2, 0)
+        self._bind_in = QPointF(x, 0)
+        self._bind_out = QPointF(x + BLOCK_WIDTH, 0)
 
         self._links_in = None
         self._links_out = None

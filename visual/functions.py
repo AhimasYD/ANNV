@@ -1,20 +1,11 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-
-import numpy as np
 
 from .constants import *
 
 
 def draw_rect(x, y, width, height):
     item = QGraphicsRectItem(x - width/2, y - height/2, width, height)
-    item.setZValue(50)
-    return item
-
-
-def draw_ellipse(x, y, width, height):
-    item = QGraphicsEllipseItem(x - width/2, y - height/2, width, height)
     item.setZValue(50)
     return item
 
