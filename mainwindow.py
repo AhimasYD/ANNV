@@ -9,13 +9,18 @@ from visual import *
 from flatblock import FlatBlock
 from volumeblock import VolumeBlock
 
-import gc
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('mainwindow.ui', self)
+
+        self._o_display = Display.COMPACT
+        self._o_color = WeightColor.OFF
+        self._o_thick = WeightThick.ON
+        self._o_names = Names.HORIZONTAL
+        self._o_captions = Captions.OFF
+        self._o_bias = Bias.OFF
 
         self._logic = None
         self._visual = None
@@ -25,32 +30,32 @@ class MainWindow(QMainWindow):
 
         sub_display = menu.addMenu('Display')
         group = QActionGroup(sub_display)
-        texts = ['Compact', 'Extended']
-        for text in texts:
-            action = QAction(text, sub_display)
-            action.setCheckable(True)
-            action.setChecked(text == texts[0])
-
-            sub_display.addAction(action)
-            group.addAction(action)
+        action = QAction('Compact', sub_display)
+        action.setCheckable(True)
+        action.setChecked(True)
+        action.triggered.connect(self.display_compact)
+        sub_display.addAction(action)
+        group.addAction(action)
+        action = QAction('Extended', sub_display)
+        action.setCheckable(True)
+        action.setChecked(False)
+        action.triggered.connect(self.display_extended)
+        sub_display.addAction(action)
+        group.addAction(action)
         group.setExclusive(True)
 
         sub_weights = menu.addMenu('Weights')
         group = QActionGroup(sub_display)
-        texts = ['Color', 'Thickness']
-
         act_color = QAction('Color', sub_weights)
         act_color.setCheckable(True)
-        act_color.triggered.connect(self.color_checked)
+        act_color.triggered.connect(self.color_changed)
         sub_weights.addAction(act_color)
         group.addAction(act_color)
-
         act_thick = QAction('Thickness', sub_weights)
         act_thick.setCheckable(True)
-        act_thick.triggered.connect(self.thick_checked)
+        act_thick.triggered.connect(self.thick_changed)
         sub_weights.addAction(act_thick)
         group.addAction(act_thick)
-
         group.setExclusive(False)
 
         sub_text = menu.addMenu('Names')
@@ -136,17 +141,21 @@ class MainWindow(QMainWindow):
         if not filename:
             return
 
-        self.scene.clear()
-
         self._logic = None
         self._visual = None
-
-        gc.collect()
+        self.scene.clear()
 
         self._logic = LModel(filename)
         self._visual = VModel(self._logic, self.scene,
-                             Display.EXTENDED, WeightColor.OFF, WeightThick.OFF, Names.HORIZONTAL, Captions.OFF, Bias.OFF,
-                             self.model_widget, self.layer_widget, self.flat, self.volume)
+                              self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
+                              self.model_widget, self.layer_widget, self.flat, self.volume)
+
+    def recreate_visual(self):
+        self._visual = None
+        self.scene.clear()
+        self._visual = VModel(self._logic, self.scene,
+                              self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
+                              self.model_widget, self.layer_widget, self.flat, self.volume)
 
     def export_image(self):
         self.scene.clearSelection()
@@ -158,14 +167,24 @@ class MainWindow(QMainWindow):
         self.scene.render(painter)
         image.save('D:\lala.png')
 
-    def color_checked(self, checked):
-        if checked:
-            self._visual.set_weight_color_hint(WeightColor.ON)
-        else:
-            self._visual.set_weight_color_hint(WeightColor.OFF)
+    def display_compact(self, checked):
+        self._o_display = Display.COMPACT
+        self.recreate_visual()
 
-    def thick_checked(self, checked):
+    def display_extended(self, checked):
+        self._o_display = Display.EXTENDED
+        self.recreate_visual()
+
+    def color_changed(self, checked):
         if checked:
-            self._visual.set_weight_thick_hint(WeightThick.ON)
+            self._o_color = WeightColor.ON
         else:
-            self._visual.set_weight_thick_hint(WeightThick.OFF)
+            self._o_color = WeightColor.OFF
+        self._visual.set_weight_color_hint(self._o_color)
+
+    def thick_changed(self, checked):
+        if checked:
+            self._o_thick = WeightThick.ON
+        else:
+            self._o_thick = WeightThick.OFF
+        self._visual.set_weight_thick_hint(self._o_thick)
