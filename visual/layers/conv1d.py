@@ -10,6 +10,7 @@ from visual.pixmap import Pixmap
 from .layer import VLayer
 from .placeholder import VPlaceholder
 from visual.links import VLink
+from .kernelwrapper import KernelWrapperFlat
 
 
 class VConv1D(VLayer):
@@ -25,7 +26,7 @@ class VConv1D(VLayer):
         if self._o_display == Display.COMPACT:
             self._block = VConv1DBlock(self._scene, self._x, self.select, self._o_names)
         elif self._o_display == Display.EXTENDED:
-            self._kernel_ctrl = VConv1DKernelController(self._scene, self._x, self._logic.channel_num,
+            self._kernel_ctrl = VConv1DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
                                                         self._logic.filters[self._filter], self.select)
 
     def select(self, event):
@@ -65,7 +66,7 @@ class VConv1D(VLayer):
         for i in range(self._logic.channel_num):
             self._kernels[i].update(self._logic.filters[self._filter, i])
         if self._kernel_ctrl is not None:
-            self._kernel_ctrl.update(self._logic.filters[self._filter])
+            self._kernel_ctrl.update(self._logic.filters[self._filter], self._filter)
 
     def filter_prev(self, event):
         if self._filter - 1 >= 0:
@@ -120,7 +121,7 @@ class VConv1DBlock:
 
         self._rect = draw_rect(x, 0, BLOCK_WIDTH, BLOCK_HEIGHT)
         self._rect.mousePressEvent = select
-        self._text = draw_text('Conv1D', self._rect.boundingRect(), opt_names)
+        self._text = draw_text('Conv2D', self._rect.boundingRect(), opt_names)
         self._scene.addItem(self._rect)
         self._scene.addItem(self._text)
 
@@ -194,7 +195,7 @@ class VConv1DBlock:
 
 
 class VConv1DKernelController:
-    def __init__(self, scene, x, units, arrays, select):
+    def __init__(self, scene, x, units, filters, arrays, select):
         self._scene = scene
         self._x = x
         self._units = units
@@ -210,7 +211,7 @@ class VConv1DKernelController:
             self._kernels = np.empty(units, dtype=VConv1DKernel)
 
             for i in range(self._units):
-                self._kernels[i] = VConv1DKernel(self._scene, arrays[i], self._x, 0, select)
+                self._kernels[i] = VConv1DKernel(self._scene, arrays[i], self._x, 0, filters, select)
 
             height = self._kernels[0].height()
             width = self._kernels[0].width()
@@ -232,8 +233,8 @@ class VConv1DKernelController:
 
             for i in range(PLACEHOLDER_MAX_KERNELS):
                 j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i] = VConv1DKernel(self._scene, arrays[i], self._x, 0, select)
-                self._kernels_end[i] = VConv1DKernel(self._scene, arrays[j], self._x, 0, select)
+                self._kernels_start[i] = VConv1DKernel(self._scene, arrays[i], self._x, 0, filters, select)
+                self._kernels_end[i] = VConv1DKernel(self._scene, arrays[j], self._x, 0, filters, select)
 
             height = self._kernels_start[0].height()
             width = self._kernels_start[0].width()
@@ -261,15 +262,15 @@ class VConv1DKernelController:
         self._links_in = None
         self._links_out = None
 
-    def update(self, arrays):
+    def update(self, arrays, filter_num):
         if self._kernels is not None:
             for i in range(self._units):
-                self._kernels[i].update(arrays[i])
+                self._kernels[i].update(arrays[i], filter_num)
         else:
             for i in range(PLACEHOLDER_MAX_KERNELS):
                 j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i].update(arrays[i])
-                self._kernels_end[i].update(arrays[j])
+                self._kernels_start[i].update(arrays[i], filter_num)
+                self._kernels_end[i].update(arrays[j], filter_num)
 
     def bind_in(self):
         return self._bind_in
@@ -333,12 +334,15 @@ class VConv1DKernelController:
 
 
 class VConv1DKernel:
-    def __init__(self, scene, array, x, y, select):
+    def __init__(self, scene, array, x, y, filters, select):
         self._scene = scene
 
         self._pixmap = Pixmap(array, PIXMAP_SIDE, hv=False, hh=False, sb=False)
         self._pixmap.mousePressEvent = select
         self._proxy = self._scene.addWidget(self._pixmap)
+
+        self._wrapper = KernelWrapperFlat(self._proxy.pos(), filters, self._proxy, select=select)
+        self._scene.addItem(self._wrapper)
 
         self.move_to(x, y)
 
@@ -349,9 +353,9 @@ class VConv1DKernel:
         return self._pixmap.width()
 
     def move_to(self, x_left, y):
-        y = y - self._pixmap.height() / 2
-        self._proxy.setX(x_left)
-        self._proxy.setY(y)
+        pos = QPointF(x_left, y - self._pixmap.height() / 2)
+        self._wrapper.move_to(pos)
 
-    def update(self, array):
+    def update(self, array, filter_num):
         self._pixmap.update(array)
+        self._wrapper.set_active(filter_num)

@@ -88,7 +88,7 @@ class VLSTM(VLayer):
         if self._o_display == Display.COMPACT:
             self._block.set_links_in(links)
         else:
-            self._neuron_ctrl.set_links_in(links, np.transpose(self._logic.kernel))
+            self._neuron_ctrl.set_links_in(links)
 
     def set_links_out(self, links):
         if self._o_display == Display.COMPACT:
@@ -291,19 +291,11 @@ class VLSTMNeuronController:
 
         return binds
 
-    def set_links_in(self, links, weights=None):
-        if weights is not None:
-            maximum = max(weights.min(), weights.max(), key=abs)
-            for i in range(self._units):
-                neuron = self._get_neuron(i)
-                if neuron is not None:
-                    neuron.set_links_in(links[i], weights=(weights[i], maximum))
-
-        else:
-            for i in range(self._units):
-                neuron = self._get_neuron(i)
-                if neuron is not None:
-                    neuron.set_links_in(links[i])
+    def set_links_in(self, links):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_links_in(links[i])
 
     def set_links_out(self, links):
         for i in range(self._units):
