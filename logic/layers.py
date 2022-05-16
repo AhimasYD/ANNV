@@ -2,10 +2,20 @@ import numpy
 
 class LLayer:
     def __init__(self):
-        self._type = None
+        self._ltype = None
         self._output = None
 
+    @property
+    def ltype(self):
+        return self._ltype
 
+    @property
+    def output(self):
+        return self._output
+
+    @output.setter
+    def output(self, new_output):
+        self._output = new_output
 
 
 class LDense:
