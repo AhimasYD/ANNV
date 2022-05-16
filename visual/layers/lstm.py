@@ -13,22 +13,22 @@ from .placeholder import VPlaceholder
 from visual.links import VLink
 from visual.layers.block import VBlock
 
+from visual.hintskeeper import HintsKeeper
+
 
 class VLSTM(VLayer):
-    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
-        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
+    def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, w_info, w_flat, w_volume)
 
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             self._connection = LinkType.UNITED
-            self._block = VLSTMBlock(self._scene, self._x, self.select, self._o_names)
+            self._block = VLSTMBlock(self._scene, self._x, self.select)
 
-        elif self._o_display == Display.EXTENDED:
+        elif HintsKeeper().display == Display.EXTENDED:
             self._connection = LinkType.SEPARATED
             self._neuron_ctrl = VLSTMNeuronController(self._scene, self._x, self._logic.units, self.select, Names.HORIZONTAL)
 
     def select(self, event):
-        print('HERE')
-
         super().select(event)
 
         layout = self._w_info.layout()
@@ -78,45 +78,33 @@ class VLSTM(VLayer):
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
     def binds_in(self):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_in()
         else:
             return self._connection, self._neuron_ctrl.binds_in()
 
     def binds_out(self):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_out()
         else:
             return self._connection, self._neuron_ctrl.binds_out()
 
     def set_links_in(self, links):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             self._block.set_links_in(links)
         else:
             self._neuron_ctrl.set_links_in(links)
 
     def set_links_out(self, links):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             self._block.set_links_out(links)
         else:
             self._neuron_ctrl.set_links_out(links)
 
-    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
-        if self._o_display == Display.COMPACT:
-            self._block.set_weight_color_hint(hint, forward)
-        else:
-            self._neuron_ctrl.set_weight_color_hint(hint, forward)
-
-    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
-        if self._o_display == Display.COMPACT:
-            self._block.set_weight_thick_hint(hint, forward)
-        else:
-            self._neuron_ctrl.set_weight_thick_hint(hint, forward)
-
 
 class VLSTMBlock(VBlock):
-    def __init__(self, scene, x, select, opt_names):
-        super().__init__(scene, x, select, opt_names, 'LSTM')
+    def __init__(self, scene, x, select):
+        super().__init__(scene, x, select, 'LSTM')
 
 
 class VLSTMNeuronController:
@@ -260,7 +248,7 @@ class VLSTMNeuronController:
                 bind_out = neuron_0.bind_rec_out()
                 bind_in = neuron_1.bind_rec_in()
 
-                link = VLink(bind_out, bind_in, LinkType.SEPARATED)
+                link = VLink(bind_out, bind_in)
                 self._scene.addItem(link.get_item())
 
                 neuron_0.set_rec_links_out(link)
@@ -274,7 +262,7 @@ class VLSTMNeuronController:
                 bind_out = neuron_0.bind_rec_out()
                 bind_in = neuron_1.bind_rec_in()
 
-                link = VLink(bind_out, bind_in, LinkType.SEPARATED)
+                link = VLink(bind_out, bind_in)
                 self._scene.addItem(link.get_item())
 
                 neuron_0.set_rec_links_out(link)
@@ -287,7 +275,7 @@ class VLSTMNeuronController:
                 bind_out = neuron_0.bind_rec_out()
                 bind_in = neuron_1.bind_rec_in()
 
-                link = VLink(bind_out, bind_in, LinkType.SEPARATED)
+                link = VLink(bind_out, bind_in)
                 self._scene.addItem(link.get_item())
 
                 neuron_0.set_rec_links_out(link)
@@ -296,14 +284,14 @@ class VLSTMNeuronController:
             neuron = self._neurons_start[self._neurons_start.shape[0] - 1]
             bind_out = neuron.bind_rec_out()
             bind_in = QPointF(bind_out.x(), bind_out.y() + NEURON_REC_MARGIN)
-            link = VLink(bind_out, bind_in, LinkType.SEPARATED)
+            link = VLink(bind_out, bind_in)
             self._scene.addItem(link.get_item())
             neuron.set_rec_links_out(link)
 
             neuron = self._neurons_end[0]
             bind_in = neuron.bind_rec_in()
             bind_out = QPointF(bind_in.x(), bind_in.y() - NEURON_REC_MARGIN)
-            link = VLink(bind_out, bind_in, LinkType.SEPARATED)
+            link = VLink(bind_out, bind_in)
             self._scene.addItem(link.get_item())
             neuron.set_rec_links_in(link)
 

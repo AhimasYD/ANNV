@@ -11,15 +11,17 @@ from visual.layers.block import VBlock
 from visual.layers.conv.convkernelcontroller import VConvKernelController
 from visual.layers.conv.convkernel import VConvKernel
 
+from visual.hintskeeper import HintsKeeper
+
 
 class VConv1D(VConv):
-    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
-        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
+    def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, w_info, w_flat, w_volume)
 
         self._connection = LinkType.UNITED
-        if self._o_display == Display.COMPACT:
-            self._block = VConv1DBlock(self._scene, self._x, self.select, self._o_names)
-        elif self._o_display == Display.EXTENDED:
+        if HintsKeeper().display == Display.COMPACT:
+            self._block = VConv1DBlock(self._scene, self._x, self.select)
+        elif HintsKeeper().display == Display.EXTENDED:
             self._kernel_ctrl = VConv1DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
                                                         self._logic.filters[self._filter], self.select)
 
@@ -64,8 +66,8 @@ class VConv1D(VConv):
 
 
 class VConv1DBlock(VBlock):
-    def __init__(self, scene, x, select, opt_names):
-        super().__init__(scene, x, select, opt_names, 'Conv1D')
+    def __init__(self, scene, x, select):
+        super().__init__(scene, x, select, 'Conv1D')
 
 
 class VConv1DKernelController(VConvKernelController):

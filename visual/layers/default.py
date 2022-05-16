@@ -12,9 +12,9 @@ from visual.layers.block import VBlock
 
 
 class VDefault(VLayer):
-    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
-        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
-        self._block = VDefaultBlock(self._scene, self._x, self.select, self._o_names, self._logic.name)
+    def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, w_info, w_flat, w_volume)
+        self._block = VDefaultBlock(self._scene, self._x, self.select, self._logic.name)
 
     def select(self, event):
         super().select(event)
@@ -31,13 +31,7 @@ class VDefault(VLayer):
     def set_links_out(self, links):
         self._block.set_links_out(links)
 
-    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
-        self._block.set_weight_color_hint(hint, forward)
-
-    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
-        self._block.set_weight_thick_hint(hint, forward)
-
 
 class VDefaultBlock(VBlock):
-    def __init__(self, scene, x, select, opt_names, name):
-        super().__init__(scene, x, select, opt_names, name + ' (D)')
+    def __init__(self, scene, x, select, name):
+        super().__init__(scene, x, select, name + ' (D)')

@@ -9,16 +9,9 @@ from .links import *
 
 
 class VModel:
-    def __init__(self, logic, scene, o_display, o_color, o_thick, o_names, o_captions, o_bias, wm, wl, wf, wv):
+    def __init__(self, logic, scene, wm, wl, wf, wv):
         self._logic = logic
         self._scene = scene
-
-        self._o_display = o_display
-        self._o_color = o_color
-        self._o_thick = o_thick
-        self._o_names = o_names
-        self._o_captions = o_captions
-        self._o_bias = o_bias
 
         self._wl = wl
         self._wm = wm
@@ -41,29 +34,17 @@ class VModel:
 
     def _create_layer(self, logic):
         if type(logic).__name__ == 'LDense':
-            layer = VDense(logic, self._scene, self._x,
-                           self._o_display, self._o_color, self._o_thick,
-                           self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
+            layer = VDense(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LLSTM':
-            layer = VLSTM(logic, self._scene, self._x,
-                          self._o_display, self._o_color, self._o_thick,
-                          self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
+            layer = VLSTM(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LEmbedding':
-            layer = VEmbedding(logic, self._scene, self._x,
-                               self._o_display, self._o_color, self._o_thick,
-                               self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
+            layer = VEmbedding(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LConv1D':
-            layer = VConv1D(logic, self._scene, self._x,
-                            self._o_display, self._o_color, self._o_thick,
-                            self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
+            layer = VConv1D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LConv2D':
-            layer = VConv2D(logic, self._scene, self._x,
-                            self._o_display, self._o_color, self._o_thick,
-                            self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
+            layer = VConv2D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         else:
-            layer = VDefault(logic, self._scene, self._x,
-                             self._o_display, self._o_color, self._o_thick,
-                             self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
+            layer = VDefault(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         return layer
 
     def _init_weights(self):
@@ -75,7 +56,7 @@ class VModel:
             type_in, binds_in = layer_1.binds_in()
 
             if type_out == LinkType.UNITED and type_in == LinkType.UNITED:
-                link = VLink(binds_out, binds_in, LinkType.UNITED)
+                link = VLink(binds_out, binds_in)
                 self._scene.addItem(link.get_item())
 
                 layer_0.set_links_out(link)
@@ -85,7 +66,7 @@ class VModel:
                 links = np.full(len(binds_in), None, dtype=VLayer)
                 for i in range(len(binds_in)):
                     if binds_in[i] is not None:
-                        link = VLink(binds_out, binds_in[i], LinkType.UNITED)
+                        link = VLink(binds_out, binds_in[i])
                         self._scene.addItem(link.get_item())
 
                         links[i] = link
@@ -97,7 +78,7 @@ class VModel:
                 links = np.full(len(binds_out), None, dtype=VLayer)
                 for i in range(len(binds_out)):
                     if binds_out[i] is not None:
-                        link = VLink(binds_out[i], binds_in, LinkType.UNITED)
+                        link = VLink(binds_out[i], binds_in)
                         self._scene.addItem(link.get_item())
 
                         links[i] = link
@@ -112,7 +93,7 @@ class VModel:
                     for j in range(len(binds_out)):
                         if binds_out[j] is None or binds_in[i] is None:
                             continue
-                        link = VLink(binds_out[j], binds_in[i], LinkType.SEPARATED)
+                        link = VLink(binds_out[j], binds_in[i])
                         self._scene.addItem(link.get_item())
 
                         links_in[i][j] = link

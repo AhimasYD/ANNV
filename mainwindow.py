@@ -157,9 +157,7 @@ class MainWindow(QMainWindow):
         self.scene.clear()
 
         logic = LModel(filename)
-        self._visual = VModel(logic, self.scene,
-                              self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
-                              self.model_widget, self.layer_widget, self.flat, self.volume)
+        self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
 
     def load_input(self):
         filename, _ = QFileDialog.getOpenFileName()
@@ -212,6 +210,4 @@ class MainWindow(QMainWindow):
         logic = self._visual.logic
         self._visual = None
         self.scene.clear()
-        self._visual = VModel(logic, self.scene,
-                              self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
-                              self.model_widget, self.layer_widget, self.flat, self.volume)
+        self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)

@@ -13,18 +13,20 @@ from .placeholder import VPlaceholder
 from visual.links import VLink
 from visual.layers.block import VBlock
 
+from visual.hintskeeper import HintsKeeper
+
 
 class VDense(VLayer):
-    def __init__(self, logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume):
-        super().__init__(logic, scene, x, o_display, o_color, o_thick, o_names, o_captions, o_bias, w_info, w_flat, w_volume)
+    def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, w_info, w_flat, w_volume)
 
         # Display as _block
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             self._connection = LinkType.UNITED
-            self._block = VDenseBlock(self._scene, self._x, self.select, self._o_names)
+            self._block = VDenseBlock(self._scene, self._x, self.select)
 
         # Display as neurons
-        elif self._o_display == Display.EXTENDED:
+        elif HintsKeeper().display == Display.EXTENDED:
             self._connection = LinkType.SEPARATED
             self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select)
 
@@ -43,45 +45,33 @@ class VDense(VLayer):
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
     def binds_in(self):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_in()
         else:
             return self._connection, self._neuron_ctrl.binds_in()
 
     def binds_out(self):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_out()
         else:
             return self._connection, self._neuron_ctrl.binds_out()
 
     def set_links_in(self, links):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             self._block.set_links_in(links)
         else:
             self._neuron_ctrl.set_links_in(links, np.transpose(self._logic.kernel))
 
     def set_links_out(self, links):
-        if self._o_display == Display.COMPACT:
+        if HintsKeeper().display == Display.COMPACT:
             self._block.set_links_out(links)
         else:
             self._neuron_ctrl.set_links_out(links)
 
-    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
-        if self._o_display == Display.COMPACT:
-            self._block.set_weight_color_hint(hint, forward)
-        else:
-            self._neuron_ctrl.set_weight_color_hint(hint, forward)
-
-    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
-        if self._o_display == Display.COMPACT:
-            self._block.set_weight_thick_hint(hint, forward)
-        else:
-            self._neuron_ctrl.set_weight_thick_hint(hint, forward)
-
 
 class VDenseBlock(VBlock):
-    def __init__(self, scene, x, select, opt_names):
-        super().__init__(scene, x, select, opt_names, 'Dense')
+    def __init__(self, scene, x, select):
+        super().__init__(scene, x, select, 'Dense')
 
 
 class VDenseNeuronController:
