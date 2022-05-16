@@ -12,6 +12,7 @@ from .layer import VLayer
 from .placeholder import VPlaceholder
 from visual.links import VLink
 from visual.layers.block import VBlock
+from visual.layers.outputwindow import OutputWindow
 
 from visual.hintskeeper import HintsKeeper
 
@@ -28,7 +29,7 @@ class VDense(VLayer):
         # Display as neurons
         elif HintsKeeper().display == Display.EXTENDED:
             self._connection = LinkType.SEPARATED
-            self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select, logic)
+            self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select, self.show_output, logic)
 
     def select(self, event):
         super().select(event)
@@ -68,6 +69,12 @@ class VDense(VLayer):
         else:
             self._neuron_ctrl.set_links_out(links)
 
+    def show_output(self, event):
+        print('OUTPUT')
+        self.window = OutputWindow(self._logic.output)
+        self.window.setModal(True)
+        self.window.show()
+
 
 class VDenseBlock(VBlock):
     def __init__(self, scene, x, select):
@@ -75,7 +82,7 @@ class VDenseBlock(VBlock):
 
 
 class VDenseNeuronController:
-    def __init__(self, scene, x, units, select, logic):
+    def __init__(self, scene, x, units, select, show_output, logic):
         self._scene = scene
         self._x = x
         self._units = units
@@ -93,7 +100,7 @@ class VDenseNeuronController:
             total_height = units * NEURON_SIDE + (units - 1) * NEURON_MARGIN
             y = -total_height/2
             for i in range(units):
-                self._neurons[i] = VDenseNeuron(self._scene, self._x, y, select)
+                self._neurons[i] = VDenseNeuron(self._scene, self._x, y, select, show_output)
                 y += NEURON_SIDE + NEURON_MARGIN
 
         # Placeholder needed
@@ -112,11 +119,11 @@ class VDenseNeuronController:
             for i in range(units):
                 if i < PLACEHOLDER_MAX_NEURONS:
                     j = i
-                    self._neurons_start[j] = VDenseNeuron(self._scene, self._x, y, select)
+                    self._neurons_start[j] = VDenseNeuron(self._scene, self._x, y, select, show_output)
                     y += NEURON_SIDE + NEURON_MARGIN
                 elif i >= units - PLACEHOLDER_MAX_NEURONS:
                     j = i - (units - PLACEHOLDER_MAX_NEURONS)
-                    self._neurons_end[j] = VDenseNeuron(self._scene, self._x, y, select)
+                    self._neurons_end[j] = VDenseNeuron(self._scene, self._x, y, select, show_output)
                     y += NEURON_SIDE + NEURON_MARGIN
 
                 if i == PLACEHOLDER_MAX_NEURONS:
@@ -211,7 +218,7 @@ class VDenseNeuronController:
 
 
 class VDenseNeuron:
-    def __init__(self, scene, x, y, select):
+    def __init__(self, scene, x, y, select, show_output):
         self._scene = scene
 
         side = NEURON_SIDE
@@ -219,6 +226,7 @@ class VDenseNeuron:
         self._item = QGraphicsEllipseItem(x, y, side, side)
         self._item.setZValue(10)
         self._item.mousePressEvent = select
+        self._item.mouseDoubleClickEvent = show_output
         self._scene.addItem(self._item)
 
         self._bind_in = QPointF(x, y + side / 2)
