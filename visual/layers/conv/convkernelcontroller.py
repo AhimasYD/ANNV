@@ -8,7 +8,7 @@ from visual.links import VLink
 
 
 class VConvKernelController:
-    def __init__(self, scene, x, units, filters, arrays, select, dtype):
+    def __init__(self, scene, x, units, filters, arrays, select, show_output, dtype):
         self._scene = scene
         self._x = x
         self._units = units
@@ -24,7 +24,7 @@ class VConvKernelController:
             self._kernels = np.empty(units, dtype=dtype)
 
             for i in range(self._units):
-                self._kernels[i] = dtype(self._scene, arrays[i], self._x, 0, filters, select)
+                self._kernels[i] = dtype(self._scene, arrays[i], self._x, 0, filters, select, show_output)
 
             width = self._kernels[0].bounding().width()
             height = self._kernels[0].bounding().height()
@@ -49,8 +49,8 @@ class VConvKernelController:
 
             for i in range(PLACEHOLDER_MAX_KERNELS):
                 j = self._units - PLACEHOLDER_MAX_KERNELS + i
-                self._kernels_start[i] = dtype(self._scene, arrays[i], self._x, 0, filters, select)
-                self._kernels_end[i] = dtype(self._scene, arrays[j], self._x, 0, filters, select)
+                self._kernels_start[i] = dtype(self._scene, arrays[i], self._x, 0, filters, select, show_output)
+                self._kernels_end[i] = dtype(self._scene, arrays[j], self._x, 0, filters, select, show_output)
 
             width = self._kernels_start[0].bounding().width()
             height = self._kernels_start[0].bounding().height()

@@ -16,9 +16,8 @@ class LLayer:
     def output(self):
         return self._output
 
-    @output.setter
-    def output(self, new_output):
-        self._output = new_output[0]
+    def set_output(self, new_output):
+        self._output = new_output
         for callback in self._output_subs:
             callback(self._output)
 
@@ -38,6 +37,10 @@ class LDense(LLayer):
         self.units = layer.units
         self.kernel = layer.get_weights()[0]
         self.bias = layer.get_weights()[1]
+
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        super().set_output(new_output)
 
 
 class LLSTM(LLayer):
@@ -68,6 +71,10 @@ class LLSTM(LLayer):
         self.b_c = b[units*2:units*3]
         self.b_o = b[units*3:]
 
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        super().set_output(new_output)
+
 
 class LConv1D(LLayer):
     def __init__(self, layer):
@@ -86,6 +93,11 @@ class LConv1D(LLayer):
         self.dilation_rate = layer.dilation_rate
         self.groups = layer.groups
         self.activation = str(layer.activation.__name__)
+
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        new_output = numpy.transpose(new_output, (1, 0))
+        super().set_output(new_output)
 
 
 class LConv2D(LLayer):
@@ -106,6 +118,11 @@ class LConv2D(LLayer):
         self.groups = layer.groups
         self.activation = str(layer.activation.__name__)
 
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        new_output = numpy.transpose(new_output, (2, 0, 1))
+        super().set_output(new_output)
+
 
 class LEmbedding(LLayer):
     def __init__(self, layer):
@@ -114,9 +131,18 @@ class LEmbedding(LLayer):
         self.type = 'Embedding'
         self.matrix = layer.weights
 
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        length = len(new_output.shape)
+        new_output = numpy.transpose(new_output, (length - 1, *range(length - 1)))
+        super().set_output(new_output)
+
 
 class LDefault(LLayer):
     def __init__(self, layer):
         super().__init__()
 
         self.name = type(layer).__name__
+
+    def set_output(self, new_output):
+        pass

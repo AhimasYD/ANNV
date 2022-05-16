@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 
 from logic import *
 from visual import *
+from visual.functions import clear_layout
 
 from flatblock import FlatBlock
 from volumeblock import VolumeBlock
@@ -156,6 +157,8 @@ class MainWindow(QMainWindow):
         self._visual = None
         self.scene.clear()
 
+        clear_layout(self.model_widget.layout())
+
         logic = LModel(filename)
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
 
@@ -210,4 +213,6 @@ class MainWindow(QMainWindow):
         logic = self._visual.logic
         self._visual = None
         self.scene.clear()
+        clear_layout(self.model_widget.layout())
+
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)

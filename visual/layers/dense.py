@@ -72,9 +72,9 @@ class VDense(VLayer):
     def show_output(self, event):
         if self._logic.output is None:
             return
-        self.window = OutputWindow(self._logic.output)
-        self.window.setModal(True)
-        self.window.showMaximized()
+        self._window = OutputWindow(self._logic.output)
+        self._window.setModal(True)
+        self._window.showMaximized()
 
 
 class VDenseBlock(VBlock):
@@ -215,7 +215,10 @@ class VDenseNeuronController:
         for i in range(self._units):
             neuron = self._get_neuron(i)
             if neuron is not None:
-                neuron.set_output(output[i], output[i] / maximum)
+                if maximum is not None:
+                    neuron.set_output(output[i], output[i] / maximum)
+                else:
+                    neuron.set_output(output[i], 0.0)
 
 
 class VDenseNeuron:

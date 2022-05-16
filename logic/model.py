@@ -60,7 +60,7 @@ class LModel:
             try:
                 inter_model = keras.Model(inputs=self.k_model.input, outputs=self.k_model.layers[i].output)
                 output = inter_model.predict(file_input)
-                self.layers[i].output = output
+                self.layers[i].set_output(output)
             except:
                 print(i)
                 pass

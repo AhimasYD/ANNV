@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+from visual.functions import brush_by_factor
+
 
 MAX_ROWS = 10
 
@@ -77,14 +79,12 @@ class Pixmap(QTableWidget):
                 else:
                     val = array[j]
 
-                alpha = abs(int(255 * (val / maximum)))
-                if val >= 0:
-                    color = QColor(255, 0, 0, alpha)
+                if maximum is not None:
+                    brush = brush_by_factor(val / maximum)
                 else:
-                    color = QColor(0, 0, 255, alpha)
-
+                    brush = brush_by_factor(0.0)
                 cell = self.item(i, j)
-                cell.setBackground(QBrush(color))
+                cell.setBackground(brush)
                 cell.setToolTip(str(val))
 
     def sizeHint(self):

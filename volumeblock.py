@@ -56,5 +56,5 @@ class VolumeBlock(QWidget):
         self.button_1_prev = button_1_prev
         self.button_1_next = button_1_next
 
-        self.filter_num = num_0
-        self.depth_num = num_1
+        self.num_0 = num_0
+        self.num_1 = num_1

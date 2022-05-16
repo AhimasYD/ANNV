@@ -20,10 +20,10 @@ class VConv1D(VConv):
 
         self._connection = LinkType.UNITED
         if HintsKeeper().display == Display.COMPACT:
-            self._block = VConv1DBlock(self._scene, self._x, self.select)
+            self._block = VConv1DBlock(self._scene, self._x, self.select, self.show_output)
         elif HintsKeeper().display == Display.EXTENDED:
             self._kernel_ctrl = VConv1DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
-                                                        self._logic.filters[self._filter], self.select)
+                                                        self._logic.filters[self._filter], self.select, self.show_output)
 
     def select(self, event):
         super().select(event)
@@ -66,8 +66,8 @@ class VConv1D(VConv):
 
 
 class VConv1DBlock(VBlock):
-    def __init__(self, scene, x, select):
-        super().__init__(scene, x, select, None, 'Conv1D')
+    def __init__(self, scene, x, select, show_output):
+        super().__init__(scene, x, select, show_output, 'Conv1D')
 
 
 class VConv1DKernelController(VConvKernelController):
@@ -76,5 +76,5 @@ class VConv1DKernelController(VConvKernelController):
 
 
 class VConv1DKernel(VConvKernel):
-    def __init__(self, scene, array, x, y, filters, select):
-        super().__init__(scene, array, x, y, filters, select, KernelWrapperFlat)
+    def __init__(self, scene, array, x, y, filters, select, show_output):
+        super().__init__(scene, array, x, y, filters, select, show_output, KernelWrapperFlat)

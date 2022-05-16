@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 from visual.constants import *
 from visual.layers.layer import VLayer
+from visual.layers.outputwindow import OutputWindow
 
 from visual.hintskeeper import HintsKeeper
 
@@ -52,3 +53,10 @@ class VConv(VLayer):
             self._block.set_links_out(links)
         else:
             self._kernel_ctrl.set_links_out(links)
+
+    def show_output(self, event):
+        if self._logic.output is None:
+            return
+        self._window = OutputWindow(self._logic.output)
+        self._window.setModal(True)
+        self._window.showMaximized()
