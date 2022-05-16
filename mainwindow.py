@@ -13,7 +13,6 @@ from volumeblock import VolumeBlock
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('mainwindow.ui', self)
 
         self._o_display = Display.COMPACT
         self._o_color = WeightColor.OFF
@@ -24,6 +23,8 @@ class MainWindow(QMainWindow):
 
         self._logic = None
         self._visual = None
+
+        uic.loadUi('mainwindow.ui', self)
 
         menu_bar = self.menuBar()
         menu = QMenu('Options', self)
@@ -137,7 +138,7 @@ class MainWindow(QMainWindow):
         self.visualView.setGeometry(visualView.x(), visualView.y(), width, visualView.height())
 
     def open_model(self):
-        filename, lala = QFileDialog.getOpenFileName()
+        filename, _ = QFileDialog.getOpenFileName()
         if not filename:
             return
 
@@ -150,14 +151,13 @@ class MainWindow(QMainWindow):
                               self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
                               self.model_widget, self.layer_widget, self.flat, self.volume)
 
-    def recreate_visual(self):
-        self._visual = None
-        self.scene.clear()
-        self._visual = VModel(self._logic, self.scene,
-                              self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
-                              self.model_widget, self.layer_widget, self.flat, self.volume)
-
     def export_image(self):
+        filename, _ = QFileDialog.getSaveFileName(self, 'Export Image', '', '*.png')
+        if not filename:
+            return
+        if not filename.endswith('.png'):
+            filename += '.png'
+
         self.scene.clearSelection()
         self.scene.setSceneRect(self.scene.itemsBoundingRect())
         image = QImage(self.scene.sceneRect().size().toSize(), QImage.Format_ARGB32)
@@ -165,7 +165,7 @@ class MainWindow(QMainWindow):
 
         painter = QPainter(image)
         self.scene.render(painter)
-        image.save('D:\lala.png')
+        image.save(filename)
 
     def display_compact(self, checked):
         self._o_display = Display.COMPACT
@@ -188,3 +188,10 @@ class MainWindow(QMainWindow):
         else:
             self._o_thick = WeightThick.OFF
         self._visual.set_weight_thick_hint(self._o_thick)
+
+    def recreate_visual(self):
+        self._visual = None
+        self.scene.clear()
+        self._visual = VModel(self._logic, self.scene,
+                              self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
+                              self.model_widget, self.layer_widget, self.flat, self.volume)

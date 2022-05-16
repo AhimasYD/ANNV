@@ -10,69 +10,69 @@ from .links import *
 
 class VModel:
     def __init__(self, logic, scene, _o_display, o_color, o_thick, o_names, o_captions, o_bias, wm, wl, wf, wv):
-        self.logic = logic
-        self.scene = scene
+        self._logic = logic
+        self._scene = scene
 
         self._o_display = _o_display
-        self.o_color = o_color
-        self.o_thick = o_thick
-        self.o_names = o_names
-        self.o_captions = o_captions
-        self.o_bias = o_bias
+        self._o_color = o_color
+        self._o_thick = o_thick
+        self._o_names = o_names
+        self._o_captions = o_captions
+        self._o_bias = o_bias
 
-        self.wl = wl
-        self.wm = wm
-        self.wf = wf
-        self.wv = wv
+        self._wl = wl
+        self._wm = wm
+        self._wf = wf
+        self._wv = wv
 
-        self.summary()
+        self._summary()
 
-        self.x = 0
-        self.layers = []
+        self._x = 0
+        self._layers = []
         for l_layer in logic.layers:
-            layer = self.create_layer(l_layer)
-            self.layers.append(layer)
-            self.x = self.scene.itemsBoundingRect().width() + LAYER_MARGIN
-        self.init_weights()
+            layer = self._create_layer(l_layer)
+            self._layers.append(layer)
+            self._x = self._scene.itemsBoundingRect().width() + LAYER_MARGIN
+        self._init_weights()
 
-    def create_layer(self, logic):
+    def _create_layer(self, logic):
         if type(logic).__name__ == 'LDense':
-            layer = VDense(logic, self.scene, self.x,
-                           self._o_display, self.o_color, self.o_thick,
-                           self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
+            layer = VDense(logic, self._scene, self._x,
+                           self._o_display, self._o_color, self._o_thick,
+                           self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LLSTM':
-            layer = VLSTM(logic, self.scene, self.x,
-                          self._o_display, self.o_color, self.o_thick,
-                          self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
+            layer = VLSTM(logic, self._scene, self._x,
+                          self._o_display, self._o_color, self._o_thick,
+                          self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LEmbedding':
-            layer = VEmbedding(logic, self.scene, self.x,
-                               self._o_display, self.o_color, self.o_thick,
-                               self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
+            layer = VEmbedding(logic, self._scene, self._x,
+                               self._o_display, self._o_color, self._o_thick,
+                               self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LConv1D':
-            layer = VConv1D(logic, self.scene, self.x,
-                            self._o_display, self.o_color, self.o_thick,
-                            self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
+            layer = VConv1D(logic, self._scene, self._x,
+                            self._o_display, self._o_color, self._o_thick,
+                            self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
         elif type(logic).__name__ == 'LConv2D':
-            layer = VConv2D(logic, self.scene, self.x,
-                            self._o_display, self.o_color, self.o_thick,
-                            self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
+            layer = VConv2D(logic, self._scene, self._x,
+                            self._o_display, self._o_color, self._o_thick,
+                            self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
         else:
-            layer = VDefault(logic, self.scene, self.x,
-                             self._o_display, self.o_color, self.o_thick,
-                             self.o_names, self.o_captions, self.o_bias, self.wl, self.wf, self.wv)
+            layer = VDefault(logic, self._scene, self._x,
+                             self._o_display, self._o_color, self._o_thick,
+                             self._o_names, self._o_captions, self._o_bias, self._wl, self._wf, self._wv)
         return layer
 
-    def init_weights(self):
-        for k in range(len(self.layers) - 1):
-            layer_0 = self.layers[k]
-            layer_1 = self.layers[k + 1]
+    def _init_weights(self):
+        for k in range(len(self._layers) - 1):
+            layer_0 = self._layers[k]
+            layer_1 = self._layers[k + 1]
 
             type_out, binds_out = layer_0.binds_out()
             type_in, binds_in = layer_1.binds_in()
 
             if type_out == LinkType.UNITED and type_in == LinkType.UNITED:
                 link = VLink(binds_out, binds_in, LinkType.UNITED)
-                self.scene.addItem(link.get_item())
+                self._scene.addItem(link.get_item())
 
                 layer_0.set_links_out(link)
                 layer_1.set_links_in(link)
@@ -82,7 +82,7 @@ class VModel:
                 for i in range(len(binds_in)):
                     if binds_in[i] is not None:
                         link = VLink(binds_out, binds_in[i], LinkType.UNITED)
-                        self.scene.addItem(link.get_item())
+                        self._scene.addItem(link.get_item())
 
                         links[i] = link
 
@@ -94,7 +94,7 @@ class VModel:
                 for i in range(len(binds_out)):
                     if binds_out[i] is not None:
                         link = VLink(binds_out[i], binds_in, LinkType.UNITED)
-                        self.scene.addItem(link.get_item())
+                        self._scene.addItem(link.get_item())
 
                         links[i] = link
 
@@ -109,7 +109,7 @@ class VModel:
                         if binds_out[j] is None or binds_in[i] is None:
                             continue
                         link = VLink(binds_out[j], binds_in[i], LinkType.SEPARATED)
-                        self.scene.addItem(link.get_item())
+                        self._scene.addItem(link.get_item())
 
                         links_in[i][j] = link
                         links_out[j][i] = link
@@ -117,10 +117,10 @@ class VModel:
                 layer_0.set_links_out(links_out)
                 layer_1.set_links_in(links_in)
 
-    def summary(self):
-        summary = self.logic.summary
+    def _summary(self):
+        summary = self._logic.summary
 
-        table = QTableWidget(summary.shape[0], summary.shape[1], self.wm)
+        table = QTableWidget(summary.shape[0], summary.shape[1], self._wm)
 
         vh_name = QTableWidgetItem('Name')
         vh_type = QTableWidgetItem('Type')
@@ -148,12 +148,12 @@ class VModel:
             table.setItem(i, 1, c_type)
             table.setItem(i, 2, c_shape)
 
-        self.wm.layout().addWidget(table)
+        self._wm.layout().addWidget(table)
 
     def set_weight_color_hint(self, hint: WeightColor):
-        for layer in self.layers:
+        for layer in self._layers:
             layer.set_weight_color_hint(hint)
 
     def set_weight_thick_hint(self, hint: WeightThick):
-        for layer in self.layers:
+        for layer in self._layers:
             layer.set_weight_thick_hint(hint)
