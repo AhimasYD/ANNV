@@ -136,4 +136,7 @@ class VModel:
         self._wm.layout().addWidget(table)
 
     def load_input(self, filename):
-        self._logic.load_input(filename)
+        res = self._logic.load_input(filename)
+        if res:
+            message = QMessageBox(QMessageBox.Warning, 'Error', res)
+            message.exec()

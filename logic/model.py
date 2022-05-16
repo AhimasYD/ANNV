@@ -42,18 +42,26 @@ class LModel:
         return len(self.layers)
 
     def load_input(self, filename):
-        input = None
+        file_input = None
         try:
             filename = filename
-            input = np.loadtxt(filename, comments="#", delimiter=",", unpack=False)
-            input = np.array([input])
+            file_input = np.loadtxt(filename, comments="#", delimiter=",", unpack=False)
         except Exception:
-            print("Can't load")
+            return "Can't read file"
+
+        try:
+            shape = self.k_model.input_shape[1:]
+            file_input.reshape(shape)
+            file_input = np.array([file_input])
+        except:
+            return "Incorrect input shape"
 
         try:
             for i in range(len(self.layers)):
                 inter_model = keras.Model(inputs=self.k_model.input, outputs=self.k_model.layers[i].output)
-                output = inter_model.predict(input)
+                output = inter_model.predict(file_input)
                 self.layers[i].output = output
         except Exception:
-            print("Can't predict")
+            return "Can't predict"
+
+        return None

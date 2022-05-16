@@ -40,8 +40,10 @@ class LDense(LLayer):
         self.bias = layer.get_weights()[1]
 
 
-class LLSTM:
+class LLSTM(LLayer):
     def __init__(self, layer):
+        super().__init__()
+
         self.type = 'LSTM'
         self.activation = str(layer.activation.__name__)
         units = layer.units
@@ -67,8 +69,10 @@ class LLSTM:
         self.b_o = b[units*3:]
 
 
-class LConv1D:
+class LConv1D(LLayer):
     def __init__(self, layer):
+        super().__init__()
+
         self.type = 'Conv1D'
         self.filters = numpy.transpose(layer.get_weights()[0], (2, 1, 0))
         self.bias = layer.get_weights()[1]
@@ -84,8 +88,10 @@ class LConv1D:
         self.activation = str(layer.activation.__name__)
 
 
-class LConv2D:
+class LConv2D(LLayer):
     def __init__(self, layer):
+        super().__init__()
+
         self.type = 'Conv2D'
         self.filters = numpy.transpose(layer.get_weights()[0], (3, 2, 0, 1))
         self.bias = layer.get_weights()[1]
@@ -101,12 +107,16 @@ class LConv2D:
         self.activation = str(layer.activation.__name__)
 
 
-class LEmbedding:
+class LEmbedding(LLayer):
     def __init__(self, layer):
+        super().__init__()
+
         self.type = 'Embedding'
         self.matrix = layer.weights
 
 
-class LDefault:
+class LDefault(LLayer):
     def __init__(self, layer):
+        super().__init__()
+
         self.name = type(layer).__name__
