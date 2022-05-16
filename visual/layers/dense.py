@@ -28,7 +28,7 @@ class VDense(VLayer):
         # Display as neurons
         elif HintsKeeper().display == Display.EXTENDED:
             self._connection = LinkType.SEPARATED
-            self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select)
+            self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select, logic)
 
     def select(self, event):
         super().select(event)
@@ -75,7 +75,7 @@ class VDenseBlock(VBlock):
 
 
 class VDenseNeuronController:
-    def __init__(self, scene, x, units, select):
+    def __init__(self, scene, x, units, select, logic):
         self._scene = scene
         self._x = x
         self._units = units
@@ -126,6 +126,8 @@ class VDenseNeuronController:
 
             self._placeholder.setPos(self._x + NEURON_SIDE / 2 - self._placeholder.boundingRect().width() / 2,
                                      0 - self._placeholder.boundingRect().height() / 2)
+
+        logic.attach_output(self.update_output)
 
     def _get_neuron(self, i):
         if self._neurons is not None:
@@ -200,6 +202,13 @@ class VDenseNeuronController:
             if neuron is not None:
                 neuron.set_links_out(links[i])
 
+    def update_output(self, output):
+        maximum = max(output.min(), output.max(), key=abs)
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_output(output[i], output[i] / maximum)
+
 
 class VDenseNeuron:
     def __init__(self, scene, x, y, select):
@@ -207,16 +216,20 @@ class VDenseNeuron:
 
         side = NEURON_SIDE
 
-        self._ellipse = QGraphicsEllipseItem(x, y, side, side)
-        self._ellipse.setZValue(10)
-        self._ellipse.mousePressEvent = select
-        self._scene.addItem(self._ellipse)
+        self._item = QGraphicsEllipseItem(x, y, side, side)
+        self._item.setZValue(10)
+        self._item.mousePressEvent = select
+        self._scene.addItem(self._item)
 
         self._bind_in = QPointF(x, y + side / 2)
         self._bind_out = QPointF(x + side, y + side / 2)
 
         self._links_in = None
         self._links_out = None
+
+    def set_output(self, value, factor):
+        self._item.setBrush(brush_by_factor(factor))
+        self._item.setToolTip(str(value))
 
     def bind_in(self):
         return self._bind_in

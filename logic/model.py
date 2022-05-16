@@ -42,22 +42,18 @@ class LModel:
         return len(self.layers)
 
     def load_input(self, filename):
-        lines = None
+        input = None
         try:
             filename = filename
-            lines = np.loadtxt(filename, comments="#", delimiter=",", unpack=False)
-            lines = np.array([lines])
+            input = np.loadtxt(filename, comments="#", delimiter=",", unpack=False)
+            input = np.array([input])
         except Exception:
             print("Can't load")
 
         try:
-            output = self.k_model.predict(lines)
-            print(output)
-
-            layer_name = 'dense_2'
-            intermediate_layer_model = keras.Model(inputs=self.k_model.input, outputs=self.k_model.get_layer(layer_name).output)
-            output_dense_2 = intermediate_layer_model.predict(lines)
-            print(output_dense_2)
+            for i in range(len(self.layers)):
+                inter_model = keras.Model(inputs=self.k_model.input, outputs=self.k_model.layers[i].output)
+                output = inter_model.predict(input)
+                self.layers[i].output = output
         except Exception:
             print("Can't predict")
-

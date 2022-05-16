@@ -15,7 +15,7 @@ class HintsKeeper(metaclass=SingletonMeta):
     def __init__(self):
         self._display = Display.COMPACT
         self._color = WeightColor.OFF
-        self._thick = WeightThick.ON
+        self._thick = WeightThick.OFF
         self._names = Names.HORIZONTAL
         self._captions = Captions.OFF
         self._bias = Bias.OFF

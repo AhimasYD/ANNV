@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItemGroup
+from PyQt5.QtGui import QBrush, QColor
 
 
 class VPlaceholder(QGraphicsItemGroup):
@@ -8,6 +9,10 @@ class VPlaceholder(QGraphicsItemGroup):
         self._circle1 = QGraphicsEllipseItem(0, 0, side, side)
         self._circle2 = QGraphicsEllipseItem(0, 0 + margin + side, side, side)
         self._circle3 = QGraphicsEllipseItem(0, 0 + 2 * margin + 2 * side, side, side)
+
+        self._circle1.setBrush(QBrush(QColor(0, 0, 0)))
+        self._circle2.setBrush(QBrush(QColor(0, 0, 0)))
+        self._circle3.setBrush(QBrush(QColor(0, 0, 0)))
 
         self._circle1.setZValue(10)
         self._circle2.setZValue(10)

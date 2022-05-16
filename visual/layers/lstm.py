@@ -283,6 +283,13 @@ class VLSTMNeuronController:
             if neuron is not None:
                 neuron.set_links_out(links[i])
 
+    def update_output(self, output):
+        maximum = max(output.min(), output.max(), key=abs)
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_output(output[i], output[i] / maximum)
+
 
 class VLSTMNeuron:
     def __init__(self, scene, x, y, select, o_names):
@@ -291,12 +298,12 @@ class VLSTMNeuron:
         width = NEURON_REC_WIDTH
         height = NEURON_REC_HEIGHT
 
-        self._rect = QGraphicsRectItem(x, y, width, height)
-        self._rect.setZValue(10)
-        self._rect.mousePressEvent = select
-        self._text = draw_text('LSTM', self._rect.boundingRect(), o_names)
+        self._item = QGraphicsRectItem(x, y, width, height)
+        self._item.setZValue(10)
+        self._item.mousePressEvent = select
+        self._text = draw_text('LSTM', self._item.boundingRect(), o_names)
         self._text.setZValue(11)
-        self._scene.addItem(self._rect)
+        self._scene.addItem(self._item)
         self._scene.addItem(self._text)
 
         self._bind_in = QPointF(x, y + height / 2)
@@ -310,6 +317,10 @@ class VLSTMNeuron:
 
         self._link_rec_in = None
         self._link_rec_out = None
+
+    def set_output(self, value, factor):
+        self._item.setBrush(brush_by_factor(factor))
+        self._item.setToolTip(str(value))
 
     def bind_in(self):
         return self._bind_in

@@ -1,9 +1,12 @@
 import numpy
 
+
 class LLayer:
     def __init__(self):
         self._ltype = None
         self._output = None
+
+        self._output_subs = []
 
     @property
     def ltype(self):
@@ -15,11 +18,21 @@ class LLayer:
 
     @output.setter
     def output(self, new_output):
-        self._output = new_output
+        self._output = new_output[0]
+        for callback in self._output_subs:
+            callback(self._output)
+
+    def attach_output(self, callback):
+        self._output_subs.append(callback)
+
+    def detach_output(self, callback):
+        self._output_subs.remove(callback)
 
 
-class LDense:
+class LDense(LLayer):
     def __init__(self, layer):
+        super().__init__()
+
         self.type = 'Dense'
         self.activation = str(layer.activation.__name__)
         self.units = layer.units

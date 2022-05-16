@@ -87,9 +87,9 @@ class Arrow(QGraphicsItemGroup):
 
         alpha = abs(int(255 * factor))
         if factor >= 0:
-            brush = QBrush(QColor(0, 0, 255, alpha))
-        else:
             brush = QBrush(QColor(255, 0, 0, alpha))
+        else:
+            brush = QBrush(QColor(0, 0, 255, alpha))
 
         width = self._line.pen().width()
         self._line.setPen(QPen(brush, width))
