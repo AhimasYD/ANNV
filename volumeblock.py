@@ -31,7 +31,7 @@ class VolumeBlock(QWidget):
 
         layout_buttons_1 = QHBoxLayout()
         layout_buttons_1.addWidget(button_1_prev)
-        layout_buttons_1.addWidget(button_1_prev)
+        layout_buttons_1.addWidget(button_1_next)
 
         label_1 = QLabel(f'{name_1}:')
         num_1 = QLabel('#')

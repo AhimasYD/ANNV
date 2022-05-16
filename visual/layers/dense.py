@@ -73,7 +73,7 @@ class VDense(VLayer):
         print('OUTPUT')
         self.window = OutputWindow(self._logic.output)
         self.window.setModal(True)
-        self.window.show()
+        self.window.showMaximized()
 
 
 class VDenseBlock(VBlock):
