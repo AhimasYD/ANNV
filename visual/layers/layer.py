@@ -1,9 +1,9 @@
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 
 from visual.functions import clear_layout
 
 
-class VLayer:
+class VLayer(metaclass=ABCMeta):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         self._logic = logic
         self._scene = scene
@@ -29,9 +29,21 @@ class VLayer:
         self._w_volume.button_1_next.mousePressEvent = None
 
     @abstractmethod
+    def binds_in(self):
+        """"""
+
+    @abstractmethod
+    def binds_out(self):
+        """"""
+
+    @abstractmethod
     def set_links_in(self, links):
         """"""
 
     @abstractmethod
     def set_links_out(self, links):
+        """"""
+
+    @abstractmethod
+    def bounding(self):
         """"""

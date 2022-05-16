@@ -39,3 +39,6 @@ class VBlock:
 
     def set_links_out(self, links):
         self._links_out = links
+
+    def bounding(self):
+        return self._rect.boundingRect()

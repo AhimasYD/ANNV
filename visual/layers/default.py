@@ -31,6 +31,9 @@ class VDefault(VLayer):
     def set_links_out(self, links):
         self._block.set_links_out(links)
 
+    def bounding(self):
+        return self._block.bounding()
+
 
 class VDefaultBlock(VBlock):
     def __init__(self, scene, x, select, name):

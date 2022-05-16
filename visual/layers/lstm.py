@@ -109,6 +109,12 @@ class VLSTM(VLayer):
         self._window.setModal(True)
         self._window.showMaximized()
 
+    def bounding(self):
+        if HintsKeeper().display == Display.COMPACT:
+            return self._block.bounding()
+        else:
+            return self._neuron_ctrl.bounding()
+
 
 class VLSTMBlock(VBlock):
     def __init__(self, scene, x, select, show_output):
@@ -302,6 +308,11 @@ class VLSTMNeuronController:
                 else:
                     neuron.set_output(output[i], 0.0)
 
+    def bounding(self):
+        unit_0 = self._get_neuron(0)
+        unit_1 = self._get_neuron(self._units - 1)
+        return unit_0.bounding().united(unit_1.bounding())
+
 
 class VLSTMNeuron:
     def __init__(self, scene, x, y, select, show_output):
@@ -358,3 +369,6 @@ class VLSTMNeuron:
 
     def set_rec_links_out(self, link):
         self._link_rec_out = link
+
+    def bounding(self):
+        return self._item.boundingRect()

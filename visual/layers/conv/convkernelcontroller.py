@@ -79,6 +79,17 @@ class VConvKernelController:
         self._links_in = None
         self._links_out = None
 
+    def _get_kernel(self, i):
+        if self._kernels is not None:
+            return self._kernels[i]
+        else:
+            if i < PLACEHOLDER_MAX_NEURONS:
+                return self._kernels_start[i]
+            elif i >= self._units - PLACEHOLDER_MAX_NEURONS:
+                return self._kernels_end[i - (self._units - PLACEHOLDER_MAX_NEURONS)]
+            else:
+                return None
+
     def update(self, arrays, filter_num):
         if self._kernels is not None:
             for i in range(self._units):
@@ -148,3 +159,8 @@ class VConvKernelController:
                     self._links_out[i].set_thick_hint(hint)
         else:
             raise TypeError
+
+    def bounding(self):
+        unit_0 = self._get_kernel(0)
+        unit_1 = self._get_kernel(self._units - 1)
+        return unit_0.bounding().united(unit_1.bounding())

@@ -60,3 +60,9 @@ class VConv(VLayer):
         self._window = OutputWindow(self._logic.output)
         self._window.setModal(True)
         self._window.showMaximized()
+
+    def bounding(self):
+        if HintsKeeper().display == Display.COMPACT:
+            return self._block.bounding()
+        else:
+            return self._kernel_ctrl.bounding()

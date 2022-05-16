@@ -71,8 +71,8 @@ class VConv1DBlock(VBlock):
 
 
 class VConv1DKernelController(VConvKernelController):
-    def __init__(self, scene, x, units, filters, arrays, select):
-        super().__init__(scene, x, units, filters, arrays, select, VConv1DKernel)
+    def __init__(self, scene, x, units, filters, arrays, select, show_output):
+        super().__init__(scene, x, units, filters, arrays, select, show_output, VConv1DKernel)
 
 
 class VConv1DKernel(VConvKernel):
