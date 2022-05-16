@@ -35,6 +35,10 @@ class VModel:
             self._x = self._scene.itemsBoundingRect().width() + LAYER_MARGIN
         self._init_weights()
 
+    @property
+    def logic(self):
+        return self._logic
+
     def _create_layer(self, logic):
         if type(logic).__name__ == 'LDense':
             layer = VDense(logic, self._scene, self._x,
@@ -157,3 +161,6 @@ class VModel:
     def set_weight_thick_hint(self, hint: WeightThick):
         for layer in self._layers:
             layer.set_weight_thick_hint(hint)
+
+    def load_input(self, filename):
+        self._logic.load_input(filename)

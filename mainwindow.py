@@ -21,9 +21,15 @@ class MainWindow(QMainWindow):
         self._o_captions = Captions.OFF
         self._o_bias = Bias.OFF
 
-        self._logic = None
         self._visual = None
 
+        self.model_widget = None
+        self.layer_widget = None
+        self.flat = None
+        self.volume = None
+        self._init_ui()
+
+    def _init_ui(self):
         uic.loadUi('mainwindow.ui', self)
 
         menu_bar = self.menuBar()
@@ -90,6 +96,7 @@ class MainWindow(QMainWindow):
         menu_bar.addMenu(menu)
 
         self.actionOpen.triggered.connect(self.open_model)
+        self.actionLoad.triggered.connect(self.load_input)
         self.actionExport.triggered.connect(self.export_image)
 
         self.scene = QGraphicsScene()
@@ -134,22 +141,27 @@ class MainWindow(QMainWindow):
     def showMaximized(self):
         super().showMaximized()
         width = int(self.width() * 0.7)
-        visualView = self.visualView
-        self.visualView.setGeometry(visualView.x(), visualView.y(), width, visualView.height())
+        visual_view = self.visualView
+        visual_view.setGeometry(visual_view.x(), visual_view.y(), width, visual_view.height())
 
     def open_model(self):
         filename, _ = QFileDialog.getOpenFileName()
         if not filename:
             return
 
-        self._logic = None
         self._visual = None
         self.scene.clear()
 
-        self._logic = LModel(filename)
-        self._visual = VModel(self._logic, self.scene,
+        logic = LModel(filename)
+        self._visual = VModel(logic, self.scene,
                               self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
                               self.model_widget, self.layer_widget, self.flat, self.volume)
+
+    def load_input(self):
+        filename, _ = QFileDialog.getOpenFileName()
+        if not filename:
+            return
+        self._visual.load_input(filename)
 
     def export_image(self):
         filename, _ = QFileDialog.getSaveFileName(self, 'Export Image', '', '*.png')
@@ -190,8 +202,9 @@ class MainWindow(QMainWindow):
         self._visual.set_weight_thick_hint(self._o_thick)
 
     def recreate_visual(self):
+        logic = self._visual.logic
         self._visual = None
         self.scene.clear()
-        self._visual = VModel(self._logic, self.scene,
+        self._visual = VModel(logic, self.scene,
                               self._o_display, self._o_color, self._o_thick, self._o_names, self._o_captions, self._o_bias,
                               self.model_widget, self.layer_widget, self.flat, self.volume)

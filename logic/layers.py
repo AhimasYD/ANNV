@@ -1,5 +1,12 @@
 import numpy
 
+class LLayer:
+    def __init__(self):
+        self._type = None
+        self._output = None
+
+
+
 
 class LDense:
     def __init__(self, layer):
