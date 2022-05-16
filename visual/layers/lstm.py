@@ -173,72 +173,6 @@ class VLSTMNeuronController:
             else:
                 return None
 
-    def binds_in(self):
-        if self._placeholder is None:
-            binds = np.empty(self._units, dtype=QPointF)
-            for i in range(self._units):
-                binds[i] = self._neurons[i].bind_in()
-
-        else:
-            placeholder = np.full(shape=(self._units - 2 * PLACEHOLDER_MAX_NEURONS), fill_value=None, dtype=QPointF)
-
-            binds_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_start[i] = self._neurons_start[i].bind_in()
-
-            binds_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_end[i] = self._neurons_end[i].bind_in()
-
-            binds = np.concatenate((binds_start, placeholder, binds_end))
-
-        return binds
-
-    def binds_out(self):
-        if self._placeholder is None:
-            binds = np.empty(self._units, dtype=QPointF)
-            for i in range(self._units):
-                binds[i] = self._neurons[i].bind_out()
-
-        else:
-            placeholder = np.full(shape=(self._units - 2 * PLACEHOLDER_MAX_NEURONS), fill_value=None, dtype=QPointF)
-
-            binds_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_start[i] = self._neurons_start[i].bind_out()
-
-            binds_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_end[i] = self._neurons_end[i].bind_out()
-
-            binds = np.concatenate((binds_start, placeholder, binds_end))
-
-        return binds
-
-    def set_links_in(self, links):
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                neuron.set_links_in(links[i])
-
-    def set_links_out(self, links):
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                neuron.set_links_out(links[i])
-
-    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                neuron.set_weight_color_hint(hint, forward)
-
-    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                neuron.set_weight_thick_hint(hint, forward)
-
     def _init_rec_weights(self):
         if self._neurons is not None:
             for i in range(self._neurons.shape[0] - 1):
@@ -295,6 +229,60 @@ class VLSTMNeuronController:
             self._scene.addItem(link.get_item())
             neuron.set_rec_links_in(link)
 
+    def binds_in(self):
+        if self._placeholder is None:
+            binds = np.empty(self._units, dtype=QPointF)
+            for i in range(self._units):
+                binds[i] = self._neurons[i].bind_in()
+
+        else:
+            placeholder = np.full(shape=(self._units - 2 * PLACEHOLDER_MAX_NEURONS), fill_value=None, dtype=QPointF)
+
+            binds_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
+            for i in range(PLACEHOLDER_MAX_NEURONS):
+                binds_start[i] = self._neurons_start[i].bind_in()
+
+            binds_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
+            for i in range(PLACEHOLDER_MAX_NEURONS):
+                binds_end[i] = self._neurons_end[i].bind_in()
+
+            binds = np.concatenate((binds_start, placeholder, binds_end))
+
+        return binds
+
+    def binds_out(self):
+        if self._placeholder is None:
+            binds = np.empty(self._units, dtype=QPointF)
+            for i in range(self._units):
+                binds[i] = self._neurons[i].bind_out()
+
+        else:
+            placeholder = np.full(shape=(self._units - 2 * PLACEHOLDER_MAX_NEURONS), fill_value=None, dtype=QPointF)
+
+            binds_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
+            for i in range(PLACEHOLDER_MAX_NEURONS):
+                binds_start[i] = self._neurons_start[i].bind_out()
+
+            binds_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
+            for i in range(PLACEHOLDER_MAX_NEURONS):
+                binds_end[i] = self._neurons_end[i].bind_out()
+
+            binds = np.concatenate((binds_start, placeholder, binds_end))
+
+        return binds
+
+    def set_links_in(self, links):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_links_in(links[i])
+
+    def set_links_out(self, links):
+        for i in range(self._units):
+            neuron = self._get_neuron(i)
+            if neuron is not None:
+                neuron.set_links_out(links[i])
+
 
 class VLSTMNeuron:
     def __init__(self, scene, x, y, select, o_names):
@@ -346,51 +334,3 @@ class VLSTMNeuron:
 
     def set_rec_links_out(self, link):
         self._link_rec_out = link
-
-    def set_weight_color_hint(self, hint: WeightColor, forward: bool = False):
-        if self._links_in is None:
-            return
-
-        if type(self._links_in) is VLink:
-            self._links_in.set_color_hint(hint)
-        elif type(self._links_in) is np.ndarray:
-            for i in range(self._links_in.shape[0]):
-                if self._links_in[i] is not None:
-                    self._links_in[i].set_color_hint(hint)
-        else:
-            raise TypeError
-
-        if not forward:
-            return
-        if type(self._links_out) is VLink:
-            self._links_out.set_color_hint(hint)
-        elif type(self._links_out) is np.ndarray:
-            for i in range(self._links_out.shape[0]):
-                if self._links_out[i] is not None:
-                    self._links_out[i].set_color_hint(hint)
-        else:
-            raise TypeError
-
-    def set_weight_thick_hint(self, hint: WeightThick, forward: bool = False):
-        if self._links_in is None:
-            return
-
-        if type(self._links_in) is VLink:
-            self._links_in.set_thick_hint(hint)
-        elif type(self._links_in) is np.ndarray:
-            for i in range(self._links_in.shape[0]):
-                if self._links_in[i] is not None:
-                    self._links_in[i].set_thick_hint(hint)
-        else:
-            raise TypeError
-
-        if not forward or self._links_out is None:
-            return
-        if type(self._links_out) is VLink:
-            self._links_out.set_thick_hint(hint)
-        elif type(self._links_out) is np.ndarray:
-            for i in range(self._links_out.shape[0]):
-                if self._links_out[i] is not None:
-                    self._links_out[i].set_thick_hint(hint)
-        else:
-            raise TypeError
