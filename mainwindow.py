@@ -9,10 +9,14 @@ from visual import *
 from flatblock import FlatBlock
 from volumeblock import VolumeBlock
 
+from visual.hintskeeper import HintsKeeper
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self._hints_keeper = HintsKeeper()
 
         self._o_display = Display.COMPACT
         self._o_color = WeightColor.OFF
@@ -181,27 +185,30 @@ class MainWindow(QMainWindow):
 
     def display_compact(self, checked):
         self._o_display = Display.COMPACT
+        self._hints_keeper.display = Display.COMPACT
         self.recreate_visual()
 
     def display_extended(self, checked):
         self._o_display = Display.EXTENDED
+        self._hints_keeper.display = Display.EXTENDED
         self.recreate_visual()
 
     def color_changed(self, checked):
         if checked:
-            self._o_color = WeightColor.ON
+            self._hints_keeper.color = WeightColor.ON
         else:
-            self._o_color = WeightColor.OFF
-        self._visual.set_weight_color_hint(self._o_color)
+            self._hints_keeper.color = WeightColor.OFF
 
     def thick_changed(self, checked):
         if checked:
-            self._o_thick = WeightThick.ON
+            self._hints_keeper.thick = WeightThick.ON
         else:
-            self._o_thick = WeightThick.OFF
-        self._visual.set_weight_thick_hint(self._o_thick)
+            self._hints_keeper.thick = WeightThick.OFF
 
     def recreate_visual(self):
+        if not self._visual:
+            return
+
         logic = self._visual.logic
         self._visual = None
         self.scene.clear()

@@ -9,11 +9,11 @@ from .links import *
 
 
 class VModel:
-    def __init__(self, logic, scene, _o_display, o_color, o_thick, o_names, o_captions, o_bias, wm, wl, wf, wv):
+    def __init__(self, logic, scene, o_display, o_color, o_thick, o_names, o_captions, o_bias, wm, wl, wf, wv):
         self._logic = logic
         self._scene = scene
 
-        self._o_display = _o_display
+        self._o_display = o_display
         self._o_color = o_color
         self._o_thick = o_thick
         self._o_names = o_names
@@ -153,14 +153,6 @@ class VModel:
             table.setItem(i, 2, c_shape)
 
         self._wm.layout().addWidget(table)
-
-    def set_weight_color_hint(self, hint: WeightColor):
-        for layer in self._layers:
-            layer.set_weight_color_hint(hint)
-
-    def set_weight_thick_hint(self, hint: WeightThick):
-        for layer in self._layers:
-            layer.set_weight_thick_hint(hint)
 
     def load_input(self, filename):
         self._logic.load_input(filename)
