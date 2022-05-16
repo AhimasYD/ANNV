@@ -53,12 +53,12 @@ class VConv2D(VConv):
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self._w_flat.show()
-        self._w_flat.filter_num.setText(f'{self._filter}')
-        self._w_flat.filter_prev.mousePressEvent = self.filter_prev
-        self._w_flat.filter_next.mousePressEvent = self.filter_next
+        self._w_flat.num.setText(f'{self._filter}')
+        self._w_flat.button_prev.mousePressEvent = self.filter_prev
+        self._w_flat.button_next.mousePressEvent = self.filter_next
 
     def update(self):
-        self._w_flat.filter_num.setText(f'{self._filter}')
+        self._w_flat.num.setText(f'{self._filter}')
         for i in range(self._logic.channel_num):
             self._kernels[i].update(self._logic.filters[self._filter, i])
         if self._kernel_ctrl is not None:

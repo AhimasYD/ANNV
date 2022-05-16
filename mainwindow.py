@@ -133,8 +133,8 @@ class MainWindow(QMainWindow):
         layer_layout = QVBoxLayout()
         layer_layout.addWidget(layer_scroll)
 
-        self.flat = FlatBlock()
-        self.volume = VolumeBlock()
+        self.flat = FlatBlock('Filter')
+        self.volume = VolumeBlock('Filter', 'Depth')
         layer_layout.addWidget(self.flat)
         layer_layout.addWidget(self.volume)
         self.flat.hide()

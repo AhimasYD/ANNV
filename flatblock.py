@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 
 
 class FlatBlock(QWidget):
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
 
         button_prev = QPushButton('Prev')
@@ -14,7 +14,7 @@ class FlatBlock(QWidget):
         layout_buttons.addWidget(button_prev)
         layout_buttons.addWidget(button_next)
 
-        label = QLabel('Filter:')
+        label = QLabel(f'{name}:')
         num = QLabel('#')
 
         layout_text = QHBoxLayout()
@@ -28,6 +28,6 @@ class FlatBlock(QWidget):
 
         self.setLayout(layout)
 
-        self.filter_prev = button_prev
-        self.filter_next = button_next
-        self.filter_num = num
+        self.button_prev = button_prev
+        self.button_next = button_next
+        self.num = num

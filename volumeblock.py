@@ -4,57 +4,57 @@ from PyQt5.QtCore import *
 
 
 class VolumeBlock(QWidget):
-    def __init__(self):
+    def __init__(self, name_0, name_1):
         super().__init__()
 
-        filter_button_prev = QPushButton('Prev')
-        filter_button_next = QPushButton('Next')
+        button_0_prev = QPushButton('Prev')
+        button_0_next = QPushButton('Next')
 
-        layout_filter_buttons = QHBoxLayout()
-        layout_filter_buttons.addWidget(filter_button_prev)
-        layout_filter_buttons.addWidget(filter_button_next)
+        layout_buttons_0 = QHBoxLayout()
+        layout_buttons_0.addWidget(button_0_prev)
+        layout_buttons_0.addWidget(button_0_next)
 
-        filter_label = QLabel('Filter:')
-        filter_num = QLabel('#')
+        label_0 = QLabel(f'{name_0}:')
+        num_0 = QLabel('#')
 
-        layout_filter_text = QHBoxLayout()
-        layout_filter_text.addWidget(filter_label)
-        layout_filter_text.addWidget(filter_num)
-        layout_filter_text.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Ignored))
+        layout_0_text = QHBoxLayout()
+        layout_0_text.addWidget(label_0)
+        layout_0_text.addWidget(num_0)
+        layout_0_text.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Ignored))
 
-        layout_filter = QVBoxLayout()
-        layout_filter.addLayout(layout_filter_text)
-        layout_filter.addLayout(layout_filter_buttons)
+        layout_0 = QVBoxLayout()
+        layout_0.addLayout(layout_0_text)
+        layout_0.addLayout(layout_buttons_0)
 
-        depth_button_prev = QPushButton('Prev')
-        depth_button_next = QPushButton('Next')
+        button_1_prev = QPushButton('Prev')
+        button_1_next = QPushButton('Next')
 
-        layout_depth_buttons = QHBoxLayout()
-        layout_depth_buttons.addWidget(depth_button_prev)
-        layout_depth_buttons.addWidget(depth_button_next)
+        layout_buttons_1 = QHBoxLayout()
+        layout_buttons_1.addWidget(button_1_prev)
+        layout_buttons_1.addWidget(button_1_prev)
 
-        depth_label = QLabel('Depth:')
-        depth_num = QLabel('#')
+        label_1 = QLabel(f'{name_1}:')
+        num_1 = QLabel('#')
 
-        layout_depth_text = QHBoxLayout()
-        layout_depth_text.addWidget(depth_label)
-        layout_depth_text.addWidget(depth_num)
-        layout_depth_text.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Ignored))
+        layout_1_text = QHBoxLayout()
+        layout_1_text.addWidget(label_1)
+        layout_1_text.addWidget(num_1)
+        layout_1_text.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Ignored))
 
-        layout_depth = QVBoxLayout()
-        layout_depth.addLayout(layout_depth_text)
-        layout_depth.addLayout(layout_depth_buttons)
+        layout_1 = QVBoxLayout()
+        layout_1.addLayout(layout_1_text)
+        layout_1.addLayout(layout_buttons_1)
 
         layout = QHBoxLayout()
-        layout.addLayout(layout_filter)
-        layout.addLayout(layout_depth)
+        layout.addLayout(layout_0)
+        layout.addLayout(layout_1)
 
         self.setLayout(layout)
 
-        self.filter_prev = filter_button_prev
-        self.filter_next = filter_button_next
-        self.depth_prev = depth_button_prev
-        self.depth_next = depth_button_next
+        self.button_0_prev = button_0_prev
+        self.button_0_next = button_0_next
+        self.button_1_prev = button_1_prev
+        self.button_1_next = button_1_next
 
-        self.filter_num = filter_num
-        self.depth_num = depth_num
+        self.filter_num = num_0
+        self.depth_num = num_1
