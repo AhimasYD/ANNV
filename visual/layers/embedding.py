@@ -36,4 +36,4 @@ class VEmbedding(VLayer):
 
 class VEmbeddingBlock(VBlock):
     def __init__(self, scene, x, select):
-        super().__init__(scene, x, select, 'Embedding')
+        super().__init__(scene, x, select, None, 'Embedding')

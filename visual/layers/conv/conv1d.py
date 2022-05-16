@@ -67,7 +67,7 @@ class VConv1D(VConv):
 
 class VConv1DBlock(VBlock):
     def __init__(self, scene, x, select):
-        super().__init__(scene, x, select, 'Conv1D')
+        super().__init__(scene, x, select, None, 'Conv1D')
 
 
 class VConv1DKernelController(VConvKernelController):

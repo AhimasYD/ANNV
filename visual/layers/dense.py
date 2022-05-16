@@ -24,7 +24,7 @@ class VDense(VLayer):
         # Display as block
         if HintsKeeper().display == Display.COMPACT:
             self._connection = LinkType.UNITED
-            self._block = VDenseBlock(self._scene, self._x, self.select)
+            self._block = VDenseBlock(self._scene, self._x, self.select, self.show_output)
 
         # Display as neurons
         elif HintsKeeper().display == Display.EXTENDED:
@@ -70,15 +70,16 @@ class VDense(VLayer):
             self._neuron_ctrl.set_links_out(links)
 
     def show_output(self, event):
-        print('OUTPUT')
+        if self._logic.output is None:
+            return
         self.window = OutputWindow(self._logic.output)
         self.window.setModal(True)
         self.window.showMaximized()
 
 
 class VDenseBlock(VBlock):
-    def __init__(self, scene, x, select):
-        super().__init__(scene, x, select, 'Dense')
+    def __init__(self, scene, x, select, show_output):
+        super().__init__(scene, x, select, show_output, 'Dense')
 
 
 class VDenseNeuronController:

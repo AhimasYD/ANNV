@@ -12,11 +12,12 @@ from visual.hintskeeper import HintsKeeper
 
 
 class VBlock:
-    def __init__(self, scene, x, select, name):
+    def __init__(self, scene, x, select, show_output, name):
         self._scene = scene
 
         self._rect = QGraphicsRectItem(x, 0 - BLOCK_HEIGHT / 2, BLOCK_WIDTH, BLOCK_HEIGHT)
         self._rect.mousePressEvent = select
+        self._rect.mouseDoubleClickEvent = show_output
         self._text = draw_text(name, self._rect.boundingRect(), HintsKeeper().names)
         self._scene.addItem(self._rect)
         self._scene.addItem(self._text)

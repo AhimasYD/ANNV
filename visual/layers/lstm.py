@@ -12,6 +12,7 @@ from .layer import VLayer
 from .placeholder import VPlaceholder
 from visual.links import VLink
 from visual.layers.block import VBlock
+from visual.layers.outputwindow import OutputWindow
 
 from visual.hintskeeper import HintsKeeper
 
@@ -22,11 +23,11 @@ class VLSTM(VLayer):
 
         if HintsKeeper().display == Display.COMPACT:
             self._connection = LinkType.UNITED
-            self._block = VLSTMBlock(self._scene, self._x, self.select)
+            self._block = VLSTMBlock(self._scene, self._x, self.select, self.show_output)
 
         elif HintsKeeper().display == Display.EXTENDED:
             self._connection = LinkType.SEPARATED
-            self._neuron_ctrl = VLSTMNeuronController(self._scene, self._x, self._logic.units, self.select, Names.HORIZONTAL)
+            self._neuron_ctrl = VLSTMNeuronController(self._scene, self._x, self._logic.units, self.select, self.show_output, logic)
 
     def select(self, event):
         super().select(event)
@@ -101,14 +102,21 @@ class VLSTM(VLayer):
         else:
             self._neuron_ctrl.set_links_out(links)
 
+    def show_output(self, event):
+        if self._logic.output is None:
+            return
+        self.window = OutputWindow(self._logic.output)
+        self.window.setModal(True)
+        self.window.showMaximized()
+
 
 class VLSTMBlock(VBlock):
-    def __init__(self, scene, x, select):
-        super().__init__(scene, x, select, 'LSTM')
+    def __init__(self, scene, x, select, show_output):
+        super().__init__(scene, x, select, show_output, 'LSTM')
 
 
 class VLSTMNeuronController:
-    def __init__(self, scene, x, units, select, o_names):
+    def __init__(self, scene, x, units, select, show_output, logic):
         self._scene = scene
         self._x = x
         self._units = units
@@ -126,7 +134,7 @@ class VLSTMNeuronController:
             total_height = units * NEURON_REC_HEIGHT + (units - 1) * NEURON_REC_MARGIN
             y = -total_height/2
             for i in range(units):
-                self._neurons[i] = VLSTMNeuron(self._scene, self._x, y, select, o_names)
+                self._neurons[i] = VLSTMNeuron(self._scene, self._x, y, select, show_output)
                 y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
 
         # Placeholder needed
@@ -145,11 +153,11 @@ class VLSTMNeuronController:
             for i in range(units):
                 if i < PLACEHOLDER_MAX_NEURONS:
                     j = i
-                    self._neurons_start[j] = VLSTMNeuron(self._scene, self._x, y, select, o_names)
+                    self._neurons_start[j] = VLSTMNeuron(self._scene, self._x, y, select, show_output)
                     y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
                 elif i >= units - PLACEHOLDER_MAX_NEURONS:
                     j = i - (units - PLACEHOLDER_MAX_NEURONS)
-                    self._neurons_end[j] = VLSTMNeuron(self._scene, self._x, y, select, o_names)
+                    self._neurons_end[j] = VLSTMNeuron(self._scene, self._x, y, select, show_output)
                     y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
 
                 if i == PLACEHOLDER_MAX_NEURONS:
@@ -161,6 +169,7 @@ class VLSTMNeuronController:
                                      0 - self._placeholder.boundingRect().height() / 2)
 
         self._init_rec_weights()
+        logic.attach_output(self.update_output)
 
     def _get_neuron(self, i):
         if self._neurons is not None:
@@ -292,7 +301,7 @@ class VLSTMNeuronController:
 
 
 class VLSTMNeuron:
-    def __init__(self, scene, x, y, select, o_names):
+    def __init__(self, scene, x, y, select, show_output):
         self._scene = scene
 
         width = NEURON_REC_WIDTH
@@ -301,7 +310,8 @@ class VLSTMNeuron:
         self._item = QGraphicsRectItem(x, y, width, height)
         self._item.setZValue(10)
         self._item.mousePressEvent = select
-        self._text = draw_text('LSTM', self._item.boundingRect(), o_names)
+        self._item.mouseDoubleClickEvent = show_output
+        self._text = draw_text('LSTM', self._item.boundingRect(), HintsKeeper().names)
         self._text.setZValue(11)
         self._scene.addItem(self._item)
         self._scene.addItem(self._text)

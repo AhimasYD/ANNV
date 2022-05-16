@@ -46,22 +46,23 @@ class LModel:
         try:
             filename = filename
             file_input = np.loadtxt(filename, comments="#", delimiter=",", unpack=False)
-        except Exception:
+        except:
             return "Can't read file"
 
         try:
             shape = self.k_model.input_shape[1:]
-            file_input.reshape(shape)
+            file_input = file_input.reshape(shape)
             file_input = np.array([file_input])
         except:
             return "Incorrect input shape"
 
-        try:
-            for i in range(len(self.layers)):
+        for i in range(len(self.layers)):
+            try:
                 inter_model = keras.Model(inputs=self.k_model.input, outputs=self.k_model.layers[i].output)
                 output = inter_model.predict(file_input)
                 self.layers[i].output = output
-        except Exception:
-            return "Can't predict"
+            except:
+                print(i)
+                pass
 
         return None

@@ -34,4 +34,4 @@ class VDefault(VLayer):
 
 class VDefaultBlock(VBlock):
     def __init__(self, scene, x, select, name):
-        super().__init__(scene, x, select, name + ' (D)')
+        super().__init__(scene, x, select, None, name + ' (D)')
