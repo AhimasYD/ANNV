@@ -72,14 +72,18 @@ class MainWindow(QMainWindow):
 
         sub_text = menu.addMenu('Names')
         group = QActionGroup(sub_display)
-        texts = ['Horizontal', 'Vertical']
-        for text in texts:
-            action = QAction(text, sub_text)
-            action.setCheckable(True)
-            action.setChecked(text == texts[0])
-
-            sub_text.addAction(action)
-            group.addAction(action)
+        action = QAction('Horizontal', sub_display)
+        action.setCheckable(True)
+        action.setChecked(True)
+        action.triggered.connect(self.names_horizontal)
+        sub_text.addAction(action)
+        group.addAction(action)
+        action = QAction('Vertical', sub_display)
+        action.setCheckable(True)
+        action.setChecked(False)
+        action.triggered.connect(self.names_vertical)
+        sub_text.addAction(action)
+        group.addAction(action)
         group.setExclusive(True)
 
         sub_captions = menu.addMenu('Captions')
@@ -205,6 +209,12 @@ class MainWindow(QMainWindow):
             self._hints_keeper.thick = WeightThick.ON
         else:
             self._hints_keeper.thick = WeightThick.OFF
+
+    def names_horizontal(self, checked):
+        self._hints_keeper.names = Names.HORIZONTAL
+
+    def names_vertical(self, checked):
+        self._hints_keeper.names = Names.VERTICAL
 
     def recreate_visual(self):
         if not self._visual:

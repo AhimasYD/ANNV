@@ -14,7 +14,7 @@ from visual.layers.block import VBlock
 class VDefault(VLayer):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
-        self._block = VDefaultBlock(self._scene, self._x, self.select, self._logic.name)
+        self._block = VDefaultBlock(self._scene, self._x, self.select, self._logic.type)
 
     def select(self, event):
         super().select(event)

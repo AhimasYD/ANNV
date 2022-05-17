@@ -33,19 +33,19 @@ class VModel:
         return self._logic
 
     def _create_layer(self, logic):
-        if type(logic).__name__ == 'LDense':
-            layer = VDense(logic, self._scene, self._x, self._wl, self._wf, self._wv)
-        elif type(logic).__name__ == 'LLSTM':
-            layer = VLSTM(logic, self._scene, self._x, self._wl, self._wf, self._wv)
-        elif type(logic).__name__ == 'LEmbedding':
-            layer = VEmbedding(logic, self._scene, self._x, self._wl, self._wf, self._wv)
-        elif type(logic).__name__ == 'LConv1D':
-            layer = VConv1D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
-        elif type(logic).__name__ == 'LConv2D':
-            layer = VConv2D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        if logic.type == 'Dense':
+            v_layer = VDense(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'LSTM':
+            v_layer = VLSTM(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'Embedding':
+            v_layer = VEmbedding(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'Conv1D':
+            v_layer = VConv1D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'Conv2D':
+            v_layer = VConv2D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         else:
-            layer = VDefault(logic, self._scene, self._x, self._wl, self._wf, self._wv)
-        return layer
+            v_layer = VDefault(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        return v_layer
 
     def _init_weights(self):
         for k in range(len(self._layers) - 1):

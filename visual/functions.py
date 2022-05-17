@@ -2,11 +2,17 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from .constants import *
+from visual.hintskeeper import HintsKeeper
 
 
 def draw_text(text, rect, names):
+    if HintsKeeper().names == Names.HORIZONTAL:
+        font_size = 30
+    else:
+        font_size = 20
+
     item = QGraphicsTextItem()
-    item.setFont(QFont('OldEnglish', 30, QFont.Bold))
+    item.setFont(QFont('OldEnglish', font_size, QFont.Bold))
 
     if names == Names.HORIZONTAL:
         item.setPlainText(text)
