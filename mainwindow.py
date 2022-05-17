@@ -92,6 +92,7 @@ class MainWindow(QMainWindow):
 
         action = QAction('Bias', menu)
         action.setCheckable(True)
+        action.triggered.connect(self.bias_changed)
         menu.addAction(action)
 
         menu_bar.addMenu(menu)
@@ -211,6 +212,12 @@ class MainWindow(QMainWindow):
             self._hints_keeper.captions = Captions.ON
         else:
             self._hints_keeper.captions = Captions.OFF
+
+    def bias_changed(self, checked):
+        if checked:
+            self._hints_keeper.bias = Bias.ON
+        else:
+            self._hints_keeper.bias = Bias.OFF
 
     def recreate_visual(self):
         if not self._visual:

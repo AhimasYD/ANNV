@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QGraphicsLineItem, QGraphicsPolygonItem, QGraphicsItemGroup
+from PyQt5.QtGui import QColor, QBrush, QPolygonF, QPen
+from PyQt5.QtCore import QPointF, QLineF, Qt
 
-import math
+from math import sqrt
 
 
 LINE_WIDTH = 2.0
@@ -39,7 +39,7 @@ class Arrow(QGraphicsItemGroup):
         try:
             dx, dy = start_point.x() - end_point.x(), start_point.y() - end_point.y()
 
-            length = math.sqrt(dx ** 2 + dy ** 2)
+            length = sqrt(dx ** 2 + dy ** 2)
             norm_x, norm_y = dx / length, dy / length  # normalize
 
             # perpendicular vector
@@ -94,3 +94,20 @@ class Arrow(QGraphicsItemGroup):
         width = self._line.pen().width()
         self._line.setPen(QPen(brush, width))
         self._line.setPen(QPen(brush, width))
+
+    def set_dotted(self):
+        pen = self._line.pen()
+        pen.setStyle(Qt.PenStyle.DotLine)
+        self._line.setPen(pen)
+
+        pen = self._cap.pen()
+        pen.setStyle(Qt.PenStyle.DotLine)
+        self._line.setPen(pen)
+
+    def hide(self):
+        self._line.hide()
+        self._cap.hide()
+
+    def show(self):
+        self._line.show()
+        self._cap.show()

@@ -1,3 +1,6 @@
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from enum import Enum, auto
 
 
@@ -31,11 +34,6 @@ class Bias(Enum):
     ON = auto()
 
 
-class LinkType(Enum):
-    UNITED = auto()
-    SEPARATED = auto()
-
-
 LAYER_MARGIN = 300
 
 
@@ -65,5 +63,6 @@ PIXMAP_SIDE = 50
 CAPTION_MARGIN = 50
 
 
-BIAS_SIDE = 100
+BIAS_BRUSH = QBrush(QColor(150, 150, 150))
+BIAS_SIDE = 80
 BIAS_MARGIN = 150

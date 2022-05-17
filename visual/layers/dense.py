@@ -10,12 +10,12 @@ from visual.functions import *
 from visual.pixmap import Pixmap
 from .layer import VLayer
 from .placeholder import VPlaceholder
-from visual.links import VLink
 from visual.layers.block import VBlock
 from visual.layers.outputwindow import OutputWindow
 from visual.layers.bias import VBiasNeuron
-
 from visual.hintskeeper import HintsKeeper
+
+from visual.links import VLink, LinkType, WeightType
 
 
 class VDense(VLayer):
@@ -249,7 +249,7 @@ class VDenseNeuronController:
         for i in range(len(binds_in)):
             bind_in = binds_in[i]
             if bind_in is not None:
-                links[i] = VLink(bind_out, bind_in)
+                links[i] = VLink(bind_out, bind_in, WeightType.BIAS)
                 self._get_neuron(i).set_link_bias(links[i])
 
                 self._scene.addItem(links[i].get_item())
