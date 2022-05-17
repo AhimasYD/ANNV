@@ -69,3 +69,7 @@ class VLayer(metaclass=ABCMeta):
     @abstractmethod
     def bounding(self):
         """"""
+
+    @abstractmethod
+    def set_bias(self, bounding):
+        """"""

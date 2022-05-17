@@ -27,7 +27,9 @@ class VModel:
             layer = self._create_layer(l_layer)
             self._layers.append(layer)
             self._x = self._scene.itemsBoundingRect().width() + LAYER_MARGIN
+
         self._init_weights()
+        self._init_biases()
 
     @property
     def logic(self):
@@ -102,6 +104,18 @@ class VModel:
 
                 layer_0.set_links_out(links_out)
                 layer_1.set_links_in(links_in)
+
+    def _init_biases(self):
+        bounding = self._layers[0].bounding()
+        bounding.translate(-LAYER_MARGIN, 0)
+        self._layers[0].set_bias(bounding)
+
+        for k in range(len(self._layers) - 1):
+            layer_0 = self._layers[k]
+            layer_1 = self._layers[k + 1]
+
+            bounding = layer_0.bounding()
+            layer_1.set_bias(bounding)
 
     def _summary(self):
         summary = self._logic.summary

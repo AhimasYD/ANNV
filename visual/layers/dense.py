@@ -13,6 +13,7 @@ from .placeholder import VPlaceholder
 from visual.links import VLink
 from visual.layers.block import VBlock
 from visual.layers.outputwindow import OutputWindow
+from visual.layers.bias import VBiasNeuron
 
 from visual.hintskeeper import HintsKeeper
 
@@ -83,6 +84,12 @@ class VDense(VLayer):
             return self._block.bounding()
         else:
             return self._neuron_ctrl.bounding()
+
+    def set_bias(self, bounding):
+        if HintsKeeper().display == Display.COMPACT:
+            pass
+        else:
+            self._neuron_ctrl.set_bias(bounding, self._logic.bias)
 
 
 class VDenseBlock(VBlock):
@@ -233,6 +240,20 @@ class VDenseNeuronController:
         unit_1 = self._get_neuron(self._units - 1)
         return unit_0.bounding().united(unit_1.bounding())
 
+    def set_bias(self, bounding, weights):
+        bias = VBiasNeuron(self._scene, bounding)
+        bind_out = bias.bind_out()
+        binds_in = self.binds_in()
+
+        links = np.full(len(binds_in), None, dtype=VLayer)
+        for i in range(len(binds_in)):
+            bind_in = binds_in[i]
+            if bind_in is not None:
+                links[i] = VLink(bind_out, bind_in)
+                self._get_neuron(i).set_link_bias(links[i])
+
+                self._scene.addItem(links[i].get_item())
+        bias.set_links_out(links)
 
 class VDenseNeuron:
     def __init__(self, scene, x, y, select, show_output):
@@ -251,6 +272,7 @@ class VDenseNeuron:
 
         self._links_in = None
         self._links_out = None
+        self._links_bias = None
 
     def set_output(self, value, factor):
         self._item.setBrush(brush_by_factor(factor))
@@ -273,6 +295,9 @@ class VDenseNeuron:
 
     def set_links_out(self, links):
         self._links_out = links
+
+    def set_link_bias(self, link):
+        self._links_bias = link
 
     def bounding(self):
         return self._item.boundingRect()
