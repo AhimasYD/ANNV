@@ -33,14 +33,31 @@ class LDense(LLayer):
         super().__init__()
 
         self._type = 'Dense'
-        self.activation = str(layer.activation.__name__)
-        self.units = layer.units
-        self.kernel = layer.get_weights()[0]
-        self.bias = layer.get_weights()[1]
+
+        self._activation = str(layer.activation.__name__)
+        self._units = layer.units
+        self._kernel = layer.get_weights()[0]
+        self._bias = layer.get_weights()[1]
 
     def set_output(self, new_output):
         new_output = new_output[0]
         super().set_output(new_output)
+
+    @property
+    def activation(self):
+        return self._activation
+
+    @property
+    def units(self):
+        return self._units
+
+    @property
+    def kernel(self):
+        return self._kernel
+
+    @property
+    def bias(self):
+        return self._bias
 
 
 class LLSTM(LLayer):
@@ -48,32 +65,72 @@ class LLSTM(LLayer):
         super().__init__()
 
         self._type = 'LSTM'
-        self.activation = str(layer.activation.__name__)
-        units = layer.units
-        self.units = layer.units
+        self._activation = str(layer.activation.__name__)
+        self._units = layer.units
 
-        W = layer.get_weights()[0]
-        U = layer.get_weights()[1]
-        b = layer.get_weights()[2]
-
-        self.W_i = W[:, :units]
-        self.W_f = W[:, units:units*2]
-        self.W_c = W[:, units*2:units*3]
-        self.W_o = W[:, units*3:]
-
-        self.U_i = U[:, :units]
-        self.U_f = U[:, units:units*2]
-        self.U_c = U[:, units*2:units*3]
-        self.U_o = U[:, units*3:]
-
-        self.b_i = b[:units]
-        self.b_f = b[units:units*2]
-        self.b_c = b[units*2:units*3]
-        self.b_o = b[units*3:]
+        self._W = layer.get_weights()[0]
+        self._U = layer.get_weights()[1]
+        self._b = layer.get_weights()[2]
 
     def set_output(self, new_output):
         new_output = new_output[0]
         super().set_output(new_output)
+
+    @property
+    def activation(self):
+        return self._activation
+
+    @property
+    def units(self):
+        return self._units
+
+    @property
+    def W_i(self):
+        return self._W[:, :self.units]
+
+    @property
+    def W_f(self):
+        return self._W[:, self.units:self.units*2]
+
+    @property
+    def W_c(self):
+        return self._W[:, self.units*2:self.units*3]
+
+    @property
+    def W_o(self):
+        return self._W[:, self.units*3:]
+
+    @property
+    def U_i(self):
+        return self._U[:, :self.units]
+
+    @property
+    def U_f(self):
+        return self._U[:, self.units:self.units * 2]
+
+    @property
+    def U_c(self):
+        return self._U[:, self.units * 2:self.units * 3]
+
+    @property
+    def U_o(self):
+        return self._U[:, self.units * 3:]
+
+    @property
+    def b_i(self):
+        return self._b[:self.units]
+
+    @property
+    def b_f(self):
+        return self._b[self.units:self.units * 2]
+
+    @property
+    def b_c(self):
+        return self._b[self.units * 2:self.units * 3]
+
+    @property
+    def b_o(self):
+        return self._b[self.units * 3:]
 
 
 class LConv1D(LLayer):
@@ -81,23 +138,59 @@ class LConv1D(LLayer):
         super().__init__()
 
         self._type = 'Conv1D'
-        self.filters = numpy.transpose(layer.get_weights()[0], (2, 1, 0))
-        self.bias = layer.get_weights()[1]
+        self._filters = numpy.transpose(layer.get_weights()[0], (2, 1, 0))
+        self._bias = layer.get_weights()[1]
 
-        self.filter_num = self.filters.shape[0]
-        self.channel_num = self.filters.shape[1]
-        self.kernel_shape = self.filters.shape[2:]
-
-        self.padding = layer.padding
-        self.strides = layer.strides
-        self.dilation_rate = layer.dilation_rate
-        self.groups = layer.groups
-        self.activation = str(layer.activation.__name__)
+        self._padding = layer.padding
+        self._strides = layer.strides
+        self._dilation_rate = layer.dilation_rate
+        self._groups = layer.groups
+        self._activation = str(layer.activation.__name__)
 
     def set_output(self, new_output):
         new_output = new_output[0]
         new_output = numpy.transpose(new_output, (1, 0))
         super().set_output(new_output)
+
+    @property
+    def filters(self):
+        return self._filters
+
+    @property
+    def bias(self):
+        return self._bias
+
+    @property
+    def filter_num(self):
+        return self.filters.shape[0]
+
+    @property
+    def channel_num(self):
+        return self.filters.shape[1]
+
+    @property
+    def kernel_shape(self):
+        return self.filters.shape[2:]
+
+    @property
+    def padding(self):
+        return self._padding
+
+    @property
+    def strides(self):
+        return self._strides
+
+    @property
+    def dilation_rate(self):
+        return self._dilation_rate
+
+    @property
+    def groups(self):
+        return self._groups
+
+    @property
+    def activation(self):
+        return self._activation
 
 
 class LConv2D(LLayer):
@@ -105,23 +198,59 @@ class LConv2D(LLayer):
         super().__init__()
 
         self._type = 'Conv2D'
-        self.filters = numpy.transpose(layer.get_weights()[0], (3, 2, 0, 1))
-        self.bias = layer.get_weights()[1]
+        self._filters = numpy.transpose(layer.get_weights()[0], (3, 2, 0, 1))
+        self._bias = layer.get_weights()[1]
 
-        self.filter_num = self.filters.shape[0]
-        self.channel_num = self.filters.shape[1]
-        self.kernel_shape = self.filters.shape[2:]
-
-        self.padding = layer.padding
-        self.strides = layer.strides
-        self.dilation_rate = layer.dilation_rate
-        self.groups = layer.groups
-        self.activation = str(layer.activation.__name__)
+        self._padding = layer.padding
+        self._strides = layer.strides
+        self._dilation_rate = layer.dilation_rate
+        self._groups = layer.groups
+        self._activation = str(layer.activation.__name__)
 
     def set_output(self, new_output):
         new_output = new_output[0]
         new_output = numpy.transpose(new_output, (2, 0, 1))
         super().set_output(new_output)
+
+    @property
+    def filters(self):
+        return self._filters
+
+    @property
+    def bias(self):
+        return self._bias
+
+    @property
+    def filter_num(self):
+        return self.filters.shape[0]
+
+    @property
+    def channel_num(self):
+        return self.filters.shape[1]
+
+    @property
+    def kernel_shape(self):
+        return self.filters.shape[2:]
+
+    @property
+    def padding(self):
+        return self._padding
+
+    @property
+    def strides(self):
+        return self._strides
+
+    @property
+    def dilation_rate(self):
+        return self._dilation_rate
+
+    @property
+    def groups(self):
+        return self._groups
+
+    @property
+    def activation(self):
+        return self._activation
 
 
 class LEmbedding(LLayer):
@@ -129,7 +258,7 @@ class LEmbedding(LLayer):
         super().__init__()
 
         self._type = 'Embedding'
-        self.matrix = layer.weights
+        self._weights = layer.weights
 
     def set_output(self, new_output):
         new_output = new_output[0]
@@ -137,12 +266,15 @@ class LEmbedding(LLayer):
         new_output = numpy.transpose(new_output, (length - 1, *range(length - 1)))
         super().set_output(new_output)
 
+    @property
+    def weights(self):
+        return self._weights
+
 
 class LDefault(LLayer):
     def __init__(self, layer):
         super().__init__()
         self._type = type(layer).__name__
-        print('lala')
 
     def set_output(self, new_output):
         pass
