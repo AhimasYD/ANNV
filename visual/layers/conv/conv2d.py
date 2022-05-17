@@ -25,6 +25,8 @@ class VConv2D(VConv):
             self._kernel_ctrl = VConv2DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
                                                         self._logic.filters[self._filter], self.select, self.show_output)
 
+        self._init_caption()
+
     def select(self, event):
         super().select(event)
 

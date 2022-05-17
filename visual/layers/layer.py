@@ -1,6 +1,11 @@
+from PyQt5.QtWidgets import QGraphicsTextItem
+from PyQt5.QtGui import QFont
 from abc import ABCMeta, abstractmethod
 
 from visual.functions import clear_layout
+from visual.constants import Captions, CAPTION_MARGIN
+
+from visual.hintskeeper import HintsKeeper
 
 
 class VLayer(metaclass=ABCMeta):
@@ -27,6 +32,23 @@ class VLayer(metaclass=ABCMeta):
         self._w_volume.button_0_next.mousePressEvent = None
         self._w_volume.button_1_prev.mousePressEvent = None
         self._w_volume.button_1_next.mousePressEvent = None
+
+    def _init_caption(self):
+        self._caption = QGraphicsTextItem(str(self._logic.output_shape))
+        self._caption.setFont(QFont('OldEnglish', 14, QFont.Medium))
+        l_bound = self.bounding()
+        x = l_bound.x() + l_bound.width() / 2 - self._caption.boundingRect().width() / 2
+        y = l_bound.y() + l_bound.height() + CAPTION_MARGIN
+        self._caption.setPos(x, y)
+        self._scene.addItem(self._caption)
+        self.update_caption(HintsKeeper().captions)
+        HintsKeeper().attach_captions(self.update_caption)
+
+    def update_caption(self, value):
+        if value == Captions.ON:
+            self._caption.show()
+        else:
+            self._caption.hide()
 
     @abstractmethod
     def binds_in(self):

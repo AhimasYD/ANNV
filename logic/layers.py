@@ -2,15 +2,19 @@ import numpy
 
 
 class LLayer:
-    def __init__(self):
+    def __init__(self, logic):
         self._type = None
+        self._output_shape = logic.output_shape
         self._output = None
-
         self._output_subs = []
 
     @property
     def type(self):
         return self._type
+
+    @property
+    def output_shape(self):
+        return self._output_shape
 
     @property
     def output(self):
@@ -30,7 +34,7 @@ class LLayer:
 
 class LDense(LLayer):
     def __init__(self, layer):
-        super().__init__()
+        super().__init__(layer)
 
         self._type = 'Dense'
 
@@ -62,7 +66,7 @@ class LDense(LLayer):
 
 class LLSTM(LLayer):
     def __init__(self, layer):
-        super().__init__()
+        super().__init__(layer)
 
         self._type = 'LSTM'
         self._activation = str(layer.activation.__name__)
@@ -135,7 +139,7 @@ class LLSTM(LLayer):
 
 class LConv1D(LLayer):
     def __init__(self, layer):
-        super().__init__()
+        super().__init__(layer)
 
         self._type = 'Conv1D'
         self._filters = numpy.transpose(layer.get_weights()[0], (2, 1, 0))
@@ -195,7 +199,7 @@ class LConv1D(LLayer):
 
 class LConv2D(LLayer):
     def __init__(self, layer):
-        super().__init__()
+        super().__init__(layer)
 
         self._type = 'Conv2D'
         self._filters = numpy.transpose(layer.get_weights()[0], (3, 2, 0, 1))
@@ -255,7 +259,7 @@ class LConv2D(LLayer):
 
 class LEmbedding(LLayer):
     def __init__(self, layer):
-        super().__init__()
+        super().__init__(layer)
 
         self._type = 'Embedding'
         self._weights = layer.weights
@@ -273,7 +277,7 @@ class LEmbedding(LLayer):
 
 class LDefault(LLayer):
     def __init__(self, layer):
-        super().__init__()
+        super().__init__(layer)
         self._type = type(layer).__name__
 
     def set_output(self, new_output):

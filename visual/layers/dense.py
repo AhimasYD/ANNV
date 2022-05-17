@@ -31,6 +31,8 @@ class VDense(VLayer):
             self._connection = LinkType.SEPARATED
             self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select, self.show_output, logic)
 
+        self._init_caption()
+
     def select(self, event):
         super().select(event)
 

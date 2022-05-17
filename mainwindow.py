@@ -5,7 +5,6 @@ from PyQt5.QtCore import *
 
 from logic import *
 from visual import *
-from visual.functions import clear_layout
 
 from flatblock import FlatBlock
 from volumeblock import VolumeBlock
@@ -86,17 +85,10 @@ class MainWindow(QMainWindow):
         group.addAction(action)
         group.setExclusive(True)
 
-        sub_captions = menu.addMenu('Captions')
-        group = QActionGroup(sub_display)
-        texts = ['Show', 'Hide']
-        for text in texts:
-            action = QAction(text, sub_captions)
-            action.setCheckable(True)
-            action.setChecked(text == texts[0])
-
-            sub_captions.addAction(action)
-            group.addAction(action)
-        group.setExclusive(True)
+        action = QAction('Captions', menu)
+        action.setCheckable(True)
+        action.triggered.connect(self.captions_changed)
+        menu.addAction(action)
 
         action = QAction('Bias', menu)
         action.setCheckable(True)
@@ -161,8 +153,6 @@ class MainWindow(QMainWindow):
         self._visual = None
         self.scene.clear()
 
-        clear_layout(self.model_widget.layout())
-
         logic = LModel(filename)
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
 
@@ -216,6 +206,12 @@ class MainWindow(QMainWindow):
     def names_vertical(self, checked):
         self._hints_keeper.names = Names.VERTICAL
 
+    def captions_changed(self, checked):
+        if checked:
+            self._hints_keeper.captions = Captions.ON
+        else:
+            self._hints_keeper.captions = Captions.OFF
+
     def recreate_visual(self):
         if not self._visual:
             return
@@ -223,6 +219,5 @@ class MainWindow(QMainWindow):
         logic = self._visual.logic
         self._visual = None
         self.scene.clear()
-        clear_layout(self.model_widget.layout())
 
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)

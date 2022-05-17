@@ -17,6 +17,7 @@ class VEmbedding(VLayer):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
         self._block = VEmbeddingBlock(self._scene, self._x, self.select)
+        self._init_caption()
 
     def select(self, event):
         super().select(event)

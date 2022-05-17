@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 import numpy as np
 
 from .constants import *
+from .functions import clear_layout
 from .layers import *
 from .links import *
 
@@ -133,6 +134,7 @@ class VModel:
             table.setItem(i, 1, c_type)
             table.setItem(i, 2, c_shape)
 
+        clear_layout(self._wm.layout())
         self._wm.layout().addWidget(table)
 
     def load_input(self, filename):
