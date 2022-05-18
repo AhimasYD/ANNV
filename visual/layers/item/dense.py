@@ -17,6 +17,8 @@ from visual.layers.placeholder import VPlaceholder
 from visual.layers.outputwindow import OutputWindow
 from visual.layers.bias import VBiasNeuron
 
+from visual.layers.item.neuron import VNeuron
+
 
 class VDense(VLayer):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
@@ -260,9 +262,9 @@ class VDenseNeuronController:
         bias.set_links_out(links)
 
 
-class VDenseNeuron:
+class VDenseNeuron(VNeuron):
     def __init__(self, scene, x, y, select, show_output):
-        self._scene = scene
+        super().__init__(scene)
 
         side = NEURON_SIDE
 
@@ -275,35 +277,15 @@ class VDenseNeuron:
         self._bind_in = QPointF(x, y + side / 2)
         self._bind_out = QPointF(x + side, y + side / 2)
 
-        self._links_in = None
-        self._links_out = None
-        self._links_bias = None
-
     def set_output(self, value, factor):
-        self._item.setBrush(brush_by_factor(factor))
+        super().set_output(value, factor)
         self._item.setToolTip(str(value))
 
-    def bind_in(self):
-        return self._bind_in
-
-    def bind_out(self):
-        return self._bind_out
-
     def set_links_in(self, links, weights=None):
-        self._links_in = links
-
+        super().set_links_in(links)
         if type(self._links_in) is np.ndarray and weights is not None:
             array, maximum = weights
             for i in range(self._links_in.shape[0]):
                 if self._links_in[i] is not None:
                     self._links_in[i].set_weight(array[i], maximum)
                     self._links_in[i].set_tooltip(str(array[i]))
-
-    def set_links_out(self, links):
-        self._links_out = links
-
-    def set_link_bias(self, link):
-        self._links_bias = link
-
-    def bounding(self):
-        return self._item.boundingRect()
