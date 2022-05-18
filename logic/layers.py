@@ -142,6 +142,7 @@ class LConv1D(LLayer):
         super().__init__(layer)
 
         self._type = 'Conv1D'
+        # Filter, Channel, Width
         self._filters = numpy.transpose(layer.get_weights()[0], (2, 1, 0))
         self._bias = layer.get_weights()[1]
 
@@ -202,6 +203,7 @@ class LConv2D(LLayer):
         super().__init__(layer)
 
         self._type = 'Conv2D'
+        # Filter, Channel, Height, Width
         self._filters = numpy.transpose(layer.get_weights()[0], (3, 2, 0, 1))
         self._bias = layer.get_weights()[1]
 
@@ -235,6 +237,71 @@ class LConv2D(LLayer):
     @property
     def kernel_shape(self):
         return self.filters.shape[2:]
+
+    @property
+    def padding(self):
+        return self._padding
+
+    @property
+    def strides(self):
+        return self._strides
+
+    @property
+    def dilation_rate(self):
+        return self._dilation_rate
+
+    @property
+    def groups(self):
+        return self._groups
+
+    @property
+    def activation(self):
+        return self._activation
+
+
+class LConv3D(LLayer):
+    def __init__(self, layer):
+        super().__init__(layer)
+
+        self._type = 'Conv3D'
+        # Filter, Depth, Channel, Height, Width
+        self._filters = numpy.transpose(layer.get_weights()[0], (4, 0, 3, 1, 2))
+        self._bias = layer.get_weights()[1]
+
+        self._padding = layer.padding
+        self._strides = layer.strides
+        self._dilation_rate = layer.dilation_rate
+        self._groups = layer.groups
+        self._activation = str(layer.activation.__name__)
+
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        new_output = numpy.transpose(new_output, (3, 0, 1, 2))
+        super().set_output(new_output)
+
+    @property
+    def filters(self):
+        return self._filters
+
+    @property
+    def bias(self):
+        return self._bias
+
+    @property
+    def filter_num(self):
+        return self.filters.shape[0]
+
+    @property
+    def channel_num(self):
+        return self.filters.shape[2]
+
+    @property
+    def depth(self):
+        return self.filters.shape[1]
+
+    @property
+    def kernel_shape(self):
+        return self.depth, *self.filters.shape[3:]
 
     @property
     def padding(self):

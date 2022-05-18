@@ -41,14 +41,17 @@ class VLayer(metaclass=ABCMeta):
         y = l_bound.y() + l_bound.height() + CAPTION_MARGIN
         self._caption.setPos(x, y)
         self._scene.addItem(self._caption)
-        self.update_caption(HintsKeeper().captions)
         HintsKeeper().attach_captions(self.update_caption)
+        self.update_caption(HintsKeeper().captions)
 
     def update_caption(self, value):
         if value == Captions.ON:
             self._caption.show()
         else:
             self._caption.hide()
+
+    def set_bias(self, bounding):
+        pass
 
     @abstractmethod
     def binds_in(self):
@@ -68,8 +71,4 @@ class VLayer(metaclass=ABCMeta):
 
     @abstractmethod
     def bounding(self):
-        """"""
-
-    @abstractmethod
-    def set_bias(self, bounding):
         """"""

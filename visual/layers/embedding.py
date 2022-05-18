@@ -1,16 +1,7 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from visual.links import LinkType
 
-from logic import *
-
-from visual.functions import *
-from visual.pixmap import Pixmap
-from .layer import VLayer
-from visual.links import VLink
+from visual.layers.layer import VLayer
 from visual.layers.block import VBlock
-
-from visual.hintskeeper import HintsKeeper
 
 
 class VEmbedding(VLayer):

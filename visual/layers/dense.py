@@ -4,18 +4,18 @@ from PyQt5.QtCore import *
 
 import numpy as np
 
-from logic import *
-
-from visual.functions import *
+from visual.constants import *
+from visual.functions import brush_by_factor
 from visual.pixmap import Pixmap
-from .layer import VLayer
-from .placeholder import VPlaceholder
-from visual.layers.block import VBlock
-from visual.layers.outputwindow import OutputWindow
-from visual.layers.bias import VBiasNeuron
 from visual.hintskeeper import HintsKeeper
 
 from visual.links import VLink, LinkType, WeightType
+
+from visual.layers.layer import VLayer
+from visual.layers.block import VBlock
+from visual.layers.placeholder import VPlaceholder
+from visual.layers.outputwindow import OutputWindow
+from visual.layers.bias import VBiasNeuron
 
 
 class VDense(VLayer):
@@ -254,6 +254,7 @@ class VDenseNeuronController:
 
                 self._scene.addItem(links[i].get_item())
         bias.set_links_out(links)
+
 
 class VDenseNeuron:
     def __init__(self, scene, x, y, select, show_output):

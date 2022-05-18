@@ -15,20 +15,20 @@ from visual.layers.block import VBlock
 from visual.layers.conv.conv import VConv
 from visual.layers.conv.convkernelcontroller import VConvKernelController
 from visual.layers.conv.convkernel import VConvKernel
-from visual.layers.conv.kernelwrapper import KernelWrapperFlat
+from visual.layers.conv.kernelwrapper import KernelWrapperVolume
 
 
-
-class VConv1D(VConv):
+class VConv3D(VConv):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
+        self._depth = 0
 
         self._connection = LinkType.UNITED
         if HintsKeeper().display == Display.COMPACT:
-            self._block = VConv1DBlock(self._scene, self._x, self.select, self.show_output)
+            self._block = VConv3DBlock(self._scene, self._x, self.select, self.show_output)
         elif HintsKeeper().display == Display.EXTENDED:
-            self._kernel_ctrl = VConv1DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
-                                                        self._logic.filters[self._filter], self.select, self.show_output)
+            self._kernel_ctrl = VConv3DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
+                                                        self._logic.filters[self._filter, self._depth], self.select, self.show_output)
 
         self._init_caption()
 
@@ -49,9 +49,9 @@ class VConv1D(VConv):
 
         self._kernels = np.empty(self._logic.channel_num, dtype=Pixmap)
         for i in range(self._logic.channel_num):
-            self._kernels[i] = Pixmap(self._logic.filters[self._filter, i], PIXMAP_SIDE, hv=True, hh=True, sb=True, mr=None)
+            self._kernels[i] = Pixmap(self._logic.filters[self._filter, self._depth, i], PIXMAP_SIDE, hv=True, hh=True, sb=True, mr=None)
             layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
-            layout.addWidget(QLabel(f'Filter_{self._filter} / Kernel_{i}:'))
+            layout.addWidget(QLabel(f'Channel_{i}:'))
             layout.addWidget(self._kernels[i])
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
@@ -59,29 +59,46 @@ class VConv1D(VConv):
         layout.addWidget(Pixmap(self._logic.bias, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self._w_flat.show()
-        self._w_flat.num.setText(f'{self._filter}')
-        self._w_flat.button_prev.mousePressEvent = self.filter_prev
-        self._w_flat.button_next.mousePressEvent = self.filter_next
+        self._w_volume.show()
+        self._w_volume.num_0.setText(f'{self._filter}')
+        self._w_volume.button_0_prev.mousePressEvent = self.filter_prev
+        self._w_volume.button_0_next.mousePressEvent = self.filter_next
+        self._w_volume.num_1.setText(f'{self._depth}')
+        self._w_volume.button_1_prev.mousePressEvent = self.depth_prev
+        self._w_volume.button_1_next.mousePressEvent = self.depth_next
 
     def update(self):
         self._w_flat.num.setText(f'{self._filter}')
         for i in range(self._logic.channel_num):
-            self._kernels[i].update(self._logic.filters[self._filter, i])
+            self._w_volume.num_0.setText(f'{self._filter}')
+            self._w_volume.num_1.setText(f'{self._depth}')
+            self._kernels[i].update(self._logic.filters[self._filter, self._depth, i])
         if self._kernel_ctrl is not None:
-            self._kernel_ctrl.update(self._logic.filters[self._filter], self._filter)
+            self._kernel_ctrl.update(self._logic.filters[self._filter, self._depth], self._filter)
+
+    def depth_prev(self, event):
+        if self._depth - 1 >= 0:
+            self._depth -= 1
+            self.update()
+
+    def depth_next(self, event):
+        if self._depth + 1 < self._logic.depth:
+            self._depth += 1
+            self.update()
 
 
-class VConv1DBlock(VBlock):
+class VConv3DBlock(VBlock):
     def __init__(self, scene, x, select, show_output):
-        super().__init__(scene, x, select, show_output, 'Conv1D')
+        super().__init__(scene, x, select, show_output, 'Conv3D')
 
 
-class VConv1DKernelController(VConvKernelController):
+class VConv3DKernelController(VConvKernelController):
     def __init__(self, scene, x, units, filters, arrays, select, show_output):
-        super().__init__(scene, x, units, filters, arrays, select, show_output, VConv1DKernel)
+        super().__init__(scene, x, units, filters, arrays, select, show_output, VConv3DKernel)
 
 
-class VConv1DKernel(VConvKernel):
+class VConv3DKernel(VConvKernel):
     def __init__(self, scene, array, x, y, filters, select, show_output):
-        super().__init__(scene, array, x, y, filters, select, show_output, KernelWrapperFlat)
+        super().__init__(scene, array, x, y, filters, select, show_output, KernelWrapperVolume)
+
+

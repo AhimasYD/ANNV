@@ -46,6 +46,8 @@ class VModel:
             v_layer = VConv1D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif logic.type == 'Conv2D':
             v_layer = VConv2D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'Conv3D':
+            v_layer = VConv3D(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         else:
             v_layer = VDefault(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         return v_layer

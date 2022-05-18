@@ -33,7 +33,10 @@ class Pixmap(QTableWidget):
                 else:
                     val = array[j]
 
-                alpha = abs(int(255 * (val / maximum)))
+                try:
+                    alpha = abs(int(255 * (val / maximum)))
+                except ValueError:
+                    alpha = 0
                 if val >= 0:
                     color = QColor(255, 0, 0, alpha)
                 else:

@@ -35,7 +35,10 @@ def draw_text(text, rect, names):
 
 
 def brush_by_factor(factor):
-    alpha = abs(int(255 * factor))
+    try:
+        alpha = abs(int(255 * factor))
+    except ValueError:
+        alpha = 0
     if factor >= 0:
         brush = QBrush(QColor(255, 0, 0, alpha))
     else:

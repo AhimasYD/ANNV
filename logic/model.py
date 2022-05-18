@@ -32,6 +32,8 @@ class LModel:
                 layer = LConv1D(self._k_model.layers[i])
             elif name == 'Conv2D':
                 layer = LConv2D(self._k_model.layers[i])
+            elif name == 'Conv3D':
+                layer = LConv3D(self._k_model.layers[i])
             elif name == 'Embedding':
                 layer = LEmbedding(self._k_model.layers[i])
             else:

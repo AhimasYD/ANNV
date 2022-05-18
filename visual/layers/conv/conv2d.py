@@ -1,17 +1,21 @@
-from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 import numpy as np
 
 from visual.constants import *
 from visual.pixmap import Pixmap
-from visual.layers.conv.kernelwrapper import KernelWrapperFlat
+from visual.hintskeeper import HintsKeeper
+
+from visual.links import LinkType
+
+from visual.layers.block import VBlock
 
 from visual.layers.conv.conv import VConv
-from visual.layers.block import VBlock
 from visual.layers.conv.convkernelcontroller import VConvKernelController
 from visual.layers.conv.convkernel import VConvKernel
-
-from visual.hintskeeper import HintsKeeper
+from visual.layers.conv.kernelwrapper import KernelWrapperFlat
 
 
 class VConv2D(VConv):
@@ -46,7 +50,7 @@ class VConv2D(VConv):
         for i in range(self._logic.channel_num):
             self._kernels[i] = Pixmap(self._logic.filters[self._filter, i], PIXMAP_SIDE, hv=True, hh=True, sb=True, mr=None)
             layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
-            layout.addWidget(QLabel(f'Filter_{self._filter} / Kernel_{i}:'))
+            layout.addWidget(QLabel(f'Channel_{i}:'))
             layout.addWidget(self._kernels[i])
 
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
@@ -62,6 +66,7 @@ class VConv2D(VConv):
     def update(self):
         self._w_flat.num.setText(f'{self._filter}')
         for i in range(self._logic.channel_num):
+            self._w_flat.num.setText(f'{self._filter}')
             self._kernels[i].update(self._logic.filters[self._filter, i])
         if self._kernel_ctrl is not None:
             self._kernel_ctrl.update(self._logic.filters[self._filter], self._filter)
