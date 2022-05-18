@@ -17,11 +17,12 @@ from visual.layers.placeholder import VPlaceholder
 from visual.layers.outputwindow import OutputWindow
 from visual.layers.bias import VBiasNeuron
 
-from visual.layers.item.neuron import VNeuron
+from visual.layers.item.itemlayer import VItem
 from visual.layers.item.neuroncontroller import VNeuronController
+from visual.layers.item.neuron import VNeuron
 
 
-class VDense(VLayer):
+class VDense(VItem):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
 
@@ -56,25 +57,6 @@ class VDense(VLayer):
             self._block.set_links_in(links)
         else:
             self._neuron_ctrl.set_links_in(links, np.transpose(self._logic.kernel))
-
-    def set_links_out(self, links):
-        if HintsKeeper().display == Display.COMPACT:
-            self._block.set_links_out(links)
-        else:
-            self._neuron_ctrl.set_links_out(links)
-
-    def show_output(self, event):
-        if self._logic.output is None:
-            return
-        self._window = OutputWindow(self._logic.output)
-        self._window.setModal(True)
-        self._window.showMaximized()
-
-    def bounding(self):
-        if HintsKeeper().display == Display.COMPACT:
-            return self._block.bounding()
-        else:
-            return self._neuron_ctrl.bounding()
 
     def set_bias(self, bounding):
         if HintsKeeper().display == Display.COMPACT:

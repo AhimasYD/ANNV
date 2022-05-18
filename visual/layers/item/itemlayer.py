@@ -22,6 +22,11 @@ from visual.layers.item.neuroncontroller import VNeuronController
 
 
 class VItem(VLayer):
+    def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
+        super().__init__(logic, scene, x, w_info, w_flat, w_volume)
+        self._block = None
+        self._neuron_ctrl = None
+
     def select(self, event):
         super().select(event)
 
@@ -47,12 +52,6 @@ class VItem(VLayer):
             return self._connection, self._block.bind_out()
         else:
             return self._connection, self._neuron_ctrl.binds_out()
-
-    def set_links_in(self, links):
-        if HintsKeeper().display == Display.COMPACT:
-            self._block.set_links_in(links)
-        else:
-            self._neuron_ctrl.set_links_in(links, np.transpose(self._logic.kernel))
 
     def set_links_out(self, links):
         if HintsKeeper().display == Display.COMPACT:
