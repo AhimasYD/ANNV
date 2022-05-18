@@ -12,7 +12,7 @@ from visual.links import LinkType
 
 from visual.layers.block import VBlock
 
-from visual.layers.conv.conv import VConv
+from visual.layers.conv.convlayer import VConv
 from visual.layers.conv.convkernelcontroller import VConvKernelController
 from visual.layers.conv.convkernel import VConvKernel
 from visual.layers.conv.kernelwrapper import KernelWrapperFlat

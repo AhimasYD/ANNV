@@ -23,7 +23,7 @@ class VNeuron:
     def bind_out(self):
         return self._bind_out
 
-    def set_links_in(self, links):
+    def set_links_in(self, links, weights):
         self._links_in = links
 
     def set_links_out(self, links):

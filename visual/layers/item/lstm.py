@@ -18,6 +18,7 @@ from visual.layers.outputwindow import OutputWindow
 from visual.layers.bias import VBiasNeuron
 
 from visual.layers.item.neuron import VNeuron
+from visual.layers.item.neuroncontroller import VNeuronController
 
 
 class VLSTM(VLayer):
@@ -83,23 +84,12 @@ class VLSTM(VLayer):
 
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-    def binds_in(self):
-        if HintsKeeper().display == Display.COMPACT:
-            return self._connection, self._block.bind_in()
-        else:
-            return self._connection, self._neuron_ctrl.binds_in()
-
-    def binds_out(self):
-        if HintsKeeper().display == Display.COMPACT:
-            return self._connection, self._block.bind_out()
-        else:
-            return self._connection, self._neuron_ctrl.binds_out()
-
     def set_links_in(self, links):
         if HintsKeeper().display == Display.COMPACT:
             self._block.set_links_in(links)
         else:
-            self._neuron_ctrl.set_links_in(links)
+            self._neuron_ctrl.set_links_in(links, (np.transpose(self._logic.W_i), np.transpose(self._logic.W_f),
+                                                   np.transpose(self._logic.W_c), np.transpose(self._logic.W_o)))
 
     def set_links_out(self, links):
         if HintsKeeper().display == Display.COMPACT:
@@ -132,140 +122,17 @@ class VLSTMBlock(VBlock):
         super().__init__(scene, x, select, show_output, 'LSTM')
 
 
-class VLSTMNeuronController:
+class VLSTMNeuronController(VNeuronController):
     def __init__(self, scene, x, units, select, show_output, logic):
-        self._scene = scene
-        self._x = x
-        self._units = units
+        super().__init__(scene, x, units, select, show_output, logic, VLSTMNeuron, NEURON_REC_HEIGHT, NEURON_REC_MARGIN)
 
-        self._neurons = None
+    def set_links_in(self, links, weights):
+        W_i, W_f, W_c, W_o = weights
 
-        self._placeholder = None
-        self._neurons_start = None
-        self._neurons_end = None
-
-        # No placeholder needed
-        if units <= PLACEHOLDER_MAX_NEURONS * 2:
-            self._neurons = np.empty(units, dtype=VLSTMNeuron)
-
-            total_height = units * NEURON_REC_HEIGHT + (units - 1) * NEURON_REC_MARGIN
-            y = -total_height/2
-            for i in range(units):
-                self._neurons[i] = VLSTMNeuron(self._scene, self._x, y, select, show_output)
-                y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
-
-        # Placeholder needed
-        else:
-            self._placeholder = VPlaceholder(PLACEHOLDER_SIDE, PLACEHOLDER_MARGIN_IN, x, 0)
-            self._placeholder.mousePressEvent = select
-            self._scene.addItem(self._placeholder)
-
-            self._neurons_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=VLSTMNeuron)
-            self._neurons_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=VLSTMNeuron)
-
-            total_height = 2 * PLACEHOLDER_MAX_NEURONS * NEURON_REC_HEIGHT + 2 * PLACEHOLDER_MAX_NEURONS * NEURON_REC_MARGIN
-            total_height += self._placeholder.boundingRect().height() + 2 * PLACEHOLDER_MARGIN_OUT
-
-            y = -total_height / 2
-            for i in range(units):
-                if i < PLACEHOLDER_MAX_NEURONS:
-                    j = i
-                    self._neurons_start[j] = VLSTMNeuron(self._scene, self._x, y, select, show_output)
-                    y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
-                elif i >= units - PLACEHOLDER_MAX_NEURONS:
-                    j = i - (units - PLACEHOLDER_MAX_NEURONS)
-                    self._neurons_end[j] = VLSTMNeuron(self._scene, self._x, y, select, show_output)
-                    y += NEURON_REC_HEIGHT + NEURON_REC_MARGIN
-
-                if i == PLACEHOLDER_MAX_NEURONS:
-                    y += self._placeholder.boundingRect().height()
-                    y += 2 * PLACEHOLDER_MARGIN_OUT
-                    y += NEURON_REC_MARGIN
-
-            self._placeholder.setPos(self._x + NEURON_REC_WIDTH / 2 - self._placeholder.boundingRect().width() / 2,
-                                     0 - self._placeholder.boundingRect().height() / 2)
-
-        logic.attach_output(self.update_output)
-
-    def _get_neuron(self, i):
-        if self._neurons is not None:
-            return self._neurons[i]
-        else:
-            if i < PLACEHOLDER_MAX_NEURONS:
-                return self._neurons_start[i]
-            elif i >= self._units - PLACEHOLDER_MAX_NEURONS:
-                return self._neurons_end[i - (self._units - PLACEHOLDER_MAX_NEURONS)]
-            else:
-                return None
-
-    def binds_in(self):
-        if self._placeholder is None:
-            binds = np.empty(self._units, dtype=QPointF)
-            for i in range(self._units):
-                binds[i] = self._neurons[i].bind_in()
-
-        else:
-            placeholder = np.full(shape=(self._units - 2 * PLACEHOLDER_MAX_NEURONS), fill_value=None, dtype=QPointF)
-
-            binds_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_start[i] = self._neurons_start[i].bind_in()
-
-            binds_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_end[i] = self._neurons_end[i].bind_in()
-
-            binds = np.concatenate((binds_start, placeholder, binds_end))
-
-        return binds
-
-    def binds_out(self):
-        if self._placeholder is None:
-            binds = np.empty(self._units, dtype=QPointF)
-            for i in range(self._units):
-                binds[i] = self._neurons[i].bind_out()
-
-        else:
-            placeholder = np.full(shape=(self._units - 2 * PLACEHOLDER_MAX_NEURONS), fill_value=None, dtype=QPointF)
-
-            binds_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_start[i] = self._neurons_start[i].bind_out()
-
-            binds_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=QPointF)
-            for i in range(PLACEHOLDER_MAX_NEURONS):
-                binds_end[i] = self._neurons_end[i].bind_out()
-
-            binds = np.concatenate((binds_start, placeholder, binds_end))
-
-        return binds
-
-    def set_links_in(self, links):
         for i in range(self._units):
             neuron = self._get_neuron(i)
             if neuron is not None:
-                neuron.set_links_in(links[i])
-
-    def set_links_out(self, links):
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                neuron.set_links_out(links[i])
-
-    def update_output(self, output):
-        maximum = max(output.min(), output.max(), key=abs)
-        for i in range(self._units):
-            neuron = self._get_neuron(i)
-            if neuron is not None:
-                if maximum is not None:
-                    neuron.set_output(output[i], output[i] / maximum)
-                else:
-                    neuron.set_output(output[i], 0.0)
-
-    def bounding(self):
-        unit_0 = self._get_neuron(0)
-        unit_1 = self._get_neuron(self._units - 1)
-        return unit_0.bounding().united(unit_1.bounding())
+                neuron.set_links_in(links[i], (W_i[i], W_f[i], W_c[i], W_o[i]))
 
     def set_bias(self, bounding, weights):
         b_i, b_f, b_c, b_o = weights
@@ -311,11 +178,14 @@ class VLSTMNeuron(VNeuron):
         super().set_output(value, factor)
         self._item.setToolTip(str(value))
 
-    def set_links_in(self, links, weights=None):
-        super().set_links_in(links)
-        if type(self._links_in) is np.ndarray and weights is not None:
-            array, maximum = weights
-            for i in range(self._links_in.shape[0]):
-                if self._links_in[i] is not None:
-                    self._links_in[i].set_weight(array[i], maximum)
-                    self._links_in[i].set_tooltip(str(array[i]))
+    def set_links_in(self, links, weights):
+        super().set_links_in(links, weights)
+
+        if type(links) is not np.ndarray:
+            return
+
+        W_i, W_f, W_c, W_o = weights
+        for i in range(self._links_in.shape[0]):
+            if self._links_in[i] is not None:
+                tooltip = f'i:{W_i[i]}\nf:{W_f[i]}\nc:{W_c[i]}\no:{W_o[i]}'
+                self._links_in[i].set_tooltip(tooltip)

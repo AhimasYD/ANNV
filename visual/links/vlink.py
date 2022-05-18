@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsLineItem
 
+from math import isnan
+
 from visual.constants import WeightColor, WeightThick, Bias
 from visual.hintskeeper import HintsKeeper
 
@@ -44,7 +46,14 @@ class VLink(QGraphicsLineItem):
 
         if self._weight is None or self._maximum is None:
             return
-        factor = self._weight / self._maximum
+
+        try:
+            factor = self._weight / self._maximum
+            if isnan(factor):
+                factor = 0.0
+        except ValueError:
+            factor = 0.0
+
         if self._color == WeightColor.ON:
             self._arrow.set_color(factor)
         else:

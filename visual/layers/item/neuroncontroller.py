@@ -1,3 +1,5 @@
+from abc import ABCMeta, abstractmethod
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -20,8 +22,8 @@ from visual.layers.bias import VBiasNeuron
 from visual.layers.item.neuron import VNeuron
 
 
-class VDenseNeuronController:
-    def __init__(self, scene, x, units, select, show_output, logic):
+class VNeuronController(metaclass=ABCMeta):
+    def __init__(self, scene, x, units, select, show_output, logic, ntype, nheight, nmargin):
         self._scene = scene
         self._x = x
         self._units = units
@@ -34,13 +36,13 @@ class VDenseNeuronController:
 
         # No placeholder needed
         if units <= PLACEHOLDER_MAX_NEURONS * 2:
-            self._neurons = np.empty(units, dtype=VDenseNeuron)
+            self._neurons = np.empty(units, dtype=ntype)
 
-            total_height = units * NEURON_SIDE + (units - 1) * NEURON_MARGIN
+            total_height = units * nheight + (units - 1) * nmargin
             y = -total_height/2
             for i in range(units):
-                self._neurons[i] = VDenseNeuron(self._scene, self._x, y, select, show_output)
-                y += NEURON_SIDE + NEURON_MARGIN
+                self._neurons[i] = ntype(self._scene, self._x, y, select, show_output)
+                y += nheight + nmargin
 
         # Placeholder needed
         else:
@@ -48,29 +50,29 @@ class VDenseNeuronController:
             self._placeholder.mousePressEvent = select
             self._scene.addItem(self._placeholder)
 
-            self._neurons_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=VDenseNeuron)
-            self._neurons_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=VDenseNeuron)
+            self._neurons_start = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=ntype)
+            self._neurons_end = np.empty(PLACEHOLDER_MAX_NEURONS, dtype=ntype)
 
-            total_height = 2 * PLACEHOLDER_MAX_NEURONS * NEURON_SIDE + 2 * PLACEHOLDER_MAX_NEURONS * NEURON_MARGIN
+            total_height = 2 * PLACEHOLDER_MAX_NEURONS * nheight + 2 * PLACEHOLDER_MAX_NEURONS * nmargin
             total_height += self._placeholder.boundingRect().height() + 2 * PLACEHOLDER_MARGIN_OUT
 
             y = -total_height / 2
             for i in range(units):
                 if i < PLACEHOLDER_MAX_NEURONS:
                     j = i
-                    self._neurons_start[j] = VDenseNeuron(self._scene, self._x, y, select, show_output)
-                    y += NEURON_SIDE + NEURON_MARGIN
+                    self._neurons_start[j] = ntype(self._scene, self._x, y, select, show_output)
+                    y += nheight + nmargin
                 elif i >= units - PLACEHOLDER_MAX_NEURONS:
                     j = i - (units - PLACEHOLDER_MAX_NEURONS)
-                    self._neurons_end[j] = VDenseNeuron(self._scene, self._x, y, select, show_output)
-                    y += NEURON_SIDE + NEURON_MARGIN
+                    self._neurons_end[j] = ntype(self._scene, self._x, y, select, show_output)
+                    y += nheight + nmargin
 
                 if i == PLACEHOLDER_MAX_NEURONS:
                     y += self._placeholder.boundingRect().height()
                     y += 2 * PLACEHOLDER_MARGIN_OUT
-                    y += NEURON_MARGIN
+                    y += nmargin
 
-            self._placeholder.setPos(self._x + NEURON_SIDE / 2 - self._placeholder.boundingRect().width() / 2,
+            self._placeholder.setPos(self._x + nheight / 2 - self._placeholder.boundingRect().width() / 2,
                                      0 - self._placeholder.boundingRect().height() / 2)
 
         logic.attach_output(self.update_output)
@@ -128,19 +130,9 @@ class VDenseNeuronController:
 
         return binds
 
-    def set_links_in(self, links, weights=None):
-        if weights is not None:
-            maximum = max(weights.min(), weights.max(), key=abs)
-            for i in range(self._units):
-                neuron = self._get_neuron(i)
-                if neuron is not None:
-                    neuron.set_links_in(links[i], weights=(weights[i], maximum))
-
-        else:
-            for i in range(self._units):
-                neuron = self._get_neuron(i)
-                if neuron is not None:
-                    neuron.set_links_in(links[i])
+    @abstractmethod
+    def set_links_in(self, links, weights):
+        """"""
 
     def set_links_out(self, links):
         for i in range(self._units):
@@ -163,21 +155,6 @@ class VDenseNeuronController:
         unit_1 = self._get_neuron(self._units - 1)
         return unit_0.bounding().united(unit_1.bounding())
 
+    @abstractmethod
     def set_bias(self, bounding, weights):
-        bias = VBiasNeuron(self._scene, bounding)
-        bind_out = bias.bind_out()
-        binds_in = self.binds_in()
-
-        maximum = max(weights.min(), weights.max(), key=abs)
-
-        links = np.full(len(binds_in), None, dtype=VLayer)
-        for i in range(len(binds_in)):
-            bind_in = binds_in[i]
-            if bind_in is not None:
-                links[i] = VLink(bind_out, bind_in, WeightType.BIAS)
-                links[i].set_weight(weights[i], maximum)
-                links[i].set_tooltip(str(weights[i]))
-                self._get_neuron(i).set_link_bias(links[i])
-
-                self._scene.addItem(links[i].get_item())
-        bias.set_links_out(links)
+        """"""
