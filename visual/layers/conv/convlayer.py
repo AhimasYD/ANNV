@@ -2,9 +2,9 @@ from abc import abstractmethod
 
 from visual.constants import *
 from visual.layers.layer import VLayer
-from visual.layers.outputwindow import OutputWindow
+from widgets.outputwindow import OutputWindow
 
-from visual.hintskeeper import HintsKeeper
+from visual.trivia.hintskeeper import HintsKeeper
 
 
 class VConv(VLayer):

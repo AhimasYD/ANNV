@@ -1,24 +1,11 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-
-import numpy as np
 
 from visual.constants import *
-from visual.functions import brush_by_factor
-from visual.pixmap import Pixmap
-from visual.hintskeeper import HintsKeeper
-
-from visual.links import VLink, LinkType, WeightType
+from visual.trivia.pixmap import Pixmap
+from visual.trivia.hintskeeper import HintsKeeper
 
 from visual.layers.layer import VLayer
-from visual.layers.block import VBlock
-from visual.layers.placeholder import VPlaceholder
-from visual.layers.outputwindow import OutputWindow
-from visual.layers.bias import VBiasNeuron
-
-from visual.layers.item.neuron import VNeuron
-from visual.layers.item.neuroncontroller import VNeuronController
+from widgets.outputwindow import OutputWindow
 
 
 class VItem(VLayer):

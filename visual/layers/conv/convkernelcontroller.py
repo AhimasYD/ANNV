@@ -3,7 +3,7 @@ from PyQt5.QtCore import QPointF
 import numpy as np
 
 from visual.constants import *
-from visual.layers.placeholder import VPlaceholder
+from visual.layers.trivia.placeholder import VPlaceholder
 from visual.links import VLink
 
 

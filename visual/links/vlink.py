@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QGraphicsLineItem
 from math import isnan
 
 from visual.constants import WeightColor, WeightThick, Bias
-from visual.hintskeeper import HintsKeeper
+from visual.trivia.hintskeeper import HintsKeeper
 
 from .constants import WeightType
 from .arrow import Arrow

@@ -1,16 +1,14 @@
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 
 import numpy as np
 
 from visual.constants import *
-from visual.pixmap import Pixmap
-from visual.hintskeeper import HintsKeeper
+from visual.trivia.pixmap import Pixmap
+from visual.trivia.hintskeeper import HintsKeeper
 
 from visual.links import LinkType
 
-from visual.layers.block import VBlock
+from visual.layers.trivia.block import VBlock
 
 from visual.layers.conv.convlayer import VConv
 from visual.layers.conv.convkernelcontroller import VConvKernelController

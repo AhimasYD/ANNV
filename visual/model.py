@@ -3,10 +3,11 @@ from PyQt5.QtCore import *
 
 import numpy as np
 
-from .constants import *
-from .functions import clear_layout
-from .layers import *
-from .links import *
+from widgets.functions import clear_layout
+
+from visual.constants import *
+from visual.layers import *
+from visual.links import *
 
 
 class VModel:

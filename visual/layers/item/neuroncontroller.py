@@ -1,25 +1,12 @@
 from abc import ABCMeta, abstractmethod
 
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 import numpy as np
 
 from visual.constants import *
-from visual.functions import brush_by_factor
-from visual.pixmap import Pixmap
-from visual.hintskeeper import HintsKeeper
 
-from visual.links import VLink, LinkType, WeightType
-
-from visual.layers.layer import VLayer
-from visual.layers.block import VBlock
-from visual.layers.placeholder import VPlaceholder
-from visual.layers.outputwindow import OutputWindow
-from visual.layers.bias import VBiasNeuron
-
-from visual.layers.item.neuron import VNeuron
+from visual.layers.trivia.placeholder import VPlaceholder
 
 
 class VNeuronController(metaclass=ABCMeta):

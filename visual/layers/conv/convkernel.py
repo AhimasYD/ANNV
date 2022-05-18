@@ -1,7 +1,5 @@
-from PyQt5.QtCore import QPointF
-
 from visual.constants import *
-from visual.pixmap import Pixmap
+from visual.trivia.pixmap import Pixmap
 
 
 class VConvKernel:

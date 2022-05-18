@@ -6,10 +6,10 @@ from PyQt5.QtCore import *
 from logic import *
 from visual import *
 
-from flatblock import FlatBlock
-from volumeblock import VolumeBlock
+from widgets.flatblock import FlatBlock
+from widgets.volumeblock import VolumeBlock
 
-from visual.hintskeeper import HintsKeeper
+from visual.trivia.hintskeeper import HintsKeeper
 
 
 class MainWindow(QMainWindow):

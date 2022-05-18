@@ -1,11 +1,8 @@
-from PyQt5.QtWidgets import QDialog
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 
-from flatblock import FlatBlock
-from volumeblock import VolumeBlock
-from visual.pixmap import Pixmap
+from widgets.flatblock import FlatBlock
+from widgets.volumeblock import VolumeBlock
+from visual.trivia.pixmap import Pixmap
 from visual.constants import PIXMAP_SIDE
 
 

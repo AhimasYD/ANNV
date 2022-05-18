@@ -1,13 +1,13 @@
 from visual.links import LinkType
 
 from visual.layers.layer import VLayer
-from visual.layers.block import VBlock
+from visual.layers.trivia.block import VBlock
 
 
-class VDefault(VLayer):
+class VEmbedding(VLayer):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
-        self._block = VDefaultBlock(self._scene, self._x, self.select, self._logic.type)
+        self._block = VEmbeddingBlock(self._scene, self._x, self.select)
         self._init_caption()
 
     def select(self, event):
@@ -29,6 +29,6 @@ class VDefault(VLayer):
         return self._block.bounding()
 
 
-class VDefaultBlock(VBlock):
-    def __init__(self, scene, x, select, name):
-        super().__init__(scene, x, select, None, name + ' (D)')
+class VEmbeddingBlock(VBlock):
+    def __init__(self, scene, x, select):
+        super().__init__(scene, x, select, None, 'Embedding')

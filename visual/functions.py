@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from .constants import *
-from visual.hintskeeper import HintsKeeper
+from visual.constants import Names
+from visual.trivia.hintskeeper import HintsKeeper
 
 
 def draw_text(text, rect, names):
@@ -44,10 +44,3 @@ def brush_by_factor(factor):
     else:
         brush = QBrush(QColor(0, 0, 255, alpha))
     return brush
-
-
-def clear_layout(layout):
-    while layout and layout.count():
-        child = layout.takeAt(0)
-        if child.widget():
-            child.widget().deleteLater()

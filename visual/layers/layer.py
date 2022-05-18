@@ -2,10 +2,10 @@ from PyQt5.QtWidgets import QGraphicsTextItem
 from PyQt5.QtGui import QFont
 from abc import ABCMeta, abstractmethod
 
-from visual.functions import clear_layout
-from visual.constants import Captions, CAPTION_MARGIN
+from widgets.functions import clear_layout
 
-from visual.hintskeeper import HintsKeeper
+from visual.constants import Captions, CAPTION_MARGIN
+from visual.trivia.hintskeeper import HintsKeeper
 
 
 class VLayer(metaclass=ABCMeta):
