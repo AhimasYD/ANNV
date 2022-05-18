@@ -183,7 +183,6 @@ class VLSTMNeuronController:
             self._placeholder.setPos(self._x + NEURON_REC_WIDTH / 2 - self._placeholder.boundingRect().width() / 2,
                                      0 - self._placeholder.boundingRect().height() / 2)
 
-        self._init_rec_weights()
         logic.attach_output(self.update_output)
 
     def _get_neuron(self, i):
@@ -196,62 +195,6 @@ class VLSTMNeuronController:
                 return self._neurons_end[i - (self._units - PLACEHOLDER_MAX_NEURONS)]
             else:
                 return None
-
-    def _init_rec_weights(self):
-        if self._neurons is not None:
-            for i in range(self._neurons.shape[0] - 1):
-                neuron_0 = self._neurons[i]
-                neuron_1 = self._neurons[i + 1]
-
-                bind_out = neuron_0.bind_rec_out()
-                bind_in = neuron_1.bind_rec_in()
-
-                link = VLink(bind_out, bind_in)
-                self._scene.addItem(link.get_item())
-
-                neuron_0.set_rec_links_out(link)
-                neuron_1.set_rec_links_in(link)
-
-        else:
-            for i in range(self._neurons_start.shape[0] - 1):
-                neuron_0 = self._neurons_start[i]
-                neuron_1 = self._neurons_start[i + 1]
-
-                bind_out = neuron_0.bind_rec_out()
-                bind_in = neuron_1.bind_rec_in()
-
-                link = VLink(bind_out, bind_in)
-                self._scene.addItem(link.get_item())
-
-                neuron_0.set_rec_links_out(link)
-                neuron_1.set_rec_links_in(link)
-
-            for i in range(self._neurons_end.shape[0] - 1):
-                neuron_0 = self._neurons_end[i]
-                neuron_1 = self._neurons_end[i + 1]
-
-                bind_out = neuron_0.bind_rec_out()
-                bind_in = neuron_1.bind_rec_in()
-
-                link = VLink(bind_out, bind_in)
-                self._scene.addItem(link.get_item())
-
-                neuron_0.set_rec_links_out(link)
-                neuron_1.set_rec_links_in(link)
-
-            neuron = self._neurons_start[self._neurons_start.shape[0] - 1]
-            bind_out = neuron.bind_rec_out()
-            bind_in = QPointF(bind_out.x(), bind_out.y() + NEURON_REC_MARGIN)
-            link = VLink(bind_out, bind_in)
-            self._scene.addItem(link.get_item())
-            neuron.set_rec_links_out(link)
-
-            neuron = self._neurons_end[0]
-            bind_in = neuron.bind_rec_in()
-            bind_out = QPointF(bind_in.x(), bind_in.y() - NEURON_REC_MARGIN)
-            link = VLink(bind_out, bind_in)
-            self._scene.addItem(link.get_item())
-            neuron.set_rec_links_in(link)
 
     def binds_in(self):
         if self._placeholder is None:
@@ -365,12 +308,6 @@ class VLSTMNeuron:
         self._links_in = None
         self._links_out = None
 
-        self._bind_rec_in = QPointF(x + width / 2, y)
-        self._bind_rec_out = QPointF(x + width / 2, y + height)
-
-        self._link_rec_in = None
-        self._link_rec_out = None
-
         self._links_bias = None
 
     def set_output(self, value, factor):
@@ -383,23 +320,11 @@ class VLSTMNeuron:
     def bind_out(self):
         return self._bind_out
 
-    def bind_rec_in(self):
-        return self._bind_rec_in
-
-    def bind_rec_out(self):
-        return self._bind_rec_out
-
     def set_links_in(self, links, weights=None):
         self._links_in = links
 
     def set_links_out(self, links):
         self._links_out = links
-
-    def set_rec_links_in(self, link):
-        self._link_rec_in = link
-
-    def set_rec_links_out(self, link):
-        self._link_rec_out = link
 
     def set_link_bias(self, link):
         self._links_bias = link
