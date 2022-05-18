@@ -25,6 +25,8 @@ class LModel:
             name = layer_names[i]
             if name == 'Dense':
                 layer = LDense(self._k_model.layers[i])
+            elif name == 'SimpleRNN':
+                layer = LSimpleRNN(self._k_model.layers[i])
             elif name == 'LSTM':
                 layer = LLSTM(self._k_model.layers[i])
             elif name == 'GRU':

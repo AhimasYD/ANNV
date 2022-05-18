@@ -37,8 +37,12 @@ class VModel:
     def _create_layer(self, logic):
         if logic.type == 'Dense':
             v_layer = VDense(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'SimpleRNN':
+            v_layer = VSimpleRNN(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif logic.type == 'LSTM':
             v_layer = VLSTM(logic, self._scene, self._x, self._wl, self._wf, self._wv)
+        elif logic.type == 'GRU':
+            v_layer = VGRU(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif logic.type == 'Embedding':
             v_layer = VEmbedding(logic, self._scene, self._x, self._wl, self._wf, self._wv)
         elif logic.type == 'Conv1D':

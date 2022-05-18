@@ -64,6 +64,43 @@ class LDense(LLayer):
         return self._bias
 
 
+class LSimpleRNN(LLayer):
+    def __init__(self, layer):
+        super().__init__(layer)
+
+        self._type = 'SimpleRNN'
+        self._activation = str(layer.activation.__name__)
+        self._units = layer.units
+
+        self._W = layer.get_weights()[0]
+        self._U = layer.get_weights()[1]
+        self._b = layer.get_weights()[2]
+
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        super().set_output(new_output)
+
+    @property
+    def activation(self):
+        return self._activation
+
+    @property
+    def units(self):
+        return self._units
+
+    @property
+    def W(self):
+        return self._W
+
+    @property
+    def U(self):
+        return self._U
+
+    @property
+    def b(self):
+        return self._b
+
+
 class LLSTM(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
