@@ -8,13 +8,13 @@ from .arrow import Arrow
 
 
 class VLink(QGraphicsLineItem):
-    def __init__(self, start, end, w_type=WeightType.KERNEL):
+    def __init__(self, start, end, w_type=WeightType.KERNEL, tooltip=None):
         super().__init__()
 
         self._arrow = Arrow(start, end)
         self._type = w_type
         if self._type == WeightType.BIAS:
-            self._arrow.set_dotted()
+            self._arrow.set_dashed()
 
         self._weight = None
         self._maximum = None
@@ -27,6 +27,9 @@ class VLink(QGraphicsLineItem):
         self._bias = HintsKeeper().bias
 
         self._update_arrow()
+
+        if tooltip is not None:
+            self.set_tooltip(tooltip)
 
     def __del__(self):
         HintsKeeper().detach_color(self.set_color_hint)
@@ -50,6 +53,9 @@ class VLink(QGraphicsLineItem):
             self._arrow.set_width(abs(factor))
         else:
             self._arrow.reset_width()
+
+    def set_tooltip(self, tooltip):
+        self._arrow.set_tooltip(tooltip)
 
     def get_item(self):
         return self._arrow

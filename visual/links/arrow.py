@@ -93,16 +93,21 @@ class Arrow(QGraphicsItemGroup):
 
         width = self._line.pen().width()
         self._line.setPen(QPen(brush, width))
-        self._line.setPen(QPen(brush, width))
+        self._cap.setBrush(brush)
+        self._cap.setPen(QPen(brush, width))
 
-    def set_dotted(self):
+    def set_dashed(self):
         pen = self._line.pen()
-        pen.setStyle(Qt.PenStyle.DotLine)
+        pen.setStyle(Qt.PenStyle.DashLine)
         self._line.setPen(pen)
 
         pen = self._cap.pen()
-        pen.setStyle(Qt.PenStyle.DotLine)
-        self._line.setPen(pen)
+        pen.setStyle(Qt.PenStyle.DashLine)
+        self._cap.setPen(pen)
+
+    def set_tooltip(self, tooltip):
+        self._line.setToolTip(tooltip)
+        self._cap.setToolTip(tooltip)
 
     def hide(self):
         self._line.hide()
