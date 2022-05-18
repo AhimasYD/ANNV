@@ -323,6 +323,8 @@ class VLSTMNeuronController:
         return unit_0.bounding().united(unit_1.bounding())
 
     def set_bias(self, bounding, weights):
+        b_i, b_f, b_c, b_o = weights
+
         bias = VBiasNeuron(self._scene, bounding)
         bind_out = bias.bind_out()
         binds_in = self.binds_in()
@@ -331,7 +333,10 @@ class VLSTMNeuronController:
         for i in range(len(binds_in)):
             bind_in = binds_in[i]
             if bind_in is not None:
+                tooltip = f'i:{b_i[i]}\nf:{b_f[i]}\nc:{b_c[i]}\no:{b_o[i]}'
+
                 links[i] = VLink(bind_out, bind_in, WeightType.BIAS)
+                links[i].set_tooltip(tooltip)
                 self._get_neuron(i).set_link_bias(links[i])
 
                 self._scene.addItem(links[i].get_item())
