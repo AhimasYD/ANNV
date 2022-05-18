@@ -70,7 +70,7 @@ class VConv3D(VConv):
         for i in range(self._logic.channel_num):
             self._w_volume.num_0.setText(f'{self._filter}')
             self._w_volume.num_1.setText(f'{self._depth}')
-            self._kernels[i].update(self._logic.filters[self._filter, self._depth, i])
+            self._kernels[i].update_map(self._logic.filters[self._filter, self._depth, i])
         if self._kernel_ctrl is not None:
             self._kernel_ctrl.update(self._logic.filters[self._filter, self._depth], self._filter)
 

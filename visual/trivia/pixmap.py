@@ -73,7 +73,7 @@ class Pixmap(QTableWidget):
 
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Minimum)
 
-    def update(self, array):
+    def update_map(self, array):
         maximum = max(array.min(), array.max(), key=abs)
         for i in range(self.rows):
             for j in range(self.columns):
@@ -83,9 +83,9 @@ class Pixmap(QTableWidget):
                     val = array[j]
 
                 if maximum is not None:
-                    brush = brush_by_factor(val / maximum)
+                    brush = brush_by_factor(val, maximum)
                 else:
-                    brush = brush_by_factor(0.0)
+                    brush = brush_by_factor(val, 0.0)
                 cell = self.item(i, j)
                 cell.setBackground(brush)
                 cell.setToolTip(str(val))

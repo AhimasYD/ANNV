@@ -34,11 +34,14 @@ def draw_text(text, rect, names):
     return item
 
 
-def brush_by_factor(factor):
+def brush_by_factor(value, maximum):
     try:
+        factor = value / maximum
         alpha = abs(int(255 * factor))
-    except ValueError:
+    except ZeroDivisionError:
+        factor = 0
         alpha = 0
+
     if factor >= 0:
         brush = QBrush(QColor(255, 0, 0, alpha))
     else:

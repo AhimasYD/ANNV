@@ -14,8 +14,8 @@ class VNeuron:
         self._links_out = None
         self._links_bias = None
 
-    def set_output(self, value, factor):
-        self._item.setBrush(brush_by_factor(factor))
+    def set_output(self, value, maximum):
+        self._item.setBrush(brush_by_factor(value, maximum))
 
     def bind_in(self):
         return self._bind_in

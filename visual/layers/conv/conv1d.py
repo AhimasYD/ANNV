@@ -65,7 +65,7 @@ class VConv1D(VConv):
     def update(self):
         self._w_flat.num.setText(f'{self._filter}')
         for i in range(self._logic.channel_num):
-            self._kernels[i].update(self._logic.filters[self._filter, i])
+            self._kernels[i].update_map(self._logic.filters[self._filter, i])
         if self._kernel_ctrl is not None:
             self._kernel_ctrl.update(self._logic.filters[self._filter], self._filter)
 

@@ -133,7 +133,7 @@ class VNeuronController(metaclass=ABCMeta):
             neuron = self._get_neuron(i)
             if neuron is not None:
                 if maximum is not None:
-                    neuron.set_output(output[i], output[i] / maximum)
+                    neuron.set_output(output[i], maximum)
                 else:
                     neuron.set_output(output[i], 0.0)
 
