@@ -5,9 +5,9 @@ from PyQt5.QtCore import QPointF, QLineF, Qt
 from math import sqrt
 
 
-LINE_WIDTH = 2.0
-LINE_WIDTH_MIN = 1.0
-LINE_WIDTH_MAX = 3.0
+LINE_WIDTH = 2
+LINE_WIDTH_MIN = 1
+LINE_WIDTH_MAX = 4
 
 ARROW_HEIGHT = 24
 ARROW_WIDTH = 12
@@ -33,16 +33,14 @@ class Arrow(QGraphicsItemGroup):
         self.addToGroup(self._line)
         self.addToGroup(self._cap)
 
-    # calculates the point where the arrow should be drawn
     @staticmethod
     def _cap_calculation(start_point: QPointF, end_point: QPointF):
         try:
             dx, dy = start_point.x() - end_point.x(), start_point.y() - end_point.y()
 
             length = sqrt(dx ** 2 + dy ** 2)
-            norm_x, norm_y = dx / length, dy / length  # normalize
+            norm_x, norm_y = dx / length, dy / length
 
-            # perpendicular vector
             perp_x = -norm_y
             perp_y = norm_x
 
@@ -61,25 +59,37 @@ class Arrow(QGraphicsItemGroup):
             return None
 
     def reset_width(self):
-        brush = self._line.pen().brush()
-        self._line.setPen(QPen(brush, LINE_WIDTH_MIN))
-        self._line.setPen(QPen(brush, LINE_WIDTH_MIN))
+        pen = self._line.pen()
+        pen.setWidth(LINE_WIDTH_MIN)
+        self._line.setPen(pen)
+
+        pen = self._cap.pen()
+        pen.setWidth(LINE_WIDTH_MIN)
+        self._cap.setPen(pen)
 
     def set_width(self, factor: float):
         if factor < 0 or factor > 1:
             raise ValueError
 
         width = LINE_WIDTH_MAX * factor
-        width = max(LINE_WIDTH_MIN, width)
+        width = int(max(LINE_WIDTH_MIN, width))
 
-        brush = self._line.pen().brush()
-        self._line.setPen(QPen(brush, width))
-        self._line.setPen(QPen(brush, width))
+        pen = self._line.pen()
+        pen.setWidth(width)
+        self._line.setPen(pen)
+
+        pen = self._cap.pen()
+        pen.setWidth(width)
+        self._cap.setPen(pen)
 
     def reset_color(self):
-        width = self._line.pen().width()
-        self._line.setPen(QPen(QBrush(QColor(0, 0, 0)), width))
-        self._line.setPen(QPen(QBrush(QColor(0, 0, 0)), width))
+        pen = self._line.pen()
+        pen.setBrush(QBrush(QColor(0, 0, 0)))
+        self._line.setPen(pen)
+
+        pen = self._cap.pen()
+        pen.setBrush(QBrush(QColor(0, 0, 0)))
+        self._cap.setPen(pen)
 
     def set_color(self, factor: float):
         if abs(factor) > 1:
@@ -90,11 +100,18 @@ class Arrow(QGraphicsItemGroup):
             brush = QBrush(QColor(255, 0, 0, alpha))
         else:
             brush = QBrush(QColor(0, 0, 255, alpha))
-
         width = self._line.pen().width()
-        self._line.setPen(QPen(brush, width))
+
+        pen = self._line.pen()
+        pen.setBrush(brush)
+        pen.setWidth(width)
+        self._line.setPen(pen)
+
+        pen = self._cap.pen()
+        pen.setBrush(brush)
+        pen.setWidth(width)
         self._cap.setBrush(brush)
-        self._cap.setPen(QPen(brush, width))
+        self._cap.setPen(pen)
 
     def set_dashed(self):
         pen = self._line.pen()

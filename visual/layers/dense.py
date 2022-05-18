@@ -245,11 +245,15 @@ class VDenseNeuronController:
         bind_out = bias.bind_out()
         binds_in = self.binds_in()
 
+        maximum = max(weights.min(), weights.max(), key=abs)
+
         links = np.full(len(binds_in), None, dtype=VLayer)
         for i in range(len(binds_in)):
             bind_in = binds_in[i]
             if bind_in is not None:
                 links[i] = VLink(bind_out, bind_in, WeightType.BIAS)
+                links[i].set_weight(weights[i], maximum)
+                links[i].set_tooltip(str(weights[i]))
                 self._get_neuron(i).set_link_bias(links[i])
 
                 self._scene.addItem(links[i].get_item())
@@ -293,6 +297,7 @@ class VDenseNeuron:
             for i in range(self._links_in.shape[0]):
                 if self._links_in[i] is not None:
                     self._links_in[i].set_weight(array[i], maximum)
+                    self._links_in[i].set_tooltip(str(array[i]))
 
     def set_links_out(self, links):
         self._links_out = links
