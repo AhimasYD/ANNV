@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from widgets.outputwindow import OutputWindow
+from visual.widgets.outputwindow import OutputWindow
 from visual.constants import Display
 from visual.trivia.hintskeeper import HintsKeeper
 from visual.layers.layer import VLayer

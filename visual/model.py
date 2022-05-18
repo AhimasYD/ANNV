@@ -1,11 +1,9 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView, QMessageBox
+from PyQt5.QtCore import Qt
 
 import numpy as np
 
-from widgets.functions import clear_layout
-
-from visual.constants import *
+from visual.widgets import clear_layout
 from visual.layers import *
 from visual.links import *
 

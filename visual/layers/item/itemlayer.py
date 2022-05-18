@@ -1,11 +1,9 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy
 
-from visual.constants import *
-from visual.trivia.pixmap import Pixmap
-from visual.trivia.hintskeeper import HintsKeeper
-
+from visual.widgets.outputwindow import OutputWindow
+from visual.constants import Display
+from visual.trivia import Pixmap, PIXMAP_SIDE, HintsKeeper
 from visual.layers.layer import VLayer
-from widgets.outputwindow import OutputWindow
 
 
 class VItem(VLayer):

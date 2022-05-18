@@ -1,10 +1,9 @@
 from PyQt5.QtWidgets import QGraphicsRectItem
 from PyQt5.QtCore import QPointF
 
-from visual.constants import *
-from visual.functions import draw_text
-
-from visual.trivia.hintskeeper import HintsKeeper
+from visual.trivia import HintsKeeper
+from visual.layers.constants import BLOCK_HEIGHT, BLOCK_WIDTH
+from visual.layers.functions import draw_text
 
 
 class VBlock:

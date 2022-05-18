@@ -1,12 +1,10 @@
+from PyQt5.QtCore import QPointF
+
 from abc import ABCMeta, abstractmethod
-
-from PyQt5.QtCore import *
-
 import numpy as np
 
-from visual.constants import *
-
-from visual.layers.trivia.placeholder import VPlaceholder
+from visual.layers.trivia import VPlaceholder
+from visual.layers.constants import PLACEHOLDER_SIDE, PLACEHOLDER_MAX_NEURONS, PLACEHOLDER_MARGIN_IN, PLACEHOLDER_MARGIN_OUT
 
 
 class VNeuronController(metaclass=ABCMeta):

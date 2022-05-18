@@ -1,8 +1,7 @@
-import numpy as np
 import pandas as pd
 from tensorflow import keras
 
-from .layers import *
+from logic.layers import *
 
 
 class LModel:

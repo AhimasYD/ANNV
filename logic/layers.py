@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 
 class LLayer:
@@ -143,7 +143,7 @@ class LConv1D(LLayer):
 
         self._type = 'Conv1D'
         # Filter, Channel, Width
-        self._filters = numpy.transpose(layer.get_weights()[0], (2, 1, 0))
+        self._filters = np.transpose(layer.get_weights()[0], (2, 1, 0))
         self._bias = layer.get_weights()[1]
 
         self._padding = layer.padding
@@ -154,7 +154,7 @@ class LConv1D(LLayer):
 
     def set_output(self, new_output):
         new_output = new_output[0]
-        new_output = numpy.transpose(new_output, (1, 0))
+        new_output = np.transpose(new_output, (1, 0))
         super().set_output(new_output)
 
     @property
@@ -204,7 +204,7 @@ class LConv2D(LLayer):
 
         self._type = 'Conv2D'
         # Filter, Channel, Height, Width
-        self._filters = numpy.transpose(layer.get_weights()[0], (3, 2, 0, 1))
+        self._filters = np.transpose(layer.get_weights()[0], (3, 2, 0, 1))
         self._bias = layer.get_weights()[1]
 
         self._padding = layer.padding
@@ -215,7 +215,7 @@ class LConv2D(LLayer):
 
     def set_output(self, new_output):
         new_output = new_output[0]
-        new_output = numpy.transpose(new_output, (2, 0, 1))
+        new_output = np.transpose(new_output, (2, 0, 1))
         super().set_output(new_output)
 
     @property
@@ -265,7 +265,7 @@ class LConv3D(LLayer):
 
         self._type = 'Conv3D'
         # Filter, Depth, Channel, Height, Width
-        self._filters = numpy.transpose(layer.get_weights()[0], (4, 0, 3, 1, 2))
+        self._filters = np.transpose(layer.get_weights()[0], (4, 0, 3, 1, 2))
         self._bias = layer.get_weights()[1]
 
         self._padding = layer.padding
@@ -276,7 +276,7 @@ class LConv3D(LLayer):
 
     def set_output(self, new_output):
         new_output = new_output[0]
-        new_output = numpy.transpose(new_output, (3, 0, 1, 2))
+        new_output = np.transpose(new_output, (3, 0, 1, 2))
         super().set_output(new_output)
 
     @property
@@ -334,7 +334,7 @@ class LEmbedding(LLayer):
     def set_output(self, new_output):
         new_output = new_output[0]
         length = len(new_output.shape)
-        new_output = numpy.transpose(new_output, (length - 1, *range(length - 1)))
+        new_output = np.transpose(new_output, (length - 1, *range(length - 1)))
         super().set_output(new_output)
 
     @property

@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget, QLabel, QSpacerItem, QDialog, QScrollArea, QVBoxLayout, QSizePolicy
 
-from widgets.flatblock import FlatBlock
-from widgets.volumeblock import VolumeBlock
-from visual.trivia.pixmap import Pixmap
-from visual.constants import PIXMAP_SIDE
+from visual.trivia import Pixmap, PIXMAP_SIDE
+from visual.widgets.flatblock import FlatBlock
+from visual.widgets.volumeblock import VolumeBlock
 
 
 class OutputWindow(QDialog):

@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView, QSizePolicy
+from PyQt5.QtGui import QColor, QBrush
+from PyQt5.QtCore import QSize, Qt
 
 from visual.functions import brush_by_factor
 
 
-MAX_ROWS = 10
+MAX_ROWS = 6
 
 
 class Pixmap(QTableWidget):

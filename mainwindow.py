@@ -6,8 +6,8 @@ from PyQt5.QtCore import *
 from logic import *
 from visual import *
 
-from widgets.flatblock import FlatBlock
-from widgets.volumeblock import VolumeBlock
+from visual.widgets.flatblock import FlatBlock
+from visual.widgets.volumeblock import VolumeBlock
 
 from visual.trivia.hintskeeper import HintsKeeper
 

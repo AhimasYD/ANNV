@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import QGraphicsEllipseItem
 from PyQt5.QtCore import QPointF
 
-from visual.constants import Bias, BIAS_BRUSH, BIAS_SIDE, BIAS_MARGIN
-from visual.trivia.hintskeeper import HintsKeeper
+from visual.trivia import HintsKeeper
+from visual.constants import Bias
+from visual.layers.constants import BIAS_SIDE, BIAS_MARGIN, BIAS_BRUSH
 
 
 class VBiasNeuron:

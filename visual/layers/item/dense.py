@@ -1,18 +1,15 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy, QGraphicsEllipseItem
+from PyQt5.QtCore import QPointF
 
 import numpy as np
 
-from visual.constants import *
-from visual.trivia.pixmap import Pixmap
-from visual.trivia.hintskeeper import HintsKeeper
-
+from visual.constants import Display
+from visual.trivia import Pixmap, HintsKeeper, PIXMAP_SIDE
 from visual.links import VLink, LinkType, WeightType
-
+from visual.layers.constants import NEURON_SIDE, NEURON_MARGIN
 from visual.layers.layer import VLayer
 from visual.layers.trivia.block import VBlock
 from visual.layers.trivia.bias import VBiasNeuron
-
 from visual.layers.item.itemlayer import VItem
 from visual.layers.item.neuroncontroller import VNeuronController
 from visual.layers.item.neuron import VNeuron
