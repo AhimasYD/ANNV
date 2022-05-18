@@ -1,10 +1,9 @@
 from abc import abstractmethod
 
-from visual.constants import *
-from visual.layers.layer import VLayer
 from widgets.outputwindow import OutputWindow
-
+from visual.constants import Display
 from visual.trivia.hintskeeper import HintsKeeper
+from visual.layers.layer import VLayer
 
 
 class VConv(VLayer):

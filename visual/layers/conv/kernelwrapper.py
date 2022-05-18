@@ -1,13 +1,12 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsRectItem, QGraphicsPolygonItem, QGraphicsItemGroup
+from PyQt5.QtGui import QColor, QBrush, QPen, QPolygonF
+from PyQt5.QtCore import QPointF
 
 import numpy as np
 
 
-MAX_WRAPPERS = 5
 INIT_Z = 10
-
+MAX_WRAPPERS = 5
 WRAPPER_3D_INDENT = 10
 
 

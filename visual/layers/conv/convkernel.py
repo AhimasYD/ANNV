@@ -1,5 +1,5 @@
-from visual.constants import *
-from visual.trivia.pixmap import Pixmap
+from visual.trivia import Pixmap, PIXMAP_SIDE
+
 
 
 class VConvKernel:

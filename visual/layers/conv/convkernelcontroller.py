@@ -2,9 +2,11 @@ from PyQt5.QtCore import QPointF
 
 import numpy as np
 
-from visual.constants import *
-from visual.layers.trivia.placeholder import VPlaceholder
+from visual.constants import WeightColor, WeightThick
 from visual.links import VLink
+from visual.layers.constants import PLACEHOLDER_SIDE, PLACEHOLDER_MAX_KERNELS, PLACEHOLDER_MARGIN_IN, PLACEHOLDER_MARGIN_OUT
+from visual.layers.constants import KERNEL_MARGIN
+from visual.layers.trivia import VPlaceholder
 
 
 class VConvKernelController:
@@ -20,7 +22,7 @@ class VConvKernelController:
         self._kernels_end = None
 
         # No placeholder needed
-        if units <= PLACEHOLDER_MAX_NEURONS * 2:
+        if units <= PLACEHOLDER_MAX_KERNELS * 2:
             self._kernels = np.empty(units, dtype=dtype)
 
             for i in range(self._units):
@@ -83,10 +85,10 @@ class VConvKernelController:
         if self._kernels is not None:
             return self._kernels[i]
         else:
-            if i < PLACEHOLDER_MAX_NEURONS:
+            if i < PLACEHOLDER_MAX_KERNELS:
                 return self._kernels_start[i]
-            elif i >= self._units - PLACEHOLDER_MAX_NEURONS:
-                return self._kernels_end[i - (self._units - PLACEHOLDER_MAX_NEURONS)]
+            elif i >= self._units - PLACEHOLDER_MAX_KERNELS:
+                return self._kernels_end[i - (self._units - PLACEHOLDER_MAX_KERNELS)]
             else:
                 return None
 
