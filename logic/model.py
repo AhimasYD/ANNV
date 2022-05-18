@@ -27,6 +27,8 @@ class LModel:
                 layer = LDense(self._k_model.layers[i])
             elif name == 'LSTM':
                 layer = LLSTM(self._k_model.layers[i])
+            elif name == 'GRU':
+                layer = LGRU(self._k_model.layers[i])
             elif name == 'Conv1D':
                 layer = LConv1D(self._k_model.layers[i])
             elif name == 'Conv2D':

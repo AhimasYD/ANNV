@@ -137,6 +137,79 @@ class LLSTM(LLayer):
         return self._b[self.units * 3:]
 
 
+class LGRU(LLayer):
+    def __init__(self, layer):
+        super().__init__(layer)
+
+        self._type = 'GRU'
+        self._activation = str(layer.activation.__name__)
+        self._units = layer.units
+
+        self._W = layer.get_weights()[0]
+        self._U = layer.get_weights()[1]
+        self._b = layer.get_weights()[2]
+
+    def set_output(self, new_output):
+        new_output = new_output[0]
+        super().set_output(new_output)
+
+    @property
+    def activation(self):
+        return self._activation
+
+    @property
+    def units(self):
+        return self._units
+
+    @property
+    def W_z(self):
+        return self._W[:, :self.units]
+
+    @property
+    def W_r(self):
+        return self._W[:, self.units:self.units*2]
+
+    @property
+    def W_h(self):
+        return self._W[:, self.units*2:]
+
+    @property
+    def U_z(self):
+        return self._U[:, :self.units]
+
+    @property
+    def U_r(self):
+        return self._U[:, self.units:self.units * 2]
+
+    @property
+    def U_h(self):
+        return self._U[:, self.units * 2:]
+
+    @property
+    def b_iz(self):
+        return self._b[0, :self.units]
+
+    @property
+    def b_ir(self):
+        return self._b[0, self.units:self.units * 2]
+
+    @property
+    def b_ih(self):
+        return self._b[0, self.units * 2:self.units * 3]
+
+    @property
+    def b_rz(self):
+        return self._b[1, :self.units]
+
+    @property
+    def b_rr(self):
+        return self._b[1, self.units:self.units * 2]
+
+    @property
+    def b_rh(self):
+        return self._b[1, self.units * 2:self.units * 3]
+
+
 class LConv1D(LLayer):
     def __init__(self, layer):
         super().__init__(layer)

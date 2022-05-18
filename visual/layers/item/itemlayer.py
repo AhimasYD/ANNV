@@ -12,20 +12,6 @@ class VItem(VLayer):
         self._block = None
         self._neuron_ctrl = None
 
-    def select(self, event):
-        super().select(event)
-
-        layout = self._w_info.layout()
-        layout.addWidget(QLabel(f'Type: {self._logic.type}'))
-        layout.addWidget(QLabel(f'Activation: {self._logic.activation}'))
-        layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
-        layout.addWidget(QLabel('Kernel:'))
-        layout.addWidget(Pixmap(self._logic.kernel, PIXMAP_SIDE, hv=True, hh=True, sb=True))
-        layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
-        layout.addWidget(QLabel('Bias:'))
-        layout.addWidget(Pixmap(self._logic.bias, PIXMAP_SIDE, hv=True, hh=True, sb=True))
-        layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
-
     def binds_in(self):
         if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_in()

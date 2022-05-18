@@ -121,7 +121,8 @@ class VLSTMNeuronController(VNeuronController):
         for i in range(len(binds_in)):
             bind_in = binds_in[i]
             if bind_in is not None:
-                tooltip = f'i:{b_i[i]}\nf:{b_f[i]}\nc:{b_c[i]}\no:{b_o[i]}'
+                tooltip = f'i: {"{:.4f}".format(b_i[i])}\nf: {"{:.4f}".format(b_f[i])}\n' \
+                          f'c: {"{:.4f}".format(b_c[i])}\no: {"{:.4f}".format(b_o[i])}'
 
                 links[i] = VLink(bind_out, bind_in, WeightType.BIAS)
                 links[i].set_tooltip(tooltip)
@@ -163,5 +164,6 @@ class VLSTMNeuron(VNeuron):
         W_i, W_f, W_c, W_o = weights
         for i in range(self._links_in.shape[0]):
             if self._links_in[i] is not None:
-                tooltip = f'i:{W_i[i]}\nf:{W_f[i]}\nc:{W_c[i]}\no:{W_o[i]}'
+                tooltip = f'i: {"{:.4f}".format(W_i[i])}\nf: {"{:.4f}".format(W_f[i])}\n' \
+                          f'c: {"{:.4f}".format(W_c[i])}\no: {"{:.4f}".format(W_o[i])}'
                 self._links_in[i].set_tooltip(tooltip)
