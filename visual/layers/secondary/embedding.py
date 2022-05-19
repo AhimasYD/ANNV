@@ -1,6 +1,8 @@
-from visual.links import LinkType
+from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy
 
 from weak import WeakMethod
+from visual.trivia import Pixmap, PIXMAP_SIDE
+from visual.links import LinkType
 from visual.layers.layer import VLayer
 from visual.layers.trivia import VBlock
 
@@ -17,6 +19,12 @@ class VEmbedding(VLayer):
 
     def select(self, event):
         super().select(event)
+
+        layout = self._w_info.layout()
+        layout.addWidget(QLabel(f'Type: {self._logic.type}'))
+        layout.addWidget(QLabel('Kernel:'))
+        layout.addWidget(Pixmap(self._logic.weights, PIXMAP_SIDE, hv=True, hh=True, sb=True))
+        layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
     def binds_in(self):
         return LinkType.UNITED, self._block.bind_in()

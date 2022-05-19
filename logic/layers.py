@@ -439,7 +439,7 @@ class LEmbedding(LLayer):
         super().__init__(layer)
 
         self._type = 'Embedding'
-        self._weights = layer.weights
+        self._weights = layer.get_weights()[0]
 
     def set_output(self, new_output):
         new_output = new_output[0]
