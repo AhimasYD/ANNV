@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QGraphicsRectItem
 from PyQt5.QtCore import QPointF
+from PyQt5.QtGui import QColor, QBrush
 
 from weak import WeakMethod
 from visual.trivia import HintsKeeper
@@ -13,6 +14,7 @@ class VBlock:
         self._name = name
 
         self._rect = QGraphicsRectItem(x, 0 - BLOCK_HEIGHT / 2, BLOCK_WIDTH, BLOCK_HEIGHT)
+        self._rect.setBrush(QBrush(QColor(255, 255, 255)))
         self._rect.mousePressEvent = select
         self._rect.mouseDoubleClickEvent = show_output
         self._scene.addItem(self._rect)

@@ -119,7 +119,7 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open model</string>
    </property>
   </action>
   <action name="actionLoad">

@@ -34,3 +34,6 @@ class Bias(Enum):
 class Activation(Enum):
     OFF = auto()
     ON = auto()
+
+
+SCENE_RECT_PADDING = 25

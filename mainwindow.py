@@ -3,9 +3,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+from math import ceil
+
 from logic import *
 from visual import *
-
 from visual.widgets import FlatBlock, VolumeBlock, clear_layout
 from visual.trivia import HintsKeeper
 
@@ -41,13 +42,13 @@ class MainWindow(QMainWindow):
         group = QActionGroup(sub_display)
         action = QAction('Compact', sub_display)
         action.setCheckable(True)
-        action.setChecked(True)
+        action.setChecked(False)
         action.triggered.connect(self.display_compact)
         sub_display.addAction(action)
         group.addAction(action)
         action = QAction('Extended', sub_display)
         action.setCheckable(True)
-        action.setChecked(False)
+        action.setChecked(True)
         action.triggered.connect(self.display_extended)
         sub_display.addAction(action)
         group.addAction(action)
@@ -178,12 +179,19 @@ class MainWindow(QMainWindow):
 
         self.scene.clearSelection()
         self.scene.setSceneRect(self.scene.itemsBoundingRect())
-        image = QImage(self.scene.sceneRect().size().toSize(), QImage.Format_ARGB32)
-        image.fill(Qt.white)
+
+        rect = self.scene.sceneRect()
+        # rect = QRectF(rect.x() - SCENE_RECT_PADDING, rect.y() - SCENE_RECT_PADDING,
+        #               rect.width() + 4 * SCENE_RECT_PADDING, rect.height() + 4 * SCENE_RECT_PADDING)
+
+        image = QImage(ceil(rect.width()), ceil(rect.height()), QImage.Format_ARGB32_Premultiplied)
+        # image.fill(Qt.white)
 
         painter = QPainter(image)
+        painter.setRenderHints(QPainter.Antialiasing)
         self.scene.render(painter)
-        image.save(filename)
+        res = image.save(filename)
+        print('RESULT', res)
 
     def display_compact(self, checked):
         self._o_display = Display.COMPACT

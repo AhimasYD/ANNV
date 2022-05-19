@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy, QGraphicsRectItem
 from PyQt5.QtCore import QPointF
+from PyQt5.QtGui import QColor, QBrush
 
 import numpy as np
 
@@ -108,6 +109,7 @@ class VSimpleRNNNeuron(VNeuron):
 
         self._item = QGraphicsRectItem(x, y, width, height)
         self._item.setZValue(10)
+        self._item.setBrush(QBrush(QColor(255, 255, 255)))
         self._item.mousePressEvent = select
         self._item.mouseDoubleClickEvent = show_output
         self._text = draw_text('SRNN', self._item.boundingRect(), HintsKeeper().names)

@@ -13,7 +13,7 @@ class SingletonMeta(type):
 
 class HintsKeeper(metaclass=SingletonMeta):
     def __init__(self):
-        self._display = Display.COMPACT
+        self._display = Display.EXTENDED
         self._color = WeightColor.OFF
         self._thick = WeightThick.OFF
         self._names = Names.HORIZONTAL

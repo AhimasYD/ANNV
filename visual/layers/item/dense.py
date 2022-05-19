@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy, QGraphicsEllipseItem
 from PyQt5.QtCore import QPointF
+from PyQt5.QtGui import QColor, QBrush
 
 import numpy as np
 
@@ -107,6 +108,7 @@ class VDenseNeuron(VNeuron):
 
         self._item = QGraphicsEllipseItem(x, y, side, side)
         self._item.setZValue(10)
+        self._item.setBrush(QBrush(QColor(255, 255, 255)))
         self._item.mousePressEvent = select
         self._item.mouseDoubleClickEvent = show_output
         self._scene.addItem(self._item)
