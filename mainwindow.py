@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from math import ceil
+from math import ceil, floor
 
 from logic import *
 from visual import *
@@ -16,14 +16,6 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self._hints_keeper = HintsKeeper()
-
-        self._o_display = Display.COMPACT
-        self._o_color = WeightColor.OFF
-        self._o_thick = WeightThick.ON
-        self._o_names = Names.HORIZONTAL
-        self._o_captions = Captions.OFF
-        self._o_bias = Bias.OFF
-
         self._visual = None
 
         self.model_widget = None
@@ -178,20 +170,19 @@ class MainWindow(QMainWindow):
             filename += '.png'
 
         self.scene.clearSelection()
-        self.scene.setSceneRect(self.scene.itemsBoundingRect())
 
-        rect = self.scene.sceneRect()
-        # rect = QRectF(rect.x() - SCENE_RECT_PADDING, rect.y() - SCENE_RECT_PADDING,
-        #               rect.width() + 4 * SCENE_RECT_PADDING, rect.height() + 4 * SCENE_RECT_PADDING)
+        rect = self.scene.itemsBoundingRect()
+        rect = QRectF(rect.x(), rect.y(), ceil(rect.width()), ceil(rect.height()))
+        self.scene.setSceneRect(rect)
 
-        image = QImage(ceil(rect.width()), ceil(rect.height()), QImage.Format_ARGB32_Premultiplied)
-        # image.fill(Qt.white)
+        image = QImage(rect.toRect().size(), QImage.Format_ARGB32_Premultiplied)
 
         painter = QPainter(image)
         painter.setRenderHints(QPainter.Antialiasing)
         self.scene.render(painter)
+
         res = image.save(filename)
-        print('RESULT', res)
+        print('SAVED:', res)
 
     def display_compact(self, checked):
         self._o_display = Display.COMPACT
