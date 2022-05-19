@@ -3,6 +3,7 @@ from PyQt5.QtCore import QPointF
 from abc import ABCMeta, abstractmethod
 import numpy as np
 
+from weak import WeakMethod
 from visual.layers.trivia import VPlaceholder
 from visual.layers.constants import PLACEHOLDER_SIDE, PLACEHOLDER_MAX_NEURONS, PLACEHOLDER_MARGIN_IN, PLACEHOLDER_MARGIN_OUT
 
@@ -60,7 +61,13 @@ class VNeuronController(metaclass=ABCMeta):
             self._placeholder.setPos(self._x + nheight / 2 - self._placeholder.boundingRect().width() / 2,
                                      0 - self._placeholder.boundingRect().height() / 2)
 
-        logic.attach_output(self.update_output)
+        self._output_callback = WeakMethod(self, VNeuronController.update_output)
+        logic.attach_output(self._output_callback)
+        self._output_detach = logic.detach_output
+
+    def __del__(self):
+        self._output_detach(self._output_callback)
+        print('DELETE VNeuronController')
 
     def _get_neuron(self, i):
         if self._neurons is not None:

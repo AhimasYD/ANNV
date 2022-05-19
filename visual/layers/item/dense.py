@@ -3,13 +3,13 @@ from PyQt5.QtCore import QPointF
 
 import numpy as np
 
+from weak import WeakMethod
 from visual.constants import Display
 from visual.trivia import Pixmap, HintsKeeper, PIXMAP_SIDE
 from visual.links import VLink, LinkType, WeightType
 from visual.layers.constants import NEURON_SIDE, NEURON_MARGIN
 from visual.layers.layer import VLayer
-from visual.layers.trivia.block import VBlock
-from visual.layers.trivia.bias import VBiasNeuron
+from visual.layers.trivia import VBlock, VBiasNeuron
 from visual.layers.item.itemlayer import VItem
 from visual.layers.item.neuroncontroller import VNeuronController
 from visual.layers.item.neuron import VNeuron
@@ -19,17 +19,22 @@ class VDense(VItem):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
 
+        self._select_callback = WeakMethod(self, VDense.select)
+        self._output_callback = WeakMethod(self, VDense.show_output)
         # Display as block
         if HintsKeeper().display == Display.COMPACT:
             self._connection = LinkType.UNITED
-            self._block = VDenseBlock(self._scene, self._x, self.select, self.show_output)
+            self._block = VDenseBlock(self._scene, self._x, self._select_callback, self._output_callback)
 
         # Display as neurons
         elif HintsKeeper().display == Display.EXTENDED:
             self._connection = LinkType.SEPARATED
-            self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self.select, self.show_output, logic)
+            self._neuron_ctrl = VDenseNeuronController(self._scene, self._x, self._logic.units, self._select_callback, self._output_callback, logic)
 
         self._init_caption()
+
+    def __del__(self):
+        super().__del__()
 
     def select(self, event):
         super().select(event)
@@ -108,6 +113,9 @@ class VDenseNeuron(VNeuron):
 
         self._bind_in = QPointF(x, y + side / 2)
         self._bind_out = QPointF(x + side, y + side / 2)
+
+    def __del__(self):
+        print('DELETE VDenseNeuron')
 
     def set_output(self, value, factor):
         super().set_output(value, factor)

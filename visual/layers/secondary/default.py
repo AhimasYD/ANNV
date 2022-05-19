@@ -1,14 +1,19 @@
 from visual.links import LinkType
 
+from weak import WeakMethod
 from visual.layers.layer import VLayer
-from visual.layers.trivia.block import VBlock
+from visual.layers.trivia import VBlock
 
 
 class VDefault(VLayer):
     def __init__(self, logic, scene, x, w_info, w_flat, w_volume):
         super().__init__(logic, scene, x, w_info, w_flat, w_volume)
-        self._block = VDefaultBlock(self._scene, self._x, self.select, self._logic.type)
+        self._select_callback = WeakMethod(self, VDefault.select)
+        self._block = VDefaultBlock(self._scene, self._x, self._select_callback, self._logic.type)
         self._init_caption()
+
+    def __del__(self):
+        super().__del__()
 
     def select(self, event):
         super().select(event)

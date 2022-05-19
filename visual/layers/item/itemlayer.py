@@ -12,6 +12,9 @@ class VItem(VLayer):
         self._block = None
         self._neuron_ctrl = None
 
+    def __del__(self):
+        super().__del__()
+
     def binds_in(self):
         if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_in()

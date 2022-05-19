@@ -1,7 +1,6 @@
 from visual.trivia import Pixmap, PIXMAP_SIDE
 
 
-
 class VConvKernel:
     def __init__(self, scene, array, x, y, filters, select, show_output, wrapper_type):
         self._scene = scene

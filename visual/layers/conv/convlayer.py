@@ -15,6 +15,9 @@ class VConv(VLayer):
         self._kernel_ctrl = None
         self._kernels = None
 
+    def __del__(self):
+        super().__del__()
+
     @abstractmethod
     def update(self):
         """"""

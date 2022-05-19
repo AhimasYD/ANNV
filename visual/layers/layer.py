@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QGraphicsTextItem
 from PyQt5.QtGui import QFont
+
 from abc import ABCMeta, abstractmethod
 
+from weak import WeakMethod
 from visual.widgets.functions import clear_layout
 from visual.constants import Captions
 from visual.layers.constants import CAPTION_MARGIN
@@ -18,6 +20,9 @@ class VLayer(metaclass=ABCMeta):
         self._w_volume = w_volume
 
         self._connection = None
+
+    def __del__(self):
+        HintsKeeper().detach_captions(self._captions_callback)
 
     def select(self, event):
         clear_layout(self._w_info.layout())
@@ -41,7 +46,9 @@ class VLayer(metaclass=ABCMeta):
         y = l_bound.y() + l_bound.height() + CAPTION_MARGIN
         self._caption.setPos(x, y)
         self._scene.addItem(self._caption)
-        HintsKeeper().attach_captions(self.update_caption)
+
+        self._captions_callback = WeakMethod(self, VLayer.update_caption)
+        HintsKeeper().attach_captions(self._captions_callback)
         self.update_caption(HintsKeeper().captions)
 
     def update_caption(self, value):

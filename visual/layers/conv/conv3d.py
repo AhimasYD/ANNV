@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QLabel, QSpacerItem, QSizePolicy
 
 import numpy as np
 
+from weak import WeakMethod
 from visual.constants import Display
 from visual.trivia import Pixmap, PIXMAP_SIDE, HintsKeeper
 from visual.links import LinkType
@@ -18,13 +19,19 @@ class VConv3D(VConv):
         self._depth = 0
 
         self._connection = LinkType.UNITED
+
+        self._select_callback = WeakMethod(self, VConv3D.select)
+        self._output_callback = WeakMethod(self, VConv3D.show_output)
         if HintsKeeper().display == Display.COMPACT:
-            self._block = VConv3DBlock(self._scene, self._x, self.select, self.show_output)
+            self._block = VConv3DBlock(self._scene, self._x, self._select_callback, self._output_callback)
         elif HintsKeeper().display == Display.EXTENDED:
             self._kernel_ctrl = VConv3DKernelController(self._scene, self._x, self._logic.channel_num, self._logic.filter_num,
-                                                        self._logic.filters[self._filter, self._depth], self.select, self.show_output)
+                                                        self._logic.filters[self._filter, self._depth], self._select_callback, self._output_callback)
 
         self._init_caption()
+
+    def __del__(self):
+        super().__del__()
 
     def select(self, event):
         super().select(event)
@@ -55,11 +62,11 @@ class VConv3D(VConv):
 
         self._w_volume.show()
         self._w_volume.num_0.setText(f'{self._filter}')
-        self._w_volume.button_0_prev.mousePressEvent = self.filter_prev
-        self._w_volume.button_0_next.mousePressEvent = self.filter_next
+        self._w_volume.button_0_prev.mousePressEvent = WeakMethod(self, VConv3D.filter_prev)
+        self._w_volume.button_0_next.mousePressEvent = WeakMethod(self, VConv3D.filter_next)
         self._w_volume.num_1.setText(f'{self._depth}')
-        self._w_volume.button_1_prev.mousePressEvent = self.depth_prev
-        self._w_volume.button_1_next.mousePressEvent = self.depth_next
+        self._w_volume.button_1_prev.mousePressEvent = WeakMethod(self, VConv3D.depth_prev)
+        self._w_volume.button_1_next.mousePressEvent = WeakMethod(self, VConv3D.depth_next)
 
     def update(self):
         self._w_flat.num.setText(f'{self._filter}')

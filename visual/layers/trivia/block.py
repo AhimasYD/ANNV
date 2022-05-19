@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsRectItem
 from PyQt5.QtCore import QPointF
 
+from weak import WeakMethod
 from visual.trivia import HintsKeeper
 from visual.layers.constants import BLOCK_HEIGHT, BLOCK_WIDTH
 from visual.layers.functions import draw_text
@@ -18,7 +19,9 @@ class VBlock:
 
         self._text = None
         self.update_name(HintsKeeper().names)
-        HintsKeeper().attach_names(self.update_name)
+
+        self._names_callback = WeakMethod(self, VBlock.update_name)
+        HintsKeeper().attach_names(self._names_callback)
 
         self._bind_in = QPointF(x, 0)
         self._bind_out = QPointF(x + BLOCK_WIDTH, 0)
@@ -27,7 +30,7 @@ class VBlock:
         self._links_out = None
 
     def __del__(self):
-        HintsKeeper().detach_names(self.update_name)
+        HintsKeeper().detach_names(self._names_callback)
 
     def bind_in(self):
         return self._bind_in
