@@ -6,10 +6,8 @@ from PyQt5.QtCore import *
 from logic import *
 from visual import *
 
-from visual.widgets.flatblock import FlatBlock
-from visual.widgets.volumeblock import VolumeBlock
-
-from visual.trivia.hintskeeper import HintsKeeper
+from visual.widgets import FlatBlock, VolumeBlock, clear_layout
+from visual.trivia import HintsKeeper
 
 
 class MainWindow(QMainWindow):
@@ -153,6 +151,7 @@ class MainWindow(QMainWindow):
 
         self._visual = None
         self.scene.clear()
+        clear_layout(self.layer_widget.layout())
 
         logic = LModel(filename)
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
@@ -226,8 +225,8 @@ class MainWindow(QMainWindow):
 
         logic = self._visual.logic
         self._visual = None
-
         self.scene.clear()
+        clear_layout(self.layer_widget.layout())
 
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
         self.scene.setSceneRect(self.scene.itemsBoundingRect())

@@ -65,6 +65,9 @@ class VNeuronController(metaclass=ABCMeta):
         logic.attach_output(self._output_callback)
         self._output_detach = logic.detach_output
 
+        if logic.output is not None:
+            self.update_output(logic.output)
+
     def __del__(self):
         self._output_detach(self._output_callback)
 

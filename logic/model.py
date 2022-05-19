@@ -15,7 +15,8 @@ class LModel:
             self._summary.append(pd.DataFrame({
                 'Name': [layer.name],
                 'Type': [layer.__class__.__name__],
-                'Shape': [layer.output_shape]
+                'Input shape': [layer.input_shape],
+                'Output shape': [layer.output_shape]
             }))
         self._summary = pd.concat(self._summary, ignore_index=True)
 
@@ -65,6 +66,8 @@ class LModel:
 
         try:
             shape = self._k_model.input_shape[1:]
+            if shape[0] is None:
+                shape = (1, *shape[1:])
             file_input = file_input.reshape(shape)
             file_input = np.array([file_input])
         except:

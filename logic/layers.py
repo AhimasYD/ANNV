@@ -78,6 +78,8 @@ class LSimpleRNN(LLayer):
 
     def set_output(self, new_output):
         new_output = new_output[0]
+        while len(new_output.shape) > 1 and new_output.shape[0] == 1:
+            new_output = new_output[0]
         super().set_output(new_output)
 
     @property
@@ -116,6 +118,8 @@ class LLSTM(LLayer):
 
     def set_output(self, new_output):
         new_output = new_output[0]
+        while len(new_output.shape) > 1 and new_output.shape[0] == 1:
+            new_output = new_output[0]
         super().set_output(new_output)
 
     @property
@@ -194,6 +198,8 @@ class LGRU(LLayer):
 
     def set_output(self, new_output):
         new_output = new_output[0]
+        while len(new_output.shape) > 1 and new_output.shape[0] == 1:
+            new_output = new_output[0]
         super().set_output(new_output)
 
     @property

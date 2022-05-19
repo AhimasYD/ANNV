@@ -24,5 +24,5 @@ class VConvKernel:
         self._wrapper.setPos(x, y)
 
     def update(self, array, filter_num):
-        self._pixmap.update(array)
+        self._pixmap.update_map(array)
         self._wrapper.set_active(filter_num)

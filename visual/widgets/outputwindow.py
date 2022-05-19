@@ -65,6 +65,11 @@ class OutputWindow(QDialog):
         self._flat.button_prev.mousePressEvent = self.channel_prev
         self._flat.button_next.mousePressEvent = self.channel_next
 
+        self._volume.button_0_prev.mousePressEvent = self.channel_prev
+        self._volume.button_0_next.mousePressEvent = self.channel_next
+        self._volume.button_1_prev.mousePressEvent = self.depth_prev
+        self._volume.button_1_next.mousePressEvent = self.depth_next
+
         self._flat.hide()
         self._volume.hide()
 
@@ -87,7 +92,6 @@ class OutputWindow(QDialog):
             self.update_pixmap()
 
     def channel_next(self, event):
-        print('HERE')
         if self._channel + 1 < self._array.shape[0]:
             self._channel += 1
             self.update_pixmap()
@@ -105,11 +109,11 @@ class OutputWindow(QDialog):
     def update_pixmap(self):
         array = self._array
         if len(self._array.shape) <= 2:
-            self._pixmap.update(array)
+            self._pixmap.update_map(array)
         elif len(self._array.shape) == 3:
-            self._pixmap.update(array[self._channel])
+            self._pixmap.update_map(array[self._channel])
             self._flat.num.setText(f'{self._channel}')
         elif len(self._array.shape) == 4:
-            self._pixmap.update(array[self._channel][self._depth])
+            self._pixmap.update_map(array[self._channel][self._depth])
             self._volume.num_0.setText(f'{self._channel}')
             self._volume.num_1.setText(f'{self._depth}')

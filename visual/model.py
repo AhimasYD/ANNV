@@ -129,10 +129,12 @@ class VModel:
 
         vh_name = QTableWidgetItem('Name')
         vh_type = QTableWidgetItem('Type')
-        vh_shape = QTableWidgetItem('Shape')
+        vh_inp_shape = QTableWidgetItem('Input shape')
+        vh_out_shape = QTableWidgetItem('Output shape')
         table.setHorizontalHeaderItem(0, vh_name)
         table.setHorizontalHeaderItem(1, vh_type)
-        table.setHorizontalHeaderItem(2, vh_shape)
+        table.setHorizontalHeaderItem(2, vh_inp_shape)
+        table.setHorizontalHeaderItem(3, vh_out_shape)
         table.verticalHeader().hide()
         table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
@@ -143,15 +145,18 @@ class VModel:
         for i in range(summary.shape[0]):
             c_name = QTableWidgetItem(str(summary.at[i, 'Name']))
             c_type = QTableWidgetItem(str(summary.at[i, 'Type']))
-            c_shape = QTableWidgetItem(str(summary.at[i, 'Shape']))
+            c_inp_shape = QTableWidgetItem(str(summary.at[i, 'Input shape']))
+            c_out_shape = QTableWidgetItem(str(summary.at[i, 'Output shape']))
 
             c_name.setTextAlignment(Qt.AlignCenter)
             c_type.setTextAlignment(Qt.AlignCenter)
-            c_shape.setTextAlignment(Qt.AlignCenter)
+            c_inp_shape.setTextAlignment(Qt.AlignCenter)
+            c_out_shape.setTextAlignment(Qt.AlignCenter)
 
             table.setItem(i, 0, c_name)
             table.setItem(i, 1, c_type)
-            table.setItem(i, 2, c_shape)
+            table.setItem(i, 2, c_inp_shape)
+            table.setItem(i, 3, c_out_shape)
 
         clear_layout(self._wm.layout())
         self._wm.layout().addWidget(table)

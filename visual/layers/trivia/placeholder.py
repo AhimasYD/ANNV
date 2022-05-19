@@ -10,9 +10,9 @@ class VPlaceholder(QGraphicsItemGroup):
         self._circle2 = QGraphicsEllipseItem(0, 0 + margin + side, side, side)
         self._circle3 = QGraphicsEllipseItem(0, 0 + 2 * margin + 2 * side, side, side)
 
-        self._circle1.setBrush(QBrush(QColor(0, 0, 0)))
-        self._circle2.setBrush(QBrush(QColor(0, 0, 0)))
-        self._circle3.setBrush(QBrush(QColor(0, 0, 0)))
+        self._circle1.setBrush(QBrush(QColor(50, 50, 50)))
+        self._circle2.setBrush(QBrush(QColor(50, 50, 50)))
+        self._circle3.setBrush(QBrush(QColor(50, 50, 50)))
 
         self._circle1.setZValue(10)
         self._circle2.setZValue(10)

@@ -5,7 +5,7 @@ def brush_by_factor(value, maximum):
     try:
         factor = value / maximum
         alpha = abs(int(255 * factor))
-    except ZeroDivisionError:
+    except (ZeroDivisionError, ValueError):
         factor = 0
         alpha = 0
 
