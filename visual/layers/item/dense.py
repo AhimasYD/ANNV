@@ -80,8 +80,8 @@ class VDenseNeuronController(VNeuronController):
                 neuron.set_links_in(links[i], weights=(weights[i], maximum))
 
     def set_bias(self, bounding, weights):
-        bias = VBiasNeuron(self._scene, bounding)
-        bind_out = bias.bind_out()
+        self._bias = VBiasNeuron(self._scene, bounding)
+        bind_out = self._bias.bind_out()
         binds_in = self.binds_in()
 
         maximum = max(weights.min(), weights.max(), key=abs)
@@ -96,7 +96,7 @@ class VDenseNeuronController(VNeuronController):
                 self._get_neuron(i).set_link_bias(links[i])
 
                 self._scene.addItem(links[i].get_item())
-        bias.set_links_out(links)
+        self._bias.set_links_out(links)
 
 
 class VDenseNeuron(VNeuron):

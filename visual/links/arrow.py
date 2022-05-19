@@ -72,7 +72,7 @@ class Arrow(QGraphicsItemGroup):
             raise ValueError
 
         width = LINE_WIDTH_MAX * factor
-        width = int(max(LINE_WIDTH_MIN, width))
+        width = max(LINE_WIDTH_MIN, int(width))
 
         pen = self._line.pen()
         pen.setWidth(width)

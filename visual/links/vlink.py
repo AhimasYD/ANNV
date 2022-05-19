@@ -2,17 +2,15 @@ from PyQt5.QtWidgets import QGraphicsLineItem
 
 from math import isnan
 
+from weak import WeakMethod
 from visual.constants import WeightColor, WeightThick, Bias
-from visual.trivia.hintskeeper import HintsKeeper
+from visual.trivia import HintsKeeper
+from visual.links.constants import WeightType
+from visual.links.arrow import Arrow
 
-from .constants import WeightType
-from .arrow import Arrow
 
-
-class VLink(QGraphicsLineItem):
+class VLink:
     def __init__(self, start, end, w_type=WeightType.KERNEL, tooltip=None):
-        super().__init__()
-
         self._arrow = Arrow(start, end)
         self._type = w_type
         if self._type == WeightType.BIAS:
@@ -21,9 +19,12 @@ class VLink(QGraphicsLineItem):
         self._weight = None
         self._maximum = None
 
-        HintsKeeper().attach_color(self.set_color_hint)
-        HintsKeeper().attach_thick(self.set_thick_hint)
-        HintsKeeper().attach_bias(self.set_bias_hint)
+        self._color_callback = WeakMethod(self, VLink.set_color_hint)
+        self._thick_callback = WeakMethod(self, VLink.set_thick_hint)
+        self._bias_callback = WeakMethod(self, VLink.set_bias_hint)
+        HintsKeeper().attach_color(self._color_callback)
+        HintsKeeper().attach_thick(self._thick_callback)
+        HintsKeeper().attach_bias(self._bias_callback)
         self._color = HintsKeeper().color
         self._thick = HintsKeeper().thick
         self._bias = HintsKeeper().bias
@@ -34,8 +35,9 @@ class VLink(QGraphicsLineItem):
             self.set_tooltip(tooltip)
 
     def __del__(self):
-        HintsKeeper().detach_color(self.set_color_hint)
-        HintsKeeper().detach_thick(self.set_thick_hint)
+        HintsKeeper().detach_color(self._color_callback)
+        HintsKeeper().detach_thick(self._thick_callback)
+        HintsKeeper().detach_bias(self._bias_callback)
 
     def _update_arrow(self):
         if self._type == WeightType.BIAS:

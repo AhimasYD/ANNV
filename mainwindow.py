@@ -156,6 +156,7 @@ class MainWindow(QMainWindow):
 
         logic = LModel(filename)
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
+        self.scene.setSceneRect(self.scene.itemsBoundingRect())
 
     def load_input(self):
         filename, _ = QFileDialog.getOpenFileName()
@@ -225,6 +226,8 @@ class MainWindow(QMainWindow):
 
         logic = self._visual.logic
         self._visual = None
+
         self.scene.clear()
 
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
+        self.scene.setSceneRect(self.scene.itemsBoundingRect())

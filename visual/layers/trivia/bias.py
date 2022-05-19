@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsEllipseItem
 from PyQt5.QtCore import QPointF
 
+from weak import WeakMethod
 from visual.trivia import HintsKeeper
 from visual.constants import Bias
 from visual.layers.constants import BIAS_SIDE, BIAS_MARGIN, BIAS_BRUSH
@@ -22,8 +23,12 @@ class VBiasNeuron:
         self._bind_out = QPointF(x + side, y + side / 2)
         self._links_out = None
 
-        HintsKeeper().attach_bias(self.set_bias_hint)
+        self._bias_callback = WeakMethod(self, VBiasNeuron.set_bias_hint)
+        HintsKeeper().attach_bias(self._bias_callback)
         self.set_bias_hint(HintsKeeper().bias)
+
+    def __del__(self):
+        HintsKeeper().detach_bias(self._bias_callback)
 
     def bind_out(self):
         return self._bind_out
