@@ -4,7 +4,7 @@ from PyQt5.QtCore import QPointF
 import numpy as np
 
 from weak import WeakMethod
-from visual.constants import Display
+from visual.constants import Display, Names
 from visual.trivia import Pixmap, HintsKeeper, PIXMAP_SIDE
 from visual.links import VLink, LinkType, WeightType
 from visual.layers.constants import NEURON_REC_HEIGHT, NEURON_REC_WIDTH, NEURON_REC_MARGIN
@@ -155,6 +155,19 @@ class VLSTMNeuron(VNeuron):
 
         self._bind_in = QPointF(x, y + height / 2)
         self._bind_out = QPointF(x + width, y + height / 2)
+
+        self._name_callback = WeakMethod(self, VLSTMNeuron.update_name)
+        HintsKeeper().attach_names(self._name_callback)
+
+    def __del__(self):
+        HintsKeeper().detach_names(self._name_callback)
+
+    def update_name(self, value):
+        self._scene.removeItem(self._text)
+
+        self._text = draw_text('LSTM', self._item.boundingRect(), value)
+        self._text.setZValue(11)
+        self._scene.addItem(self._text)
 
     def set_output(self, value, factor):
         super().set_output(value, factor)

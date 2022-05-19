@@ -157,6 +157,19 @@ class VGRUNeuron(VNeuron):
         self._bind_in = QPointF(x, y + height / 2)
         self._bind_out = QPointF(x + width, y + height / 2)
 
+        self._name_callback = WeakMethod(self, VGRUNeuron.update_name)
+        HintsKeeper().attach_names(self._name_callback)
+
+    def __del__(self):
+        HintsKeeper().detach_names(self._name_callback)
+
+    def update_name(self, value):
+        self._scene.removeItem(self._text)
+
+        self._text = draw_text('GRU', self._item.boundingRect(), value)
+        self._text.setZValue(11)
+        self._scene.addItem(self._text)
+
     def set_output(self, value, factor):
         super().set_output(value, factor)
         self._item.setToolTip(str(value))
