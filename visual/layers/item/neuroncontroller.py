@@ -9,7 +9,7 @@ from visual.layers.constants import PLACEHOLDER_SIDE, PLACEHOLDER_MAX_NEURONS, P
 
 
 class VNeuronController(metaclass=ABCMeta):
-    def __init__(self, scene, x, units, select, show_output, logic, ntype, nheight, nmargin):
+    def __init__(self, scene, x, units, select, show_output, logic, ntype, nheight, nwidth, nmargin):
         self._scene = scene
         self._x = x
         self._units = units
@@ -58,7 +58,7 @@ class VNeuronController(metaclass=ABCMeta):
                     y += 2 * PLACEHOLDER_MARGIN_OUT
                     y += nmargin
 
-            self._placeholder.setPos(self._x + nheight / 2 - self._placeholder.boundingRect().width() / 2,
+            self._placeholder.setPos(self._x + nwidth / 2 - self._placeholder.boundingRect().width() / 2,
                                      0 - self._placeholder.boundingRect().height() / 2)
 
         self._output_callback = WeakMethod(self, VNeuronController.update_output)

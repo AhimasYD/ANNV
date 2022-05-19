@@ -106,7 +106,7 @@ class VGRUBlock(VBlock):
 
 class VGRUNeuronController(VNeuronController):
     def __init__(self, scene, x, units, select, show_output, logic):
-        super().__init__(scene, x, units, select, show_output, logic, VGRUNeuron, NEURON_REC_HEIGHT, NEURON_REC_MARGIN)
+        super().__init__(scene, x, units, select, show_output, logic, VGRUNeuron, NEURON_REC_HEIGHT, NEURON_REC_WIDTH, NEURON_REC_MARGIN)
 
     def set_links_in(self, links, weights):
         W_z, W_r, W_h = weights

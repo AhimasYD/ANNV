@@ -105,7 +105,7 @@ class VLSTMBlock(VBlock):
 
 class VLSTMNeuronController(VNeuronController):
     def __init__(self, scene, x, units, select, show_output, logic):
-        super().__init__(scene, x, units, select, show_output, logic, VLSTMNeuron, NEURON_REC_HEIGHT, NEURON_REC_MARGIN)
+        super().__init__(scene, x, units, select, show_output, logic, VLSTMNeuron, NEURON_REC_HEIGHT, NEURON_REC_WIDTH, NEURON_REC_MARGIN)
 
     def set_links_in(self, links, weights):
         W_i, W_f, W_c, W_o = weights

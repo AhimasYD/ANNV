@@ -70,7 +70,7 @@ class VDenseBlock(VBlock):
 
 class VDenseNeuronController(VNeuronController):
     def __init__(self, scene, x, units, select, show_output, logic):
-        super().__init__(scene, x, units, select, show_output, logic, VDenseNeuron, NEURON_SIDE, NEURON_MARGIN)
+        super().__init__(scene, x, units, select, show_output, logic, VDenseNeuron, NEURON_SIDE, NEURON_SIDE, NEURON_MARGIN)
 
     def set_links_in(self, links, weights):
         maximum = max(weights.min(), weights.max(), key=abs)
