@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from weak import WeakMethod
 from visual.widgets.functions import clear_layout
 from visual.constants import Captions
-from visual.layers.constants import CAPTION_MARGIN
+from visual.layers.constants import CAPTION_MARGIN, CAPTION_MARGIN_INNER
 from visual.trivia import HintsKeeper
 
 
@@ -39,13 +39,23 @@ class VLayer(metaclass=ABCMeta):
         self._w_volume.button_1_next.mousePressEvent = None
 
     def _init_caption(self):
-        self._caption = QGraphicsTextItem(str(self._logic.output_shape))
-        self._caption.setFont(QFont('OldEnglish', 14, QFont.Medium))
+        self._caption_type = QGraphicsTextItem(str(self._logic.type))
+        self._caption_type .setFont(QFont('OldEnglish', 14, QFont.Medium))
+
         l_bound = self.bounding()
-        x = l_bound.x() + l_bound.width() / 2 - self._caption.boundingRect().width() / 2
+        x = l_bound.x() + l_bound.width() / 2 - self._caption_type.boundingRect().width() / 2
         y = l_bound.y() + l_bound.height() + CAPTION_MARGIN
-        self._caption.setPos(x, y)
-        self._scene.addItem(self._caption)
+        self._caption_type.setPos(x, y)
+        self._scene.addItem(self._caption_type)
+
+        self._caption_shape = QGraphicsTextItem(str(self._logic.output_shape))
+        self._caption_shape.setFont(QFont('OldEnglish', 14, QFont.Medium))
+
+        l_bound = self.bounding()
+        x = l_bound.x() + l_bound.width() / 2 - self._caption_shape.boundingRect().width() / 2
+        y = l_bound.y() + l_bound.height() + CAPTION_MARGIN + CAPTION_MARGIN_INNER
+        self._caption_shape.setPos(x, y)
+        self._scene.addItem(self._caption_shape)
 
         self._captions_callback = WeakMethod(self, VLayer.update_caption)
         HintsKeeper().attach_captions(self._captions_callback)
@@ -53,9 +63,11 @@ class VLayer(metaclass=ABCMeta):
 
     def update_caption(self, value):
         if value == Captions.ON:
-            self._caption.show()
+            self._caption_type.show()
+            self._caption_shape.show()
         else:
-            self._caption.hide()
+            self._caption_type.hide()
+            self._caption_shape.hide()
 
     def set_bias(self, bounding):
         pass

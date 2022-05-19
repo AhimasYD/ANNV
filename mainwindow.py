@@ -27,6 +27,9 @@ class MainWindow(QMainWindow):
     def _init_ui(self):
         uic.loadUi('mainwindow.ui', self)
 
+        self.tabWidget.tabBar().setDocumentMode(True)
+        self.tabWidget.tabBar().setExpanding(True)
+
         menu_bar = self.menuBar()
         menu = QMenu('Options', self)
 

@@ -12,4 +12,4 @@ from visual.layers.constants import KERNEL_MARGIN
 from visual.layers.constants import PLACEHOLDER_SIDE, PLACEHOLDER_MARGIN_IN, PLACEHOLDER_MARGIN_OUT
 from visual.layers.constants import PLACEHOLDER_MAX_NEURONS, PLACEHOLDER_MAX_KERNELS
 from visual.layers.constants import BIAS_SIDE, BIAS_MARGIN, BIAS_BRUSH
-from visual.layers.constants import CAPTION_MARGIN
+from visual.layers.constants import CAPTION_MARGIN, CAPTION_MARGIN_INNER
