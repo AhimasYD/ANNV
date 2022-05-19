@@ -86,7 +86,3 @@ class VConv2DKernelController(VConvKernelController):
 class VConv2DKernel(VConvKernel):
     def __init__(self, scene, array, x, y, filters, select, show_output):
         super().__init__(scene, array, x, y, filters, select, show_output, KernelWrapperFlat)
-
-    def __del__(self):
-        print('DELETE VConv2DKernel')
-

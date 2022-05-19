@@ -156,9 +156,6 @@ class VLSTMNeuron(VNeuron):
         self._bind_in = QPointF(x, y + height / 2)
         self._bind_out = QPointF(x + width, y + height / 2)
 
-    def __del__(self):
-        print('DELETE VLSTMNeuron')
-
     def set_output(self, value, factor):
         super().set_output(value, factor)
         self._item.setToolTip(str(value))

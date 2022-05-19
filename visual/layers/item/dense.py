@@ -114,9 +114,6 @@ class VDenseNeuron(VNeuron):
         self._bind_in = QPointF(x, y + side / 2)
         self._bind_out = QPointF(x + side, y + side / 2)
 
-    def __del__(self):
-        print('DELETE VDenseNeuron')
-
     def set_output(self, value, factor):
         super().set_output(value, factor)
         self._item.setToolTip(str(value))

@@ -67,7 +67,6 @@ class VNeuronController(metaclass=ABCMeta):
 
     def __del__(self):
         self._output_detach(self._output_callback)
-        print('DELETE VNeuronController')
 
     def _get_neuron(self, i):
         if self._neurons is not None:
