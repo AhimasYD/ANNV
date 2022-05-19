@@ -42,6 +42,7 @@ class VLSTM(VItem):
 
         layout.addWidget(QLabel(f'Type: {self._logic.type}'))
         layout.addWidget(QLabel(f'Activation: {self._logic.activation}'))
+        layout.addWidget(QLabel(f'Recurrent activation: {self._logic.rec_activation}'))
         layout.addItem(QSpacerItem(0, 25, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         layout.addWidget(QLabel('W_i:'))

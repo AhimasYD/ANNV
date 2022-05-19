@@ -107,6 +107,7 @@ class LLSTM(LLayer):
 
         self._type = 'LSTM'
         self._activation = str(layer.activation.__name__)
+        self._rec_activation = str(layer.recurrent_activation.__name__)
         self._units = layer.units
 
         self._W = layer.get_weights()[0]
@@ -120,6 +121,10 @@ class LLSTM(LLayer):
     @property
     def activation(self):
         return self._activation
+
+    @property
+    def rec_activation(self):
+        return self._rec_activation
 
     @property
     def units(self):
@@ -180,6 +185,7 @@ class LGRU(LLayer):
 
         self._type = 'GRU'
         self._activation = str(layer.activation.__name__)
+        self._rec_activation = str(layer.recurrent_activation.__name__)
         self._units = layer.units
 
         self._W = layer.get_weights()[0]
@@ -193,6 +199,10 @@ class LGRU(LLayer):
     @property
     def activation(self):
         return self._activation
+
+    @property
+    def rec_activation(self):
+        return self._rec_activation
 
     @property
     def units(self):
