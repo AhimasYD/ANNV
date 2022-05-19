@@ -29,3 +29,8 @@ class Captions(Enum):
 class Bias(Enum):
     OFF = auto()
     ON = auto()
+
+
+class Activation(Enum):
+    OFF = auto()
+    ON = auto()

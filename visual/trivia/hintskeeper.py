@@ -1,4 +1,4 @@
-from visual.constants import Display, WeightColor, WeightThick, Names, Captions, Bias
+from visual.constants import Display, WeightColor, WeightThick, Names, Captions, Bias, Activation
 
 
 class SingletonMeta(type):
@@ -19,6 +19,7 @@ class HintsKeeper(metaclass=SingletonMeta):
         self._names = Names.HORIZONTAL
         self._captions = Captions.OFF
         self._bias = Bias.OFF
+        self._activation = Activation.ON
 
         self._display_subs = []
         self._color_subs = []
@@ -26,6 +27,7 @@ class HintsKeeper(metaclass=SingletonMeta):
         self._names_subs = []
         self._captions_subs = []
         self._bias_subs = []
+        self._activation_subs = []
 
     @property
     def display(self):
@@ -50,6 +52,10 @@ class HintsKeeper(metaclass=SingletonMeta):
     @property
     def bias(self):
         return self._bias
+
+    @property
+    def activation(self):
+        return self._activation
 
     @display.setter
     def display(self, value: Display):
@@ -87,6 +93,12 @@ class HintsKeeper(metaclass=SingletonMeta):
         for callback in self._bias_subs:
             callback(value)
 
+    @activation.setter
+    def activation(self, value):
+        self._activation = value
+        for callback in self._activation_subs:
+            callback(value)
+
     def attach_display(self, callback):
         self._display_subs.append(callback)
 
@@ -105,6 +117,9 @@ class HintsKeeper(metaclass=SingletonMeta):
     def attach_bias(self, callback):
         self._bias_subs.append(callback)
 
+    def attach_activation(self, callback):
+        self._activation_subs.append(callback)
+
     def detach_display(self, callback):
         self._display_subs.remove(callback)
 
@@ -122,3 +137,6 @@ class HintsKeeper(metaclass=SingletonMeta):
 
     def detach_bias(self, callback):
         self._bias_subs.remove(callback)
+
+    def detach_activation(self, callback):
+        self._activation_subs.remove(callback)

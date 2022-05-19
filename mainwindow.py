@@ -93,6 +93,12 @@ class MainWindow(QMainWindow):
         action.triggered.connect(self.bias_changed)
         menu.addAction(action)
 
+        action = QAction('Activation', menu)
+        action.setCheckable(True)
+        action.setChecked(True)
+        action.triggered.connect(self.activation_changed)
+        menu.addAction(action)
+
         menu_bar.addMenu(menu)
 
         self.actionOpen.triggered.connect(self.open_model)
@@ -218,6 +224,12 @@ class MainWindow(QMainWindow):
             self._hints_keeper.bias = Bias.ON
         else:
             self._hints_keeper.bias = Bias.OFF
+
+    def activation_changed(self, checked):
+        if checked:
+            self._hints_keeper.activation = Activation.ON
+        else:
+            self._hints_keeper.activation = Activation.OFF
 
     def recreate_visual(self):
         if not self._visual:

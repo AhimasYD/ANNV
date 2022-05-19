@@ -123,6 +123,7 @@ class VSimpleRNNNeuron(VNeuron):
 
     def __del__(self):
         HintsKeeper().detach_names(self._name_callback)
+        super().__del__()
 
     def update_name(self, value):
         self._scene.removeItem(self._text)
