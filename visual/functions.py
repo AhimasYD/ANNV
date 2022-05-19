@@ -6,10 +6,9 @@ def brush_by_factor(value, maximum):
         factor = value / maximum
         alpha = abs(int(255 * factor))
     except (ZeroDivisionError, ValueError):
-        factor = 0
         alpha = 0
 
-    if factor >= 0:
+    if value >= 0:
         brush = QBrush(QColor(255, 0, 0, alpha))
     else:
         brush = QBrush(QColor(0, 0, 255, alpha))

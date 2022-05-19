@@ -152,10 +152,19 @@ class MainWindow(QMainWindow):
             return
 
         self._visual = None
-        self.scene.clear()
         clear_layout(self.layer_widget.layout())
 
-        logic = LModel(filename)
+        rect = self.scene.itemsBoundingRect()
+        self.scene.clear()
+        self.scene.update(rect)
+
+        try:
+            logic = LModel(filename)
+        except:
+            message = QMessageBox(QMessageBox.Warning, 'Error', "Failed to load model")
+            message.exec()
+            return
+
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
         self.scene.setSceneRect(self.scene.itemsBoundingRect())
 
@@ -179,6 +188,7 @@ class MainWindow(QMainWindow):
         self.scene.setSceneRect(rect)
 
         image = QImage(rect.toRect().size(), QImage.Format_ARGB32_Premultiplied)
+        image.fill(Qt.white)
 
         painter = QPainter(image)
         painter.setRenderHints(QPainter.Antialiasing)
@@ -239,8 +249,11 @@ class MainWindow(QMainWindow):
 
         logic = self._visual.logic
         self._visual = None
-        self.scene.clear()
         clear_layout(self.layer_widget.layout())
+
+        rect = self.scene.itemsBoundingRect()
+        self.scene.clear()
+        self.scene.update(rect)
 
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
         self.scene.setSceneRect(self.scene.itemsBoundingRect())

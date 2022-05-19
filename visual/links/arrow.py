@@ -87,6 +87,7 @@ class Arrow(QGraphicsItemGroup):
         pen.setBrush(QBrush(QColor(0, 0, 0)))
         self._line.setPen(pen)
 
+        self._cap.setBrush(QBrush(QColor(255, 255, 255)))
         pen = self._cap.pen()
         pen.setBrush(QBrush(QColor(0, 0, 0)))
         self._cap.setPen(pen)

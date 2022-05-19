@@ -120,8 +120,8 @@ class VLSTMNeuronController(VNeuronController):
     def set_bias(self, bounding, weights):
         b_i, b_f, b_c, b_o = weights
 
-        bias = VBiasNeuron(self._scene, bounding)
-        bind_out = bias.bind_out()
+        self._bias = VBiasNeuron(self._scene, bounding)
+        bind_out = self._bias.bind_out()
         binds_in = self.binds_in()
 
         links = np.full(len(binds_in), None, dtype=VLayer)
@@ -136,7 +136,7 @@ class VLSTMNeuronController(VNeuronController):
                 self._get_neuron(i).set_link_bias(links[i])
 
                 self._scene.addItem(links[i].get_item())
-        bias.set_links_out(links)
+        self._bias.set_links_out(links)
 
 
 class VLSTMNeuron(VNeuron):
@@ -161,6 +161,8 @@ class VLSTMNeuron(VNeuron):
 
         self._name_callback = WeakMethod(self, VLSTMNeuron.update_name)
         HintsKeeper().attach_names(self._name_callback)
+
+        self.update_activation(HintsKeeper().activation)
 
     def __del__(self):
         HintsKeeper().detach_names(self._name_callback)

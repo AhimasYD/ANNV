@@ -116,6 +116,8 @@ class VDenseNeuron(VNeuron):
         self._bind_in = QPointF(x, y + side / 2)
         self._bind_out = QPointF(x + side, y + side / 2)
 
+        self.update_activation(HintsKeeper().activation)
+
     def __del__(self):
         super().__del__()
 
