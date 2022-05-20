@@ -3,8 +3,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from math import ceil, floor
-
 from logic import *
 from visual import *
 from visual.widgets import FlatBlock, VolumeBlock, clear_layout
