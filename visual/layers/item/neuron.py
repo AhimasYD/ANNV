@@ -27,7 +27,7 @@ class VNeuron:
 
     def set_output(self, value, maximum):
         self._brush = brush_by_factor(value, maximum)
-        if HintsKeeper().activation:
+        if HintsKeeper().activation == Activation.ON:
             self._item.setBrush(self._brush)
 
     def update_activation(self, value):
