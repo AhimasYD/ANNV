@@ -183,12 +183,9 @@ class MainWindow(QMainWindow):
 
         self.scene.clearSelection()
 
-        rect = self.scene.itemsBoundingRect()
-        rect = QRectF(rect.x(), rect.y(), ceil(rect.width()), ceil(rect.height()))
-        self.scene.setSceneRect(rect)
-
-        image = QImage(rect.toRect().size(), QImage.Format_ARGB32_Premultiplied)
-        image.fill(Qt.white)
+        rect = self.scene.sceneRect()
+        image = QImage(rect.toAlignedRect().size(), QImage.Format_ARGB32)
+        image.fill(QColor(255, 255, 255, 255))
 
         painter = QPainter(image)
         painter.setRenderHints(QPainter.Antialiasing)
