@@ -69,8 +69,9 @@ class VLayer(metaclass=ABCMeta):
             self._caption_type.hide()
             self._caption_shape.hide()
 
+    @abstractmethod
     def set_bias(self, bounding):
-        pass
+        """"""
 
     @abstractmethod
     def binds_in(self):

@@ -47,20 +47,6 @@ class MainWindow(QMainWindow):
         group.addAction(action)
         group.setExclusive(True)
 
-        sub_weights = menu.addMenu('Weights')
-        group = QActionGroup(sub_display)
-        act_color = QAction('Color', sub_weights)
-        act_color.setCheckable(True)
-        act_color.triggered.connect(self.color_changed)
-        sub_weights.addAction(act_color)
-        group.addAction(act_color)
-        act_thick = QAction('Thickness', sub_weights)
-        act_thick.setCheckable(True)
-        act_thick.triggered.connect(self.thick_changed)
-        sub_weights.addAction(act_thick)
-        group.addAction(act_thick)
-        group.setExclusive(False)
-
         sub_text = menu.addMenu('Names')
         group = QActionGroup(sub_display)
         action = QAction('Horizontal', sub_display)
@@ -76,6 +62,20 @@ class MainWindow(QMainWindow):
         sub_text.addAction(action)
         group.addAction(action)
         group.setExclusive(True)
+
+        sub_weights = menu.addMenu('Weights')
+        group = QActionGroup(sub_display)
+        act_color = QAction('Color', sub_weights)
+        act_color.setCheckable(True)
+        act_color.triggered.connect(self.color_changed)
+        sub_weights.addAction(act_color)
+        group.addAction(act_color)
+        act_thick = QAction('Thickness', sub_weights)
+        act_thick.setCheckable(True)
+        act_thick.triggered.connect(self.thick_changed)
+        sub_weights.addAction(act_thick)
+        group.addAction(act_thick)
+        group.setExclusive(False)
 
         action = QAction('Captions', menu)
         action.setCheckable(True)
@@ -182,7 +182,10 @@ class MainWindow(QMainWindow):
         self.scene.clearSelection()
 
         rect = self.scene.sceneRect()
-        image = QImage(rect.toAlignedRect().size(), QImage.Format_ARGB32)
+        new_rect = QRectF(rect.x() - SCENE_RECT_PADDING, rect.y() - SCENE_RECT_PADDING,
+                          rect.width() + 2 * SCENE_RECT_PADDING, rect.height() + 2 * SCENE_RECT_PADDING)
+        self.scene.setSceneRect(new_rect)
+        image = QImage(new_rect.toAlignedRect().size(), QImage.Format_ARGB32)
         image.fill(QColor(255, 255, 255, 255))
 
         painter = QPainter(image)
@@ -191,6 +194,8 @@ class MainWindow(QMainWindow):
 
         res = image.save(filename)
         print('SAVED:', res)
+
+        self.scene.setSceneRect(rect)
 
     def display_compact(self, checked):
         self._o_display = Display.COMPACT

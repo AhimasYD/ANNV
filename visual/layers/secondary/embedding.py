@@ -26,6 +26,9 @@ class VEmbedding(VLayer):
         layout.addWidget(Pixmap(self._logic.weights, PIXMAP_SIDE, hv=True, hh=True, sb=True))
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
+    def set_bias(self, bounding):
+        pass
+
     def binds_in(self):
         return LinkType.UNITED, self._block.bind_in()
 

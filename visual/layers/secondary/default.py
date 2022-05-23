@@ -18,6 +18,9 @@ class VDefault(VLayer):
     def select(self, event):
         super().select(event)
 
+    def set_bias(self, bounding):
+        pass
+
     def binds_in(self):
         return LinkType.UNITED, self._block.bind_in()
 

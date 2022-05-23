@@ -32,6 +32,9 @@ class VConv(VLayer):
             self._filter += 1
             self.update()
 
+    def set_bias(self, bounding):
+        pass
+
     def binds_in(self):
         if HintsKeeper().display == Display.COMPACT:
             return self._connection, self._block.bind_in()

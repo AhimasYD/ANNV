@@ -3,18 +3,18 @@ import numpy as np
 
 class LLayer:
     def __init__(self, logic):
-        self._type = None
-        self._output_shape = logic.output_shape
+        self._logic = logic
+
         self._output = None
         self._output_subs = []
 
     @property
     def type(self):
-        return self._type
+        return type(self._logic).__name__
 
     @property
     def output_shape(self):
-        return self._output_shape
+        return self._logic.output_shape
 
     @property
     def output(self):
@@ -36,10 +36,6 @@ class LDense(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'Dense'
-
-        self._activation = str(layer.activation.__name__)
-        self._units = layer.units
         self._kernel = layer.get_weights()[0]
         self._bias = layer.get_weights()[1]
 
@@ -49,11 +45,11 @@ class LDense(LLayer):
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
     @property
     def units(self):
-        return self._units
+        return self._logic.units
 
     @property
     def kernel(self):
@@ -68,10 +64,6 @@ class LSimpleRNN(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'SimpleRNN'
-        self._activation = str(layer.activation.__name__)
-        self._units = layer.units
-
         self._W = layer.get_weights()[0]
         self._U = layer.get_weights()[1]
         self._b = layer.get_weights()[2]
@@ -84,11 +76,11 @@ class LSimpleRNN(LLayer):
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
     @property
     def units(self):
-        return self._units
+        return self._logic.units
 
     @property
     def W(self):
@@ -107,11 +99,6 @@ class LLSTM(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'LSTM'
-        self._activation = str(layer.activation.__name__)
-        self._rec_activation = str(layer.recurrent_activation.__name__)
-        self._units = layer.units
-
         self._W = layer.get_weights()[0]
         self._U = layer.get_weights()[1]
         self._b = layer.get_weights()[2]
@@ -124,15 +111,15 @@ class LLSTM(LLayer):
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
     @property
     def rec_activation(self):
-        return self._rec_activation
+        return str(self._logic.recurrent_activation.__name__)
 
     @property
     def units(self):
-        return self._units
+        return self._logic.units
 
     @property
     def W_i(self):
@@ -187,11 +174,6 @@ class LGRU(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'GRU'
-        self._activation = str(layer.activation.__name__)
-        self._rec_activation = str(layer.recurrent_activation.__name__)
-        self._units = layer.units
-
         self._W = layer.get_weights()[0]
         self._U = layer.get_weights()[1]
         self._b = layer.get_weights()[2]
@@ -204,15 +186,15 @@ class LGRU(LLayer):
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
     @property
     def rec_activation(self):
-        return self._rec_activation
+        return str(self._logic.recurrent_activation.__name__)
 
     @property
     def units(self):
-        return self._units
+        return self._logic.units
 
     @property
     def W_z(self):
@@ -267,16 +249,9 @@ class LConv1D(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'Conv1D'
         # Filter, Channel, Width
         self._filters = np.transpose(layer.get_weights()[0], (2, 1, 0))
         self._bias = layer.get_weights()[1]
-
-        self._padding = layer.padding
-        self._strides = layer.strides
-        self._dilation_rate = layer.dilation_rate
-        self._groups = layer.groups
-        self._activation = str(layer.activation.__name__)
 
     def set_output(self, new_output):
         new_output = new_output[0]
@@ -305,39 +280,32 @@ class LConv1D(LLayer):
 
     @property
     def padding(self):
-        return self._padding
+        return self._logic.padding
 
     @property
     def strides(self):
-        return self._strides
+        return self._logic.strides
 
     @property
     def dilation_rate(self):
-        return self._dilation_rate
+        return self._logic.dilation_rate
 
     @property
     def groups(self):
-        return self._groups
+        return self._logic.groups
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
 
 class LConv2D(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'Conv2D'
         # Filter, Channel, Height, Width
         self._filters = np.transpose(layer.get_weights()[0], (3, 2, 0, 1))
         self._bias = layer.get_weights()[1]
-
-        self._padding = layer.padding
-        self._strides = layer.strides
-        self._dilation_rate = layer.dilation_rate
-        self._groups = layer.groups
-        self._activation = str(layer.activation.__name__)
 
     def set_output(self, new_output):
         new_output = new_output[0]
@@ -366,39 +334,32 @@ class LConv2D(LLayer):
 
     @property
     def padding(self):
-        return self._padding
+        return self._logic.padding
 
     @property
     def strides(self):
-        return self._strides
+        return self._logic.strides
 
     @property
     def dilation_rate(self):
-        return self._dilation_rate
+        return self._logic.dilation_rate
 
     @property
     def groups(self):
-        return self._groups
+        return self._logic.groups
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
 
 class LConv3D(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'Conv3D'
         # Filter, Depth, Channel, Height, Width
         self._filters = np.transpose(layer.get_weights()[0], (4, 0, 3, 1, 2))
         self._bias = layer.get_weights()[1]
-
-        self._padding = layer.padding
-        self._strides = layer.strides
-        self._dilation_rate = layer.dilation_rate
-        self._groups = layer.groups
-        self._activation = str(layer.activation.__name__)
 
     def set_output(self, new_output):
         new_output = new_output[0]
@@ -431,30 +392,29 @@ class LConv3D(LLayer):
 
     @property
     def padding(self):
-        return self._padding
+        return self._logic.padding
 
     @property
     def strides(self):
-        return self._strides
+        return self._logic.strides
 
     @property
     def dilation_rate(self):
-        return self._dilation_rate
+        return self._logic.dilation_rate
 
     @property
     def groups(self):
-        return self._groups
+        return self._logic.groups
 
     @property
     def activation(self):
-        return self._activation
+        return str(self._logic.activation.__name__)
 
 
 class LEmbedding(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
 
-        self._type = 'Embedding'
         self._weights = layer.get_weights()[0]
 
     def set_output(self, new_output):
@@ -471,7 +431,6 @@ class LEmbedding(LLayer):
 class LDefault(LLayer):
     def __init__(self, layer):
         super().__init__(layer)
-        self._type = type(layer).__name__
 
     def set_output(self, new_output):
         pass
