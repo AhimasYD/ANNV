@@ -51,13 +51,11 @@ class VLink:
 
         try:
             factor = self._weight / self._maximum
-            if isnan(factor):
-                factor = 0.0
-        except ValueError:
+        except:
             factor = 0.0
 
         if self._color == WeightColor.ON:
-            self._arrow.set_color(factor)
+            self._arrow.set_color(self._weight, self._maximum)
         else:
             self._arrow.reset_color()
         if self._thick == WeightThick.ON:

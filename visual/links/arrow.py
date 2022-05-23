@@ -4,6 +4,8 @@ from PyQt5.QtCore import QPointF, QLineF, Qt
 
 from math import sqrt
 
+from visual.functions import brush_by_factor
+
 
 LINE_WIDTH = 2
 LINE_WIDTH_MIN = 1
@@ -92,15 +94,9 @@ class Arrow(QGraphicsItemGroup):
         pen.setBrush(QBrush(QColor(0, 0, 0)))
         self._cap.setPen(pen)
 
-    def set_color(self, factor: float):
-        if abs(factor) > 1:
-            raise ValueError
+    def set_color(self, value, maximum):
+        brush = brush_by_factor(value, maximum)
 
-        alpha = abs(int(255 * factor))
-        if factor >= 0:
-            brush = QBrush(QColor(255, 0, 0, alpha))
-        else:
-            brush = QBrush(QColor(0, 0, 255, alpha))
         width = self._line.pen().width()
 
         pen = self._line.pen()
