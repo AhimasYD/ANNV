@@ -74,6 +74,16 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="styleSheet">
+           <string notr="true">QTabBar::tab::!selected  {
+    background:  rgb(220, 220, 220);
+}
+QTabBar::tab::selected  {
+    background:  rgb(190, 190, 190);
+}
+
+</string>
+          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>

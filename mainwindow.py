@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
         visual_view.setGeometry(visual_view.x(), visual_view.y(), width, visual_view.height())
 
     def open_model(self):
-        filename, _ = QFileDialog.getOpenFileName()
+        filename, _ = QFileDialog.getOpenFileName(self, 'Open Model', '', '*.h5')
         if not filename:
             return
 
@@ -167,17 +167,18 @@ class MainWindow(QMainWindow):
         self.scene.setSceneRect(self.scene.itemsBoundingRect())
 
     def load_input(self):
-        filename, _ = QFileDialog.getOpenFileName()
+        filename, _ = QFileDialog.getOpenFileName(self, 'Load Input')
         if not filename:
             return
         self._visual.load_input(filename)
 
     def export_image(self):
-        filename, _ = QFileDialog.getSaveFileName(self, 'Export Image', '', '*.png')
+        type_png = '*.png'
+        type_jpg = '*jpeg'
+        filename, filetype = QFileDialog.getSaveFileName(self, 'Export Image', '', f'{type_png};;{type_jpg}')
+
         if not filename:
             return
-        if not filename.endswith('.png'):
-            filename += '.png'
 
         self.scene.clearSelection()
 
