@@ -164,5 +164,5 @@ class VModel:
     def load_input(self, filename):
         res = self._logic.load_input(filename)
         if res:
-            message = QMessageBox(QMessageBox.Warning, 'Error', res)
+            message = QMessageBox(QMessageBox.Warning, 'Warning', res)
             message.exec()

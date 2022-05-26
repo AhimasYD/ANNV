@@ -42,6 +42,7 @@ class VDense(VItem):
 
         layout = self._w_info.layout()
         layout.addWidget(QLabel(f'Type: {self._logic.type}'))
+        layout.addWidget(QLabel(f'Units: {self._logic.units}'))
         layout.addWidget(QLabel(f'Activation: {self._logic.activation}'))
         layout.addItem(QSpacerItem(0, 15, QSizePolicy.Minimum, QSizePolicy.Fixed))
         layout.addWidget(QLabel('Kernel:'))

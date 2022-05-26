@@ -102,6 +102,7 @@ class MainWindow(QMainWindow):
         self.scene = QGraphicsScene()
         self.visualView.setScene(self.scene)
         self.visualView.setRenderHints(QPainter.Antialiasing)
+        self.visualView.scale(0.75, 0.75)
 
         # Tab Model
         self.model_widget = QWidget()
@@ -149,6 +150,14 @@ class MainWindow(QMainWindow):
         if not filename:
             return
 
+        try:
+            logic = LModel(filename)
+        except Exception as e:
+            print(e)
+            message = QMessageBox(QMessageBox.Warning, 'Warning', "Failed to load model")
+            message.exec()
+            return
+
         self._visual = None
         clear_layout(self.layer_widget.layout())
 
@@ -156,23 +165,25 @@ class MainWindow(QMainWindow):
         self.scene.clear()
         self.scene.update(rect)
 
-        try:
-            logic = LModel(filename)
-        except:
-            message = QMessageBox(QMessageBox.Warning, 'Error', "Failed to load model")
-            message.exec()
-            return
+        clear_layout(self.model_widget.layout())
+        clear_layout(self.layer_widget.layout())
 
         self._visual = VModel(logic, self.scene, self.model_widget, self.layer_widget, self.flat, self.volume)
         self.scene.setSceneRect(self.scene.itemsBoundingRect())
 
     def load_input(self):
+        if self._visual is None:
+            return
+
         filename, _ = QFileDialog.getOpenFileName(self, 'Load Input')
         if not filename:
             return
         self._visual.load_input(filename)
 
     def export_image(self):
+        if self._visual is None:
+            return
+
         type_png = '*.png'
         type_jpg = '*jpeg'
         filename, filetype = QFileDialog.getSaveFileName(self, 'Export Image', '', f'{type_png};;{type_jpg}')
@@ -195,6 +206,10 @@ class MainWindow(QMainWindow):
 
         res = image.save(filename)
         print('SAVED:', res)
+
+        if not res:
+            message = QMessageBox(QMessageBox.Warning, 'Warning', 'Failed to save image')
+            message.exec()
 
         self.scene.setSceneRect(rect)
 
