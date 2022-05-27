@@ -203,9 +203,9 @@ class MainWindow(QMainWindow):
         painter = QPainter(image)
         painter.setRenderHints(QPainter.Antialiasing)
         self.scene.render(painter)
+        painter.end()
 
         res = image.save(filename)
-        print('SAVED:', res)
 
         if not res:
             message = QMessageBox(QMessageBox.Warning, 'Warning', 'Failed to save image')
